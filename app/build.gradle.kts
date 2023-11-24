@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.kotlinAndroid)
     alias(libs.plugins.ksp)
+    alias(libs.plugins.hilt)
 }
 
 android {
@@ -64,6 +65,11 @@ dependencies {
     // Navigation
     implementation(libs.compose.destinations)
     ksp(libs.compose.destinations.ksp)
+
+    // Dependency Injection
+    implementation(libs.androidx.hilt.navigation.compose)
+    implementation(libs.hilt.android)
+    ksp(libs.dagger.hilt.compiler)
 
     // Testing
     testImplementation(libs.junit)
