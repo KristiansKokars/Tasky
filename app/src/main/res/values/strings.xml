@@ -6,4 +6,6 @@
     <string name="sign_up">SIGN UP</string>
     <string name="email_address_is_valid">Email Address is Valid</string>
     <string name="show_password">Show Password</string>
+    <string name="email_address">Email Address</string>
+    <string name="password">Password</string>
 </resources>

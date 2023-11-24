@@ -61,7 +61,7 @@ private fun LoginScreenContent() {
             TaskyTextField(
                 text = "",
                 onValueChange = {},
-                placeholder = { Text("Email Address") },
+                placeholder = { Text(stringResource(R.string.email_address)) },
                 trailingIcon = {
                     Icon(
                         Icons.Default.Check,
@@ -75,7 +75,7 @@ private fun LoginScreenContent() {
                 text = "",
                 onValueChange = {},
                 visualTransformation = PasswordVisualTransformation(),
-                placeholder = { Text("Password") },
+                placeholder = { Text(stringResource(R.string.password)) },
                 trailingIcon = {
                     Icon(
                         painterResource(R.drawable.ic_visibility_off),
