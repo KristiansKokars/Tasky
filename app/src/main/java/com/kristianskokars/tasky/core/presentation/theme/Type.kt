@@ -10,6 +10,11 @@ import com.kristianskokars.tasky.R
 
 val Inter = FontFamily(Font(R.font.inter))
 
+val BannerHeadingStyle = TextStyle(
+    fontWeight = FontWeight.Bold,
+    fontSize = 28.sp
+)
+
 // Set of Material typography styles to start with
 val Typography = Typography(
     bodyLarge = TextStyle(

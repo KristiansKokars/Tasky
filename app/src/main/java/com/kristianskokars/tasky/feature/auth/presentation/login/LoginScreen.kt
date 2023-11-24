@@ -1,4 +1,4 @@
-package com.kristianskokars.tasky.feature.auth.presentation
+package com.kristianskokars.tasky.feature.auth.presentation.login
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -13,6 +13,10 @@ import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -24,24 +28,33 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.kristianskokars.tasky.R
 import com.kristianskokars.tasky.core.presentation.components.ScreenSurface
 import com.kristianskokars.tasky.core.presentation.components.TaskyButton
 import com.kristianskokars.tasky.core.presentation.components.TaskySurface
 import com.kristianskokars.tasky.core.presentation.components.TaskyTextField
+import com.kristianskokars.tasky.core.presentation.theme.BannerHeadingStyle
 import com.kristianskokars.tasky.core.presentation.theme.Gray
 import com.kristianskokars.tasky.core.presentation.theme.Green
 import com.kristianskokars.tasky.core.presentation.theme.LighterGray
 import com.kristianskokars.tasky.core.presentation.theme.Purple
 
 @Composable
-fun LoginScreen() {
+fun LoginScreen(
+
+) {
     LoginScreenContent()
 }
 
 @Composable
 private fun LoginScreenContent() {
+    var emailAddress by remember {
+        mutableStateOf("")
+    }
+    var password by remember {
+        mutableStateOf("")
+    }
+
     Column(modifier = Modifier.fillMaxSize()) {
         Row(
             modifier = Modifier
@@ -49,18 +62,16 @@ private fun LoginScreenContent() {
                 .padding(vertical = 48.dp),
             horizontalArrangement = Arrangement.Center,
         ) {
-            // TODO: see if this repeats and needs a separate style
             Text(
                 text = stringResource(R.string.welcome_back),
-                fontWeight = FontWeight.Bold,
-                fontSize = 28.sp
+                style = BannerHeadingStyle
             )
         }
         TaskySurface {
             Spacer(modifier = Modifier.size(54.dp))
             TaskyTextField(
-                text = "",
-                onValueChange = {},
+                text = emailAddress,
+                onValueChange = { emailAddress = it },
                 placeholder = { Text(stringResource(R.string.email_address)) },
                 trailingIcon = {
                     Icon(
@@ -72,8 +83,8 @@ private fun LoginScreenContent() {
             )
             Spacer(modifier = Modifier.size(16.dp))
             TaskyTextField(
-                text = "",
-                onValueChange = {},
+                text = password,
+                onValueChange = { password = it },
                 visualTransformation = PasswordVisualTransformation(),
                 placeholder = { Text(stringResource(R.string.password)) },
                 trailingIcon = {
