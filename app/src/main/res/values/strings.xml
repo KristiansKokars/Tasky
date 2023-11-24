@@ -8,4 +8,9 @@
     <string name="show_password">Show Password</string>
     <string name="email_address">Email Address</string>
     <string name="password">Password</string>
+    <string name="create_your_account">Create your account</string>
+    <string name="get_started">GET STARTED</string>
+    <string name="name">Name</string>
+    <string name="name_is_valid">Name is valid</string>
+    <string name="go_back_to_login">Go Back to Login</string>
 </resources>

@@ -2,7 +2,6 @@ package com.kristianskokars.tasky.core.presentation.components
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
@@ -13,7 +12,6 @@ import androidx.compose.ui.unit.dp
 import com.kristianskokars.tasky.core.presentation.theme.DarkGray
 import com.kristianskokars.tasky.core.presentation.theme.LightGray
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TaskyTextField(
     text: String,
@@ -26,9 +24,13 @@ fun TaskyTextField(
         modifier = Modifier.fillMaxWidth(),
         value = text,
         onValueChange = onValueChange,
-        colors = TextFieldDefaults.textFieldColors(
-            textColor = DarkGray,
-            containerColor = LightGray,
+        colors = TextFieldDefaults.colors(
+            focusedTextColor = DarkGray,
+            unfocusedTextColor = DarkGray,
+            disabledTextColor = DarkGray,
+            focusedContainerColor = LightGray,
+            unfocusedContainerColor = LightGray,
+            disabledContainerColor = LightGray,
             focusedIndicatorColor = Color.Transparent,
             unfocusedIndicatorColor = Color.Transparent,
             disabledIndicatorColor = Color.Transparent,
