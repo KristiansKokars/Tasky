@@ -147,9 +147,10 @@ fun RegisterScreenContent(
                 isError = state.isPasswordValid == false
             )
             Spacer(modifier = Modifier.size(24.dp))
-            TaskyButton(onClick = {
-                onEvent(RegisterEvent.Register)
-            }, enabled = state.canRegister) {
+            TaskyButton(
+                onClick = { onEvent(RegisterEvent.Register) },
+                enabled = state.canRegister
+            ) {
                 Text(text = stringResource(R.string.get_started))
             }
             Spacer(modifier = Modifier.size(24.dp))
@@ -191,18 +192,21 @@ private fun RegisterResultBox(registerResult: RegisterResult) {
                 textAlign = TextAlign.Center,
                 color = Green
             )
+
             is RegisterResult.Error -> when (registerResult.error) {
                 is RegisterError.NetworkError -> Text(
                     text = stringResource(R.string.network_error_check_your_internet_connection),
                     textAlign = TextAlign.Center,
                     color = Red
                 )
+
                 is RegisterError.ServerError -> Text(
                     text = stringResource(R.string.server_error_try_again_later),
                     textAlign = TextAlign.Center,
                     color = Red
                 )
             }
+
             is RegisterResult.NoResult -> {}
         }
     }

@@ -7,8 +7,8 @@ import com.github.michaelbull.result.mapBoth
 import com.kristianskokars.tasky.feature.auth.data.BackendAuthProvider
 import com.kristianskokars.tasky.lib.launch
 import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
 import timber.log.Timber
+import javax.inject.Inject
 
 @HiltViewModel
 class RegisterViewModel @Inject constructor(
