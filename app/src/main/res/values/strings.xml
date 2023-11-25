@@ -13,4 +13,8 @@
     <string name="name">Name</string>
     <string name="name_is_valid">Name is valid</string>
     <string name="go_back_to_login">Go Back to Login</string>
+    <string name="hide_password">Hide Password</string>
+    <string name="registered_successfully">Registered successfully!</string>
+    <string name="network_error_check_your_internet_connection">Network error: check your internet connection!</string>
+    <string name="server_error_try_again_later">Server error, try again later!</string>
 </resources>
