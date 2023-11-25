@@ -3,6 +3,9 @@ plugins {
     alias(libs.plugins.kotlinAndroid)
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
+    alias(libs.plugins.parcelize)
+    alias(libs.plugins.serialization)
+    alias(libs.plugins.secrets.gradle)
 }
 
 android {
@@ -52,6 +55,11 @@ android {
     }
 }
 
+secrets {
+    propertiesFileName = "secrets.properties"
+    defaultPropertiesFileName = "secrets.defaults.properties"
+}
+
 dependencies {
     // Android
     implementation(libs.core.ktx)
@@ -62,6 +70,7 @@ dependencies {
     implementation(libs.ui.graphics)
     implementation(libs.ui.tooling.preview)
     implementation(libs.material3)
+    implementation(libs.androidx.lifecycle.runtime.compose)
 
     // Navigation
     implementation(libs.compose.destinations)
@@ -74,6 +83,15 @@ dependencies {
 
     // Logging
     implementation(libs.timber)
+
+    // Result
+    implementation(libs.kotlin.result)
+
+    // Networking
+    implementation(libs.retrofit)
+    implementation(libs.retrofit2.kotlinx.serialization.converter)
+    implementation(libs.kotlinx.serialization.json)
+    implementation(libs.logging.interceptor)
 
     // Testing
     testImplementation(libs.junit)
