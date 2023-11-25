@@ -17,4 +17,5 @@
     <string name="registered_successfully">Registered successfully!</string>
     <string name="network_error_check_your_internet_connection">Network error: check your internet connection!</string>
     <string name="server_error_try_again_later">Server error, try again later!</string>
+    <string name="failed_to_write_data_to_local_device_is_your_storage_full">Failed to write data to local device, is your storage full?</string>
 </resources>

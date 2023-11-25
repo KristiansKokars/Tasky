@@ -1,4 +1,4 @@
-package com.kristianskokars.tasky.feature.auth.presentation.register
+package com.kristianskokars.tasky.feature.auth.presentation.login
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -12,30 +12,21 @@ import javax.inject.Inject
 import timber.log.Timber
 
 @HiltViewModel
-class RegisterViewModel @Inject constructor(
+class LoginViewModel @Inject constructor(
     private val authProvider: BackendAuthProvider,
     private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
-    private val stateKey = "RegisterState"
-    val state = savedStateHandle.getStateFlow(stateKey, RegisterState())
+    private val stateKey = "LoginState"
+    val state = savedStateHandle.getStateFlow(stateKey, LoginState())
 
-    fun onEvent(event: RegisterEvent) {
-        Timber.i("RegisterViewModel Event: $event")
+    fun onEvent(event: LoginEvent) {
+        Timber.i("LoginViewModel Event: $event")
         when (event) {
-            is RegisterEvent.OnNameChange -> onNameChange(event.value)
-            is RegisterEvent.OnEmailChange -> onEmailChange(event.value)
-            is RegisterEvent.OnPasswordChange -> onPasswordChange(event.value)
-            RegisterEvent.TogglePasswordVisibility -> togglePasswordVisibility()
-            RegisterEvent.Register -> register()
+            is LoginEvent.OnEmailChange -> onEmailChange(event.value)
+            is LoginEvent.OnPasswordChange -> onPasswordChange(event.value)
+            LoginEvent.TogglePasswordVisibility -> togglePasswordVisibility()
+            LoginEvent.Login -> login()
         }
-    }
-
-    private fun onNameChange(newName: String) {
-        // TODO: may want to debounce for UX or wait until register call is made to tell an error?
-        savedStateHandle[stateKey] = state.value.copy(
-            name = newName,
-            isNameValid = newName.length in 4..50
-        )
     }
 
     private fun onEmailChange(newEmail: String) {
@@ -58,27 +49,26 @@ class RegisterViewModel @Inject constructor(
         )
     }
 
-    private fun register() {
+    private fun login() {
         val currentState = state.value
-        if (currentState.isNameValid != true || currentState.isEmailValid != true || currentState.isPasswordValid != true) return
+        if (currentState.isEmailValid != true || currentState.isPasswordValid != true) return
+
+        // TODO: implement loading
+        savedStateHandle[stateKey] = state.value.copy(loginResult = LoginResult.NoResult)
 
         launch {
-            authProvider.register(
-                name = currentState.name,
-                email = currentState.email,
-                password = currentState.password
-            ).mapBoth(
+            authProvider.login(currentState.email, currentState.password).mapBoth(
                 success = {
                     savedStateHandle[stateKey] = state.value.copy(
-                        registerResult = RegisterResult.Success
+                        loginResult = LoginResult.Success
                     )
-                    Timber.d("Registered successfully: $currentState")
+                    Timber.d("Logged in successfully: $currentState")
                 },
                 failure = {
                     savedStateHandle[stateKey] = state.value.copy(
-                        registerResult = RegisterResult.Error(it)
+                        loginResult = LoginResult.Error(it)
                     )
-                    Timber.d("Failed to register user: $currentState")
+                    Timber.d("Failed to login user: $currentState")
                 }
             )
         }
