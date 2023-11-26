@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.ClickableText
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.Icon
@@ -23,6 +24,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
@@ -101,6 +103,7 @@ private fun LoginScreenContent(
             Spacer(modifier = Modifier.size(54.dp))
             TaskyTextField(
                 text = state.email,
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
                 onValueChange = { onEvent(LoginEvent.OnEmailChange(it)) },
                 placeholder = { Text(stringResource(R.string.email_address)) },
                 trailingIcon = if (state.isEmailValid == true) {
@@ -119,6 +122,7 @@ private fun LoginScreenContent(
             Spacer(modifier = Modifier.size(16.dp))
             TaskyTextField(
                 text = state.password,
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                 onValueChange = { onEvent(LoginEvent.OnPasswordChange(it)) },
                 visualTransformation = if (state.isPasswordVisible) {
                     VisualTransformation.None
