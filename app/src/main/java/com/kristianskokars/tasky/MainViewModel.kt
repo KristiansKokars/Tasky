@@ -7,6 +7,7 @@ import com.kristianskokars.tasky.feature.auth.data.model.AuthState
 import com.kristianskokars.tasky.lib.asStateFlow
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.map
 
 @HiltViewModel
@@ -14,5 +15,5 @@ class MainViewModel @Inject constructor(authProvider: BackendAuthProvider) : Vie
     val authState = authProvider.authState
     val isLoadingUserSession = authState.map { authState ->
         authState == AuthState.RetrievingFromStorage
-    }.asStateFlow(viewModelScope, true)
+    }.asStateFlow(viewModelScope, true, SharingStarted.Eagerly)
 }
