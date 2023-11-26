@@ -1,6 +1,7 @@
 [versions]
 agp = "8.3.0-alpha14"
 compose-destinations = "1.9.55"
+core-splashscreen = "1.0.1"
 datastore-preferences = "1.0.0"
 hilt = "2.48"
 hilt-navigation-compose = "1.1.0"
@@ -22,6 +23,7 @@ secrets-gradle-plugin = "2.0.1"
 timber = "5.0.1"
 
 [libraries]
+androidx-core-splashscreen = { module = "androidx.core:core-splashscreen", version.ref = "core-splashscreen" }
 androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastore-preferences" }
 androidx-hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hilt-navigation-compose" }
 androidx-lifecycle-runtime-compose = { module = "androidx.lifecycle:lifecycle-runtime-compose", version.ref = "lifecycle-runtime-ktx" }
