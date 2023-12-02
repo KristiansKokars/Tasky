@@ -13,3 +13,7 @@ val LighterGray = Color(0xFFBEBEBE)
 val Green = Color(0xFF279F70)
 val Red = Color(0xFFFF7272)
 val LightBlue = Color(0xFFB7C6DE)
+// This does not look orange, but the design has called it orange, so orange it is
+val Orange = Color(0xFFFDEFA8)
+val Light = Color(0xFFEEF6FF)
+val LightGreen = Color(0xFFCAEF45)
