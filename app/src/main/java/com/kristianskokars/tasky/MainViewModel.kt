@@ -1,19 +1,21 @@
 package com.kristianskokars.tasky
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.kristianskokars.tasky.feature.auth.data.BackendAuthProvider
-import com.kristianskokars.tasky.feature.auth.data.model.AuthState
-import com.kristianskokars.tasky.lib.asStateFlow
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.map
 import javax.inject.Inject
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 
 @HiltViewModel
 class MainViewModel @Inject constructor(authProvider: BackendAuthProvider) : ViewModel() {
+    private val _isInitializingApp = MutableStateFlow(true)
+
     val authState = authProvider.authState
-    val isLoadingUserSession = authState.map { authState ->
-        authState == AuthState.RetrievingFromStorage
-    }.asStateFlow(viewModelScope, true, SharingStarted.Eagerly)
+    val isInitializingApp = _isInitializingApp.asStateFlow()
+
+    fun hasInitializedApp() {
+        _isInitializingApp.update { false }
+    }
 }

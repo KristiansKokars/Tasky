@@ -25,8 +25,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         val splashScreen = installSplashScreen()
         super.onCreate(savedInstanceState)
-        splashScreen.setKeepOnScreenCondition { viewModel.isLoadingUserSession.value }
-
+        splashScreen.setKeepOnScreenCondition { viewModel.isInitializingApp.value }
         setContent {
             val authState by viewModel.authState.collectAsStateWithLifecycle()
             val engine = rememberNavHostEngine()
@@ -35,17 +34,23 @@ class MainActivity : ComponentActivity() {
             LaunchedEffect(key1 = authState) {
                 when (authState) {
                     AuthState.RetrievingFromStorage -> {}
-                    AuthState.LoggedOut -> navControler.navigate(NavGraphs.root) {
-                        launchSingleTop = true
-                        popUpTo(NavGraphs.root.route) {
-                            inclusive = true
+                    AuthState.LoggedOut -> {
+                        navControler.navigate(NavGraphs.root) {
+                            launchSingleTop = true
+                            popUpTo(NavGraphs.root.route) {
+                                inclusive = true
+                            }
                         }
+                        viewModel.hasInitializedApp()
                     }
-                    is AuthState.LoggedIn -> navControler.navigate(NavGraphs.appGraph) {
-                        launchSingleTop = true
-                        popUpTo(NavGraphs.root.route) {
-                            inclusive = true
+                    is AuthState.LoggedIn -> {
+                        navControler.navigate(NavGraphs.appGraph) {
+                            launchSingleTop = true
+                            popUpTo(NavGraphs.root.route) {
+                                inclusive = true
+                            }
                         }
+                        viewModel.hasInitializedApp()
                     }
                 }
             }
