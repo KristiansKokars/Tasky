@@ -15,7 +15,7 @@ class MainViewModel @Inject constructor(authProvider: BackendAuthProvider) : Vie
     val authState = authProvider.authState
     val isInitializingApp = _isInitializingApp.asStateFlow()
 
-    fun hasInitializedApp() {
+    fun appHasInitialized() {
         _isInitializingApp.update { false }
     }
 }

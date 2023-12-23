@@ -41,7 +41,7 @@ class MainActivity : ComponentActivity() {
                                 inclusive = true
                             }
                         }
-                        viewModel.hasInitializedApp()
+                        viewModel.appHasInitialized()
                     }
                     is AuthState.LoggedIn -> {
                         navControler.navigate(NavGraphs.appGraph) {
@@ -50,7 +50,7 @@ class MainActivity : ComponentActivity() {
                                 inclusive = true
                             }
                         }
-                        viewModel.hasInitializedApp()
+                        viewModel.appHasInitialized()
                     }
                 }
             }
