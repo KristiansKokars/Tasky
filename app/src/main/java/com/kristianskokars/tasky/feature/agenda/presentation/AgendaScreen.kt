@@ -39,23 +39,27 @@ import com.kristianskokars.tasky.feature.agenda.presentation.components.AddAgend
 import com.kristianskokars.tasky.feature.agenda.presentation.components.AgendaCard
 import com.kristianskokars.tasky.feature.agenda.presentation.components.ProfileIcon
 import com.kristianskokars.tasky.feature.agenda.presentation.components.TopDayRow
+import com.kristianskokars.tasky.feature.destinations.CreateAgendaScreenDestination
 import com.kristianskokars.tasky.nav.AppGraph
 import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import com.ramcosta.composedestinations.navigation.EmptyDestinationsNavigator
 
 @AppGraph(start = true)
 @Destination
 @Composable
-fun AgendaScreen(viewModel: AgendaViewModel = hiltViewModel()) {
+fun AgendaScreen(viewModel: AgendaViewModel = hiltViewModel(), navigator: DestinationsNavigator) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
-    AgendaScreenContent(state = state, onEvent = viewModel::onEvent)
+    AgendaScreenContent(state = state, onEvent = viewModel::onEvent, navigator)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AgendaScreenContent(
     state: AgendaState,
-    onEvent: (AgendaEvent) -> Unit
+    onEvent: (AgendaEvent) -> Unit,
+    navigator: DestinationsNavigator
 ) {
     Scaffold(
         topBar = {
@@ -77,7 +81,13 @@ fun AgendaScreenContent(
                 actions = { ProfileIcon(onLogOut = { onEvent(AgendaEvent.Logout) }) }
             )
         },
-        floatingActionButton = { AddAgendaButton() }
+        floatingActionButton = {
+            AddAgendaButton(
+                onCreateNewAgenda = { agendaType ->
+                    navigator.navigate(CreateAgendaScreenDestination(agendaType))
+                }
+            )
+        }
     ) { padding ->
         TaskySurface(modifier = Modifier.padding(padding)) {
             TopDayRow(
@@ -133,6 +143,10 @@ private fun TimeNeedle() {
 @Composable
 private fun AgendaScreenPreview() {
     ScreenSurface {
-        AgendaScreenContent(state = AgendaState(agendas = Agenda.previewValues), onEvent = {})
+        AgendaScreenContent(
+            state = AgendaState(agendas = Agenda.previewValues),
+            onEvent = {},
+            navigator = EmptyDestinationsNavigator
+        )
     }
 }

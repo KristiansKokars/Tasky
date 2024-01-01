@@ -23,4 +23,7 @@
     <string name="edit">Edit</string>
     <string name="delete">Delete</string>
     <string name="logout">Logout</string>
+    <string name="event">Event</string>
+    <string name="task">Task</string>
+    <string name="reminder">Reminder</string>
 </resources>
