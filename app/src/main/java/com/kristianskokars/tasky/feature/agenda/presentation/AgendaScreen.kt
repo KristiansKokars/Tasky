@@ -56,7 +56,7 @@ fun AgendaScreen(viewModel: AgendaViewModel = hiltViewModel(), navigator: Destin
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AgendaScreenContent(
+private fun AgendaScreenContent(
     state: AgendaState,
     onEvent: (AgendaEvent) -> Unit,
     navigator: DestinationsNavigator
