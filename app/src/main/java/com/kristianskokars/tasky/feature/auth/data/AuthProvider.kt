@@ -6,8 +6,8 @@ import com.github.michaelbull.result.Result
 import com.kristianskokars.tasky.core.data.local.model.User
 import com.kristianskokars.tasky.core.data.local.model.UserSettings
 import com.kristianskokars.tasky.core.data.remote.TaskyAPI
-import com.kristianskokars.tasky.core.data.remote.model.LoginDTO
-import com.kristianskokars.tasky.core.data.remote.model.RegisterDTO
+import com.kristianskokars.tasky.core.data.remote.model.LoginRequestDTO
+import com.kristianskokars.tasky.core.data.remote.model.RegisterRequestDTO
 import com.kristianskokars.tasky.di.IOScope
 import com.kristianskokars.tasky.feature.auth.data.model.AuthState
 import com.kristianskokars.tasky.feature.auth.data.model.LoginError
@@ -15,13 +15,13 @@ import com.kristianskokars.tasky.feature.auth.data.model.RegisterError
 import com.kristianskokars.tasky.lib.Success
 import com.kristianskokars.tasky.lib.asStateFlow
 import com.kristianskokars.tasky.lib.success
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.map
-import retrofit2.HttpException
 import java.io.IOException
 import java.net.UnknownHostException
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.map
+import retrofit2.HttpException
 
 @Singleton
 class BackendAuthProvider @Inject constructor(
@@ -42,7 +42,7 @@ class BackendAuthProvider @Inject constructor(
     suspend fun register(name: String, email: String, password: String): Result<Success, RegisterError> {
         try {
             api.register(
-                RegisterDTO(
+                RegisterRequestDTO(
                     fullName = name,
                     email = email,
                     password = password
@@ -59,7 +59,7 @@ class BackendAuthProvider @Inject constructor(
 
     suspend fun login(email: String, password: String): Result<Success, LoginError> {
         try {
-            val response = api.login(LoginDTO(email, password))
+            val response = api.login(LoginRequestDTO(email, password))
             userSettingsStore.updateData { userSettings ->
                 userSettings.copy(
                     token = response.token,

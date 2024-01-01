@@ -42,6 +42,7 @@ import com.kristianskokars.tasky.core.presentation.theme.LightGray
 import com.kristianskokars.tasky.core.presentation.theme.LightGreen
 import com.kristianskokars.tasky.core.presentation.theme.White
 import com.kristianskokars.tasky.feature.agenda.data.model.Agenda
+import com.kristianskokars.tasky.feature.agenda.presentation.util.formatTime
 
 private val agendaDropdownItems
     @Composable
@@ -150,7 +151,7 @@ fun AgendaCard(
                     horizontalArrangement = Arrangement.End
                 ) {
                     Text(
-                        text = agenda.time,
+                        text = agenda.time.formatTime(),
                         fontWeight = FontWeight.Light,
                         fontSize = 14.sp,
                         lineHeight = 12.sp

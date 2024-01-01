@@ -97,6 +97,9 @@ dependencies {
     // Local Data
     implementation(libs.androidx.datastore.preferences)
 
+    // Time
+    implementation(libs.kotlinx.datetime)
+
     // Testing
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.ext.junit)

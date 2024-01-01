@@ -12,8 +12,11 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import javax.inject.Singleton
+import kotlinx.datetime.Clock
+import kotlinx.datetime.TimeZone
 import retrofit2.Retrofit
+import java.util.Locale
+import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -35,4 +38,16 @@ object DataModule {
     @Provides
     @Singleton
     fun provideTaskyAPI(retrofit: Retrofit): TaskyAPI = retrofit.create(TaskyAPI::class.java)
+
+    @Provides
+    @Singleton
+    fun provideSystemClock(): Clock = Clock.System
+
+    @Provides
+    @Singleton
+    fun provideSystemTimezone(): TimeZone = TimeZone.currentSystemDefault()
+
+    @Provides
+    @Singleton
+    fun provideSystemLocale(): Locale = Locale.getDefault()
 }
