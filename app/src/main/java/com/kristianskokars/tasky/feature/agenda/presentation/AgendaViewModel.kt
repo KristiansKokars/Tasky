@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kristianskokars.tasky.feature.agenda.data.AgendaRepository
 import com.kristianskokars.tasky.feature.agenda.presentation.util.nameOfMonth
+import com.kristianskokars.tasky.feature.auth.data.BackendAuthProvider
 import com.kristianskokars.tasky.lib.asStateFlow
 import com.kristianskokars.tasky.lib.launch
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -25,6 +26,7 @@ class AgendaViewModel @Inject constructor(
     private val timeZone: TimeZone,
     private val clock: Clock,
     private val locale: Locale,
+    private val backendAuthProvider: BackendAuthProvider,
 ) : ViewModel() {
     private val _selectedDayIndex = MutableStateFlow(0)
     private val currentWeekDays = clock.next6Days().map { it.toLocalDateTime(timeZone) }
@@ -51,11 +53,18 @@ class AgendaViewModel @Inject constructor(
     fun onEvent(event: AgendaEvent) {
         when (event) {
             is AgendaEvent.DaySelected -> selectNewCurrentDay(event.dayIndex)
+            AgendaEvent.Logout -> logout()
         }
     }
 
     private fun selectNewCurrentDay(dayIndex: Int) {
         _selectedDayIndex.update { dayIndex }
+    }
+
+    private fun logout() {
+        launch {
+            backendAuthProvider.logout()
+        }
     }
 
     private fun fetchAgendas() {

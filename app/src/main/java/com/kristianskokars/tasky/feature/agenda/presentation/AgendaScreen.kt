@@ -17,7 +17,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
@@ -46,12 +45,11 @@ import com.kristianskokars.tasky.core.presentation.components.TaskySurface
 import com.kristianskokars.tasky.core.presentation.theme.Black
 import com.kristianskokars.tasky.core.presentation.theme.DarkGray
 import com.kristianskokars.tasky.core.presentation.theme.Gray
-import com.kristianskokars.tasky.core.presentation.theme.Light
-import com.kristianskokars.tasky.core.presentation.theme.LightBlue
 import com.kristianskokars.tasky.core.presentation.theme.Orange
 import com.kristianskokars.tasky.core.presentation.theme.White
 import com.kristianskokars.tasky.feature.agenda.data.model.Agenda
 import com.kristianskokars.tasky.feature.agenda.presentation.components.AgendaCard
+import com.kristianskokars.tasky.feature.agenda.presentation.components.ProfileIcon
 import com.kristianskokars.tasky.feature.agenda.presentation.util.initial
 import com.kristianskokars.tasky.nav.AppGraph
 import com.ramcosta.composedestinations.annotation.Destination
@@ -89,19 +87,7 @@ fun AgendaScreenContent(
                         )
                     }
                 },
-                actions = {
-                    Text(
-                        modifier = Modifier
-                            .padding(8.dp)
-                            .clip(CircleShape)
-                            .background(Light)
-                            .padding(6.dp),
-                        text = "AB",
-                        color = LightBlue,
-                        fontWeight = FontWeight.SemiBold,
-                        fontSize = 13.sp
-                    )
-                }
+                actions = { ProfileIcon(onLogOut = { onEvent(AgendaEvent.Logout) }) }
             )
         },
         floatingActionButton = {
@@ -176,7 +162,9 @@ private fun DaySelection(
     onDayClick: (index: Int) -> Unit
 ) {
     LazyRow(
-        modifier = Modifier.padding(16.dp).fillMaxWidth(),
+        modifier = Modifier
+            .padding(16.dp)
+            .fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         itemsIndexed(days) { index, day ->

@@ -15,13 +15,13 @@ import com.kristianskokars.tasky.feature.auth.data.model.RegisterError
 import com.kristianskokars.tasky.lib.Success
 import com.kristianskokars.tasky.lib.asStateFlow
 import com.kristianskokars.tasky.lib.success
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.map
+import retrofit2.HttpException
 import java.io.IOException
 import java.net.UnknownHostException
 import javax.inject.Inject
 import javax.inject.Singleton
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.map
-import retrofit2.HttpException
 
 @Singleton
 class BackendAuthProvider @Inject constructor(
@@ -76,5 +76,11 @@ class BackendAuthProvider @Inject constructor(
         }
 
         return success()
+    }
+
+    suspend fun logout() {
+        userSettingsStore.updateData { userSettings ->
+            userSettings.copy(userId = null, fullName = null, token = null)
+        }
     }
 }
