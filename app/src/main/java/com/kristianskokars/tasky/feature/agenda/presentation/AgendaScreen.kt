@@ -31,6 +31,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kristianskokars.tasky.R
+import com.kristianskokars.tasky.core.data.local.model.CreateAgendaType
 import com.kristianskokars.tasky.core.presentation.components.ScreenSurface
 import com.kristianskokars.tasky.core.presentation.components.TaskySurface
 import com.kristianskokars.tasky.core.presentation.theme.Black
@@ -39,7 +40,7 @@ import com.kristianskokars.tasky.feature.agenda.presentation.components.AddAgend
 import com.kristianskokars.tasky.feature.agenda.presentation.components.AgendaCard
 import com.kristianskokars.tasky.feature.agenda.presentation.components.ProfileIcon
 import com.kristianskokars.tasky.feature.agenda.presentation.components.TopDayRow
-import com.kristianskokars.tasky.feature.destinations.CreateAgendaScreenDestination
+import com.kristianskokars.tasky.feature.destinations.CreateEventScreenDestination
 import com.kristianskokars.tasky.nav.AppGraph
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
@@ -84,7 +85,11 @@ private fun AgendaScreenContent(
         floatingActionButton = {
             AddAgendaButton(
                 onCreateNewAgenda = { agendaType ->
-                    navigator.navigate(CreateAgendaScreenDestination(agendaType))
+                    when (agendaType) {
+                        CreateAgendaType.Event -> navigator.navigate(CreateEventScreenDestination)
+                        CreateAgendaType.Reminder -> { /* TODO */ }
+                        CreateAgendaType.Task -> { /* TODO */ }
+                    }
                 }
             )
         }

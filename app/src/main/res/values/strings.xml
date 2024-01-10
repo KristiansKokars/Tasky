@@ -26,4 +26,11 @@
     <string name="event">Event</string>
     <string name="task">Task</string>
     <string name="reminder">Reminder</string>
+    <string name="add_photos">Add photos</string>
+    <string name="edit_title">Edit Title</string>
+    <string name="edit_description">Edit description</string>
+    <string name="edit_reminder">Edit Reminder</string>
+    <string name="edit_date">Edit Date</string>
+    <string name="edit_time">Edit Time</string>
+    <string name="view_photo">View Photo</string>
 </resources>

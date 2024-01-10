@@ -100,6 +100,9 @@ dependencies {
     // Time
     implementation(libs.kotlinx.datetime)
 
+    // Coil
+    implementation(libs.coil.compose)
+
     // Testing
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.ext.junit)

@@ -1,5 +1,6 @@
 [versions]
-agp = "8.4.0-alpha01"
+agp = "8.2.1"
+coil-compose = "2.5.0"
 compose-destinations = "1.9.55"
 core-splashscreen = "1.0.1"
 datastore-preferences = "1.0.0"
@@ -28,6 +29,7 @@ androidx-core-splashscreen = { module = "androidx.core:core-splashscreen", versi
 androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastore-preferences" }
 androidx-hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hilt-navigation-compose" }
 androidx-lifecycle-runtime-compose = { module = "androidx.lifecycle:lifecycle-runtime-compose", version.ref = "lifecycle-runtime-ktx" }
+coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coil-compose" }
 compose-destinations = { module = "io.github.raamcosta.compose-destinations:core", version.ref = "compose-destinations" }
 core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "core-ktx" }
 dagger-hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "hilt" }

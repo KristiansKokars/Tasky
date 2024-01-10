@@ -13,6 +13,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.kristianskokars.tasky.core.presentation.theme.Black
+import com.kristianskokars.tasky.core.presentation.theme.DarkGray
+import com.kristianskokars.tasky.core.presentation.theme.LightGray
 import com.kristianskokars.tasky.core.presentation.theme.White
 
 @Composable
@@ -29,8 +31,8 @@ fun TaskyButton(
         colors = ButtonDefaults.buttonColors(
             containerColor = Black,
             contentColor = White,
-            disabledContainerColor = Black.copy(alpha = 0.6f),
-            disabledContentColor = White.copy(alpha = 0.4f)
+            disabledContainerColor = LightGray,
+            disabledContentColor = DarkGray
         ),
         enabled = enabled,
         onClick = onClick
