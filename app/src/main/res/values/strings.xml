@@ -38,4 +38,5 @@
     <string name="delete_task">DELETE TASK</string>
     <string name="edit_task">EDIT TASK</string>
     <string name="delete_event">DELETE EVENT</string>
+    <string name="delete_reminder">DELETE REMINDER</string>
 </resources>
