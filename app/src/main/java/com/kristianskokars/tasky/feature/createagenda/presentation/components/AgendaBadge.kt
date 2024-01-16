@@ -17,7 +17,7 @@ import androidx.compose.ui.unit.sp
 import com.kristianskokars.tasky.core.presentation.theme.DarkGray
 
 @Composable
-fun EventBadge(
+fun AgendaBadge(
     modifier: Modifier = Modifier,
     badgeColor: Color,
     text: String,

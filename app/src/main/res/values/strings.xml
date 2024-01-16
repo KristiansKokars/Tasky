@@ -35,4 +35,7 @@
     <string name="view_photo">View Photo</string>
     <string name="go_back">Go back</string>
     <string name="save">Save</string>
+    <string name="delete_task">DELETE TASK</string>
+    <string name="edit_task">EDIT TASK</string>
+    <string name="delete_event">DELETE EVENT</string>
 </resources>

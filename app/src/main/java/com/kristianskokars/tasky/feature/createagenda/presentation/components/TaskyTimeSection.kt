@@ -20,7 +20,7 @@ import com.kristianskokars.tasky.R
 @Composable
 fun TaskyTimeSection(
     modifier: Modifier = Modifier,
-    isEditing: Boolean = true,
+    isEditing: Boolean = false,
     onEditTime: () -> Unit = {},
     onEditDate: () -> Unit = {},
 ) {

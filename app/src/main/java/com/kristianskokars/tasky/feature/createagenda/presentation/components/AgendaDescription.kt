@@ -14,7 +14,7 @@ import androidx.compose.ui.res.stringResource
 import com.kristianskokars.tasky.R
 
 @Composable
-fun EventDescription(
+fun AgendaDescription(
     modifier: Modifier = Modifier,
     isEditing: Boolean = false,
     onEditDescription: () -> Unit = {},
