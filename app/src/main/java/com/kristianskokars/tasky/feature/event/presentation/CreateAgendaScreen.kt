@@ -1,4 +1,4 @@
-package com.kristianskokars.tasky.feature.createagenda.presentation
+package com.kristianskokars.tasky.feature.event.presentation
 
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable

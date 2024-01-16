@@ -1,4 +1,4 @@
-package com.kristianskokars.tasky.feature.createagenda.presentation.components
+package com.kristianskokars.tasky.feature.event.presentation.components
 
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer

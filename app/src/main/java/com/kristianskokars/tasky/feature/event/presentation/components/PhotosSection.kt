@@ -1,4 +1,4 @@
-package com.kristianskokars.tasky.feature.createagenda.presentation.components
+package com.kristianskokars.tasky.feature.event.presentation.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border

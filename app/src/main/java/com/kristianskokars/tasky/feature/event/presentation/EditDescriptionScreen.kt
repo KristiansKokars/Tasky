@@ -1,4 +1,5 @@
-package com.kristianskokars.tasky.feature.createagenda.presentation
+package com.kristianskokars.tasky.feature.event.presentation
+
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -27,21 +28,21 @@ import com.kristianskokars.tasky.R
 import com.kristianskokars.tasky.core.presentation.components.ScreenSurface
 import com.kristianskokars.tasky.core.presentation.theme.Black
 import com.kristianskokars.tasky.core.presentation.theme.White
-import com.kristianskokars.tasky.feature.createagenda.presentation.components.EditToolbar
+import com.kristianskokars.tasky.feature.event.presentation.components.EditToolbar
 import com.kristianskokars.tasky.nav.AppGraph
 import com.ramcosta.composedestinations.annotation.Destination
 
 @AppGraph
 @Destination
 @Composable
-fun EditTitleScreen() {
-    EditTitleScreenContent()
+fun EditDescriptionScreen() {
+    EditDescriptionScreenContent()
 }
 
 @Composable
-private fun EditTitleScreenContent() {
+private fun EditDescriptionScreenContent() {
     var value by rememberSaveable(stateSaver = TextFieldValue.Saver) {
-        mutableStateOf(TextFieldValue("Meeting"))
+        mutableStateOf(TextFieldValue("Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. "))
     }
 
     CompositionLocalProvider(LocalContentColor provides Black) {
@@ -52,12 +53,12 @@ private fun EditTitleScreenContent() {
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
         ) {
-            EditToolbar(title = stringResource(id = R.string.edit_title))
+            EditToolbar(title = stringResource(id = R.string.edit_description))
             Spacer(modifier = Modifier.size(36.dp))
             BasicTextField(
                 value = value,
                 onValueChange = { value = it },
-                textStyle = TextStyle.Default.copy(fontSize = 26.sp)
+                textStyle = TextStyle.Default.copy(fontSize = 16.sp)
             )
         }
     }
@@ -65,8 +66,8 @@ private fun EditTitleScreenContent() {
 
 @Preview
 @Composable
-fun EditTitleScreenPreview() {
+fun EditDescriptionScreenPreview() {
     ScreenSurface {
-        EditTitleScreenContent()
+        EditDescriptionScreenContent()
     }
 }
