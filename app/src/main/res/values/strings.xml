@@ -41,4 +41,6 @@
     <string name="delete_reminder">DELETE REMINDER</string>
     <string name="delete_photo">Delete photo</string>
     <string name="photo">Photo</string>
+    <string name="close_add_visitor_dialog">Close Add Visitor dialog</string>
+    <string name="add_visitor">Add visitor</string>
 </resources>
