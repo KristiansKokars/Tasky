@@ -3,7 +3,7 @@ package com.kristianskokars.tasky.feature.agenda.presentation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kristianskokars.tasky.feature.agenda.data.AgendaRepository
-import com.kristianskokars.tasky.feature.agenda.presentation.util.nameOfMonth
+import com.kristianskokars.tasky.core.presentation.util.nameOfMonth
 import com.kristianskokars.tasky.feature.auth.data.BackendAuthProvider
 import com.kristianskokars.tasky.lib.asStateFlow
 import com.kristianskokars.tasky.lib.launch

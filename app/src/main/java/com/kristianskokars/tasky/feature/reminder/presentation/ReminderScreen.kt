@@ -71,7 +71,7 @@ private fun ReminderScreenContent(navigator: DestinationsNavigator) {
                 EventTitle(
                     title = "Project X",
                     onEditTitle = {
-                        navigator.navigate(EditTitleScreenDestination)
+                        navigator.navigate(EditTitleScreenDestination(""))
                     }
                 )
                 Spacer(modifier = Modifier.size(24.dp))
@@ -80,7 +80,7 @@ private fun ReminderScreenContent(navigator: DestinationsNavigator) {
                 AgendaDescription(
                     text = "Weekly plan\nRole distribution",
                     onEditDescription = {
-                        navigator.navigate(EditDescriptionScreenDestination)
+                        navigator.navigate(EditDescriptionScreenDestination(""))
                     }
                 )
                 Spacer(modifier = Modifier.size(20.dp))

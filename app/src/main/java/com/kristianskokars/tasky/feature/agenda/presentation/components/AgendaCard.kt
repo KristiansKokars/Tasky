@@ -41,8 +41,8 @@ import com.kristianskokars.tasky.core.presentation.theme.Green
 import com.kristianskokars.tasky.core.presentation.theme.LightGray
 import com.kristianskokars.tasky.core.presentation.theme.LightGreen
 import com.kristianskokars.tasky.core.presentation.theme.White
+import com.kristianskokars.tasky.core.presentation.util.formatTime
 import com.kristianskokars.tasky.feature.agenda.data.model.Agenda
-import com.kristianskokars.tasky.feature.agenda.presentation.util.formatTime
 
 private val agendaDropdownItems
     @Composable
@@ -122,7 +122,7 @@ fun AgendaCard(
                             // TODO: meet accessibility guidelines here
                             modifier = Modifier.clickable { isDropdownOpen = true },
                             painter = painterResource(id = R.drawable.ic_dropdown_menu),
-                            contentDescription = "Open agenda menu"
+                            contentDescription = stringResource(R.string.open_agenda_menu)
                         )
                         AgendaDropdownMenu(
                             items = agendaDropdownItems,
@@ -167,7 +167,9 @@ fun AgendaCard(
 private fun AgendaCardPreview() {
     ScreenSurface {
         Column(
-            modifier = Modifier.background(White).padding(20.dp)
+            modifier = Modifier
+                .background(White)
+                .padding(20.dp)
         ) {
             Agenda.previewValues.forEach { agenda ->
                 AgendaCard(agenda = agenda)

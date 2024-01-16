@@ -28,7 +28,7 @@ fun AgendaDescription(
                 modifier = Modifier.weight(1f).fillMaxHeight()
             ) {
                 EditButton(
-                    modifier = Modifier.align(Alignment.Center),
+                    modifier = Modifier.align(Alignment.CenterEnd),
                     onEdit = onEditDescription,
                     label = stringResource(R.string.edit_description)
                 )

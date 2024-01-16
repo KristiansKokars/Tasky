@@ -25,6 +25,8 @@ import com.kristianskokars.tasky.core.presentation.components.TaskySurface
 import com.kristianskokars.tasky.core.presentation.theme.Black
 import com.kristianskokars.tasky.core.presentation.theme.Gray
 import com.kristianskokars.tasky.core.presentation.theme.LightGreen
+import com.kristianskokars.tasky.feature.destinations.EditDescriptionScreenDestination
+import com.kristianskokars.tasky.feature.destinations.EditTitleScreenDestination
 import com.kristianskokars.tasky.feature.event.presentation.components.AgendaBadge
 import com.kristianskokars.tasky.feature.event.presentation.components.AgendaDescription
 import com.kristianskokars.tasky.feature.event.presentation.components.AgendaTopBar
@@ -33,8 +35,6 @@ import com.kristianskokars.tasky.feature.event.presentation.components.PhotosSec
 import com.kristianskokars.tasky.feature.event.presentation.components.RemindBeforeSection
 import com.kristianskokars.tasky.feature.event.presentation.components.TaskyTimeSection
 import com.kristianskokars.tasky.feature.event.presentation.components.VisitorsSection
-import com.kristianskokars.tasky.feature.destinations.EditDescriptionScreenDestination
-import com.kristianskokars.tasky.feature.destinations.EditTitleScreenDestination
 import com.kristianskokars.tasky.nav.AppGraph
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
@@ -43,7 +43,10 @@ import com.ramcosta.composedestinations.navigation.EmptyDestinationsNavigator
 @AppGraph
 @Destination
 @Composable
-fun CreateEventScreen(navigator: DestinationsNavigator) {
+fun CreateEventScreen(
+    navigator: DestinationsNavigator,
+
+) {
     CreateEventScreenContent(navigator = navigator)
 }
 
@@ -65,7 +68,7 @@ private fun CreateEventScreenContent(navigator: DestinationsNavigator) {
                 EventTitle(
                     title = "Meeting",
                     onEditTitle = {
-                        navigator.navigate(EditTitleScreenDestination)
+                        navigator.navigate(EditTitleScreenDestination(""))
                     }
                 )
                 Spacer(modifier = Modifier.size(24.dp))
@@ -74,7 +77,7 @@ private fun CreateEventScreenContent(navigator: DestinationsNavigator) {
                 AgendaDescription(
                     text = "Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint.",
                     onEditDescription = {
-                        navigator.navigate(EditDescriptionScreenDestination)
+                        navigator.navigate(EditDescriptionScreenDestination(""))
                     }
                 )
                 Spacer(modifier = Modifier.size(32.dp))

@@ -35,6 +35,9 @@ android {
         }
     }
     compileOptions {
+        // Flag to enable support for the new language APIs, required for Compose DatePicker library
+        isCoreLibraryDesugaringEnabled = true
+
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
@@ -110,7 +113,13 @@ dependencies {
     androidTestImplementation(platform(libs.compose.bom))
     androidTestImplementation(libs.ui.test.junit4)
 
+    // Date Time Picker
+    implementation(libs.compose.datetime)
+
     // Debug
     debugImplementation(libs.ui.tooling)
     debugImplementation(libs.ui.test.manifest)
+
+    // Required desugaring for Compose DateTime picker to support API < 26
+    coreLibraryDesugaring(libs.desugar.jdk.libs)
 }

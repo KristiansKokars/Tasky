@@ -30,18 +30,26 @@ import com.kristianskokars.tasky.core.presentation.theme.White
 import com.kristianskokars.tasky.feature.event.presentation.components.EditToolbar
 import com.kristianskokars.tasky.nav.AppGraph
 import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.result.EmptyResultBackNavigator
+import com.ramcosta.composedestinations.result.ResultBackNavigator
 
 @AppGraph
 @Destination
 @Composable
-fun EditTitleScreen() {
-    EditTitleScreenContent()
+fun EditTitleScreen(
+    startingTitle: String,
+    resultNavigator: ResultBackNavigator<String>
+) {
+    EditTitleScreenContent(startingTitle, resultNavigator)
 }
 
 @Composable
-private fun EditTitleScreenContent() {
+private fun EditTitleScreenContent(
+    startingTitle: String,
+    resultNavigator: ResultBackNavigator<String>
+) {
     var value by rememberSaveable(stateSaver = TextFieldValue.Saver) {
-        mutableStateOf(TextFieldValue("Meeting"))
+        mutableStateOf(TextFieldValue(startingTitle))
     }
 
     CompositionLocalProvider(LocalContentColor provides Black) {
@@ -52,7 +60,10 @@ private fun EditTitleScreenContent() {
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
         ) {
-            EditToolbar(title = stringResource(id = R.string.edit_title))
+            EditToolbar(
+                title = stringResource(id = R.string.edit_title),
+                onSave = { resultNavigator.navigateBack(result = value.text) }
+            )
             Spacer(modifier = Modifier.size(36.dp))
             BasicTextField(
                 value = value,
@@ -67,6 +78,9 @@ private fun EditTitleScreenContent() {
 @Composable
 fun EditTitleScreenPreview() {
     ScreenSurface {
-        EditTitleScreenContent()
+        EditTitleScreenContent(
+            startingTitle = "Meeting",
+            resultNavigator = EmptyResultBackNavigator()
+        )
     }
 }

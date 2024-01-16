@@ -9,24 +9,41 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LocalContentColor
+import androidx.compose.material3.MenuDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.kristianskokars.tasky.R
+import com.kristianskokars.tasky.core.data.local.model.RemindAtTime
+import com.kristianskokars.tasky.core.presentation.theme.Black
 import com.kristianskokars.tasky.core.presentation.theme.Gray
 import com.kristianskokars.tasky.core.presentation.theme.LightGray
+import com.kristianskokars.tasky.core.presentation.theme.White
 
 @Composable
 fun RemindBeforeSection(
     modifier: Modifier = Modifier,
-    isEditing: Boolean = false,
-    onEditReminder: () -> Unit = {}
+    remindAtTime: RemindAtTime = RemindAtTime.ThirtyMinutesBefore,
+    canEdit: Boolean = false,
+    onChangeRemindAtTime: (RemindAtTime) -> Unit = {},
 ) {
+    var isDropdownExpanded by remember {
+        mutableStateOf(false)
+    }
+
     Column {
         Row(
             modifier = modifier
@@ -42,18 +59,59 @@ fun RemindBeforeSection(
                 Icon(
                     modifier = Modifier.align(Alignment.Center),
                     painter = painterResource(id = R.drawable.ic_bell),
-                    contentDescription = "Reminder at",
+                    contentDescription = stringResource(R.string.reminder_at),
                     tint = Gray
                 )
             }
             Spacer(modifier = Modifier.size(12.dp))
-            Text(text = "30 minutes before")
-            if (isEditing) {
+            Text(text = remindAtTime.toUIString())
+            if (canEdit) {
                 Spacer(modifier = Modifier.weight(1f))
-                EditButton(
-                    onEdit = onEditReminder,
-                    label = stringResource(R.string.edit_reminder)
-                )
+                Box {
+                    EditButton(
+                        onEdit = { isDropdownExpanded = true },
+                        label = stringResource(R.string.edit_reminder)
+                    )
+                    RemindAtDropdownMenu(
+                        items = RemindAtTime.remindAtTimes,
+                        isExpanded = isDropdownExpanded,
+                        onItemClick = { newRemindAtTime ->
+                            onChangeRemindAtTime(newRemindAtTime)
+                            isDropdownExpanded = false
+                        },
+                        onDismissRequest = {
+                            isDropdownExpanded = false
+                        }
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun RemindAtDropdownMenu(
+    items: List<RemindAtTime>,
+    onItemClick: (RemindAtTime) -> Unit = {},
+    isExpanded: Boolean = false,
+    onDismissRequest: () -> Unit = {}
+) {
+    CompositionLocalProvider(LocalContentColor provides Black) {
+        Box {
+            DropdownMenu(
+                expanded = isExpanded,
+                onDismissRequest = onDismissRequest,
+                modifier = Modifier.background(White)
+            ) {
+                items.forEach { remindAt ->
+                    DropdownMenuItem(
+                        colors = MenuDefaults.itemColors(textColor = Black),
+                        text = {
+                            Text(text = remindAt.toUIString())
+                        },
+                        onClick = { onItemClick(remindAt) }
+                    )
+                }
             }
         }
     }

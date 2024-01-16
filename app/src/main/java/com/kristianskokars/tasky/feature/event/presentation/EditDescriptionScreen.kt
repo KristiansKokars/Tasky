@@ -31,18 +31,26 @@ import com.kristianskokars.tasky.core.presentation.theme.White
 import com.kristianskokars.tasky.feature.event.presentation.components.EditToolbar
 import com.kristianskokars.tasky.nav.AppGraph
 import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.result.EmptyResultBackNavigator
+import com.ramcosta.composedestinations.result.ResultBackNavigator
 
 @AppGraph
 @Destination
 @Composable
-fun EditDescriptionScreen() {
-    EditDescriptionScreenContent()
+fun EditDescriptionScreen(
+    startingDescription: String,
+    resultNavigator: ResultBackNavigator<String>
+) {
+    EditDescriptionScreenContent(startingDescription, resultNavigator)
 }
 
 @Composable
-private fun EditDescriptionScreenContent() {
+private fun EditDescriptionScreenContent(
+    startingDescription: String,
+    resultNavigator: ResultBackNavigator<String>
+) {
     var value by rememberSaveable(stateSaver = TextFieldValue.Saver) {
-        mutableStateOf(TextFieldValue("Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. "))
+        mutableStateOf(TextFieldValue(startingDescription))
     }
 
     CompositionLocalProvider(LocalContentColor provides Black) {
@@ -53,7 +61,10 @@ private fun EditDescriptionScreenContent() {
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
         ) {
-            EditToolbar(title = stringResource(id = R.string.edit_description))
+            EditToolbar(
+                title = stringResource(id = R.string.edit_description),
+                onSave = { resultNavigator.navigateBack(result = value.text) }
+            )
             Spacer(modifier = Modifier.size(36.dp))
             BasicTextField(
                 value = value,
@@ -68,6 +79,9 @@ private fun EditDescriptionScreenContent() {
 @Composable
 fun EditDescriptionScreenPreview() {
     ScreenSurface {
-        EditDescriptionScreenContent()
+        EditDescriptionScreenContent(
+            startingDescription = "Description here",
+            resultNavigator = EmptyResultBackNavigator()
+        )
     }
 }

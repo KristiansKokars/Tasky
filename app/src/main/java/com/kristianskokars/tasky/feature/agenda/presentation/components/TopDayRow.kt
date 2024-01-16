@@ -22,7 +22,7 @@ import androidx.compose.ui.unit.sp
 import com.kristianskokars.tasky.core.presentation.theme.DarkGray
 import com.kristianskokars.tasky.core.presentation.theme.Gray
 import com.kristianskokars.tasky.core.presentation.theme.Orange
-import com.kristianskokars.tasky.feature.agenda.presentation.util.initial
+import com.kristianskokars.tasky.core.presentation.util.initial
 import kotlinx.datetime.LocalDateTime
 
 @Composable
