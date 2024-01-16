@@ -33,4 +33,6 @@
     <string name="edit_date">Edit Date</string>
     <string name="edit_time">Edit Time</string>
     <string name="view_photo">View Photo</string>
+    <string name="go_back">Go back</string>
+    <string name="save">Save</string>
 </resources>

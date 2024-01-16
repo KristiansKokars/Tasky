@@ -25,18 +25,22 @@ import com.kristianskokars.tasky.feature.createagenda.presentation.components.Ph
 import com.kristianskokars.tasky.feature.createagenda.presentation.components.RemindBeforeSection
 import com.kristianskokars.tasky.feature.createagenda.presentation.components.TaskyTimeSection
 import com.kristianskokars.tasky.feature.createagenda.presentation.components.VisitorsSection
+import com.kristianskokars.tasky.feature.destinations.EditDescriptionScreenDestination
+import com.kristianskokars.tasky.feature.destinations.EditTitleScreenDestination
 import com.kristianskokars.tasky.nav.AppGraph
 import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import com.ramcosta.composedestinations.navigation.EmptyDestinationsNavigator
 
 @AppGraph
 @Destination
 @Composable
-fun CreateEventScreen() {
-    CreateEventScreenContent()
+fun CreateEventScreen(navigator: DestinationsNavigator) {
+    CreateEventScreenContent(navigator = navigator)
 }
 
 @Composable
-private fun CreateEventScreenContent() {
+private fun CreateEventScreenContent(navigator: DestinationsNavigator) {
     Scaffold(
         topBar = { EventTopBar() },
     ) { padding ->
@@ -45,11 +49,21 @@ private fun CreateEventScreenContent() {
                 Spacer(modifier = Modifier.size(32.dp))
                 EventBadge(text = stringResource(id = R.string.event), badgeColor = LightGreen)
                 Spacer(modifier = Modifier.size(32.dp))
-                EventTitle(title = "Meeting")
+                EventTitle(
+                    title = "Meeting",
+                    onEditTitle = {
+                        navigator.navigate(EditTitleScreenDestination)
+                    }
+                )
                 Spacer(modifier = Modifier.size(24.dp))
                 TaskyDivider()
                 Spacer(modifier = Modifier.size(16.dp))
-                EventDescription(text = "Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint." )
+                EventDescription(
+                    text = "Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint.",
+                    onEditDescription = {
+                        navigator.navigate(EditDescriptionScreenDestination)
+                    }
+                )
                 Spacer(modifier = Modifier.size(32.dp))
                 PhotosSection()
                 Spacer(modifier = Modifier.size(32.dp))
@@ -70,6 +84,6 @@ private fun CreateEventScreenContent() {
 @Composable
 private fun CreateEventScreenPreview() {
     ScreenSurface {
-        CreateEventScreenContent()
+        CreateEventScreenContent(navigator = EmptyDestinationsNavigator)
     }
 }
