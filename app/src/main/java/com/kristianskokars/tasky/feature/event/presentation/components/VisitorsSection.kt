@@ -35,8 +35,7 @@ fun VisitorsSection(
 ) {
     Column(
         modifier = Modifier
-            .fillMaxWidth()
-            .verticalScroll(rememberScrollState()),
+            .fillMaxWidth(),
     ) {
         Row(
             modifier = Modifier.padding(vertical = 40.dp),

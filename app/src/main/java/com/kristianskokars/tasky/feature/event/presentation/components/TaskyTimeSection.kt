@@ -91,8 +91,8 @@ fun TaskyTimeSection(
             }
             Row {
                 if (isEditing) {
-                    EditButton(
-                        onEdit = editTimeDialogState::show,
+                    EditIndicatorIcon(
+//                        onEdit = editTimeDialogState::show,
                         label = stringResource(R.string.edit_time)
                     )
                 }
@@ -105,8 +105,8 @@ fun TaskyTimeSection(
             }
             Row {
                 if (isEditing) {
-                    EditButton(
-                        onEdit = editDateDialogState::show,
+                    EditIndicatorIcon(
+//                        onEdit = editDateDialogState::show,
                         label = stringResource(R.string.edit_date)
                     )
                 }

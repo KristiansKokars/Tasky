@@ -68,8 +68,8 @@ fun RemindBeforeSection(
             if (canEdit) {
                 Spacer(modifier = Modifier.weight(1f))
                 Box {
-                    EditButton(
-                        onEdit = { isDropdownExpanded = true },
+                    EditIndicatorIcon(
+//                        onEdit = { isDropdownExpanded = true },
                         label = stringResource(R.string.edit_reminder)
                     )
                     RemindAtDropdownMenu(

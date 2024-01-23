@@ -6,6 +6,8 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.Scaffold
@@ -25,6 +27,7 @@ import com.kristianskokars.tasky.core.presentation.components.TaskySurface
 import com.kristianskokars.tasky.core.presentation.theme.Black
 import com.kristianskokars.tasky.core.presentation.theme.Gray
 import com.kristianskokars.tasky.core.presentation.theme.LightGreen
+import com.kristianskokars.tasky.core.presentation.util.fillParentWidth
 import com.kristianskokars.tasky.feature.destinations.EditDescriptionScreenDestination
 import com.kristianskokars.tasky.feature.destinations.EditTitleScreenDestination
 import com.kristianskokars.tasky.feature.event.presentation.components.AgendaBadge
@@ -46,7 +49,7 @@ import com.ramcosta.composedestinations.navigation.EmptyDestinationsNavigator
 fun CreateEventScreen(
     navigator: DestinationsNavigator,
 
-) {
+    ) {
     CreateEventScreenContent(navigator = navigator)
 }
 
@@ -61,17 +64,23 @@ private fun CreateEventScreenContent(navigator: DestinationsNavigator) {
         },
     ) { padding ->
         CompositionLocalProvider(LocalContentColor provides Black) {
-            TaskySurface(modifier = Modifier.padding(padding)) {
+            TaskySurface(
+                modifier = Modifier
+                    .padding(padding)
+                    .verticalScroll(rememberScrollState())
+            ) {
                 Spacer(modifier = Modifier.size(32.dp))
                 AgendaBadge(text = stringResource(id = R.string.event), badgeColor = LightGreen)
-                Spacer(modifier = Modifier.size(32.dp))
+                Spacer(modifier = Modifier.size(8.dp))
                 EventTitle(
+                    modifier = Modifier.fillParentWidth(16.dp),
                     title = "Meeting",
                     onEditTitle = {
                         navigator.navigate(EditTitleScreenDestination(""))
-                    }
+                    },
+                    isEditing = true
                 )
-                Spacer(modifier = Modifier.size(24.dp))
+                Spacer(modifier = Modifier.size(8.dp))
                 TaskyDivider()
                 Spacer(modifier = Modifier.size(16.dp))
                 AgendaDescription(
