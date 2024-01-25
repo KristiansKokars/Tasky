@@ -78,6 +78,7 @@ dependencies {
 
     // Navigation
     implementation(libs.compose.destinations)
+    implementation(libs.compose.destinations.animations)
     ksp(libs.compose.destinations.ksp)
 
     // Dependency Injection
