@@ -2,6 +2,7 @@ package com.kristianskokars.tasky.feature.agenda.presentation
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -24,6 +25,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -32,6 +35,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kristianskokars.tasky.R
 import com.kristianskokars.tasky.core.data.local.model.CreateAgendaType
+import com.kristianskokars.tasky.core.presentation.components.DatePickerDialog
 import com.kristianskokars.tasky.core.presentation.components.ScreenSurface
 import com.kristianskokars.tasky.core.presentation.components.TaskySurface
 import com.kristianskokars.tasky.core.presentation.theme.Black
@@ -42,10 +46,12 @@ import com.kristianskokars.tasky.feature.agenda.presentation.components.ProfileI
 import com.kristianskokars.tasky.feature.agenda.presentation.components.TopDayRow
 import com.kristianskokars.tasky.feature.destinations.CreateEventScreenDestination
 import com.kristianskokars.tasky.feature.destinations.TaskScreenDestination
+import com.kristianskokars.tasky.lib.nameOfMonth
 import com.kristianskokars.tasky.nav.AppGraph
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.navigation.EmptyDestinationsNavigator
+import com.vanpra.composematerialdialogs.rememberMaterialDialogState
 
 @AppGraph(start = true)
 @Destination
@@ -63,13 +69,29 @@ private fun AgendaScreenContent(
     onEvent: (AgendaEvent) -> Unit,
     navigator: DestinationsNavigator
 ) {
+    val editDateDialogState = rememberMaterialDialogState()
+
+    DatePickerDialog(
+        dialogState = editDateDialogState,
+        onDateSelected = { date -> onEvent(AgendaEvent.OnDatePicked(date)) }
+    )
+
     Scaffold(
         topBar = {
             TopAppBar(
                 title = {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
+                    Row(
+                        modifier = Modifier
+                            .clickable(
+                                onClick = editDateDialogState::show,
+                                onClickLabel = stringResource(R.string.change_date),
+                                role = Role.Button,
+                            )
+                            .padding(8.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
                         Text(
-                            text = state.month,
+                            text = state.currentChosenDate.nameOfMonth(state.locale).uppercase(),
                             fontWeight = FontWeight.Bold,
                             fontSize = 16.sp
                         )
@@ -103,14 +125,17 @@ private fun AgendaScreenContent(
             )
             Spacer(modifier = Modifier.size(20.dp))
             Row(modifier = Modifier.fillMaxWidth()) {
-                Text(text = "Today", style = MaterialTheme.typography.headlineMedium)
+                Text(text = stringResource(R.string.today), style = MaterialTheme.typography.headlineMedium)
             }
             Box {
                 LazyColumn(
                     contentPadding = PaddingValues(top = 20.dp)
                 ) {
                     item(key = state.lastDoneAgenda) {
-                        if (state.lastDoneAgenda == null) {
+                        if (state.agendas.isEmpty()) {
+                            Text(text = stringResource(R.string.no_agenda_items_scheduled), color = Black)
+                        }
+                        if (state.lastDoneAgenda == null && state.agendas.isNotEmpty()) {
                             TimeNeedle()
                             Spacer(modifier = Modifier.size(8.dp))
                         }

@@ -3,7 +3,6 @@ package com.kristianskokars.tasky.feature.agenda.presentation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kristianskokars.tasky.feature.agenda.data.AgendaRepository
-import com.kristianskokars.tasky.core.presentation.util.nameOfMonth
 import com.kristianskokars.tasky.feature.auth.data.BackendAuthProvider
 import com.kristianskokars.tasky.lib.asStateFlow
 import com.kristianskokars.tasky.lib.launch
@@ -14,11 +13,13 @@ import kotlinx.coroutines.flow.update
 import kotlinx.datetime.Clock
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.Instant
+import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.plus
 import kotlinx.datetime.toLocalDateTime
 import java.util.Locale
 import javax.inject.Inject
+import kotlin.time.Duration.Companion.days
 
 @HiltViewModel
 class AgendaViewModel @Inject constructor(
@@ -29,20 +30,22 @@ class AgendaViewModel @Inject constructor(
     private val backendAuthProvider: BackendAuthProvider,
 ) : ViewModel() {
     private val _selectedDayIndex = MutableStateFlow(0)
-    private val currentWeekDays = clock.next6Days().map { it.toLocalDateTime(timeZone) }
+    private val _localDate = MutableStateFlow(clock.now().toLocalDateTime(timeZone).date)
 
     val state = combine(
         repository.currentAgendas(),
+        _localDate,
         _selectedDayIndex
-    ) { agendas, selectedDayIndex ->
+    ) { agendas, localDate, selectedDayIndex ->
         val lastDoneAgenda = agendas.lastOrNull { it.isDone }?.id
 
         AgendaState(
-            month = clock.now().toLocalDateTime(timeZone).nameOfMonth(locale).uppercase(locale),
+            currentChosenDate = localDate,
             agendas = agendas.sortedBy { it.time },
-            currentWeekDays = currentWeekDays,
+            currentWeekDays = localDate.next6Days(),
             lastDoneAgenda = lastDoneAgenda,
-            selectedDayIndex = selectedDayIndex
+            selectedDayIndex = selectedDayIndex,
+            locale = locale,
         )
     }.asStateFlow(viewModelScope, AgendaState())
 
@@ -54,6 +57,7 @@ class AgendaViewModel @Inject constructor(
         when (event) {
             is AgendaEvent.DaySelected -> selectNewCurrentDay(event.dayIndex)
             AgendaEvent.Logout -> logout()
+            is AgendaEvent.OnDatePicked -> onDatePicked(event.date)
         }
     }
 
@@ -67,13 +71,17 @@ class AgendaViewModel @Inject constructor(
         }
     }
 
+    private fun onDatePicked(newDate: LocalDate) {
+        _localDate.update { newDate }
+    }
+
     private fun fetchAgendas() {
         launch {
             repository.fetchAgendas()
         }
     }
 
-    private fun Clock.next6Days(): List<Instant> = List(6) { index ->
-        now().plus(index, DateTimeUnit.DAY, timeZone)
+    private fun LocalDate.next6Days(): List<LocalDate> = List(6) { index ->
+        this.plus(index, DateTimeUnit.DAY)
     }
 }

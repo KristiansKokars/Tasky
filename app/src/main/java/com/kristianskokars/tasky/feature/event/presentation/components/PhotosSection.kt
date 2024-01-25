@@ -32,7 +32,7 @@ import com.kristianskokars.tasky.R
 import com.kristianskokars.tasky.core.presentation.theme.Gray
 import com.kristianskokars.tasky.core.presentation.theme.LightBlue
 import com.kristianskokars.tasky.core.presentation.theme.LightGray
-import com.kristianskokars.tasky.core.presentation.util.fillParentWidth
+import com.kristianskokars.tasky.lib.fillParentWidth
 
 @Composable
 fun PhotosSection(

@@ -16,18 +16,20 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.kristianskokars.tasky.core.presentation.theme.DarkGray
 import com.kristianskokars.tasky.core.presentation.theme.Gray
 import com.kristianskokars.tasky.core.presentation.theme.Orange
-import com.kristianskokars.tasky.core.presentation.util.initial
-import kotlinx.datetime.LocalDateTime
+import com.kristianskokars.tasky.core.presentation.theme.White
+import com.kristianskokars.tasky.lib.initial
+import kotlinx.datetime.LocalDate
 
 @Composable
 fun TopDayRow(
-    days: List<LocalDateTime>,
+    days: List<LocalDate>,
     selectedDayIndex: Int,
     onDayClick: (index: Int) -> Unit
 ) {
@@ -39,7 +41,10 @@ fun TopDayRow(
     ) {
         itemsIndexed(days) { index, day ->
             Day(
-                modifier = Modifier.clickable { onDayClick(index) },
+                modifier = Modifier
+                    .clickable(
+                        role = Role.Button
+                    ) { onDayClick(index) },
                 letter = day.dayOfWeek.initial(),
                 number = day.dayOfMonth,
                 isSelected = index == selectedDayIndex

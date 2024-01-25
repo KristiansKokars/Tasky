@@ -55,4 +55,7 @@
     <string name="one_day_before">1 day before</string>
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
+    <string name="change_date">Change date</string>
+    <string name="no_agenda_items_scheduled">No agenda items scheduled!</string>
+    <string name="today">Today</string>
 </resources>

@@ -126,8 +126,8 @@ private fun TaskScreenContent(
                 TaskyTimeSection(
                     time = state.task.dateTime,
                     isEditing = state.isEditing,
-                    onTimePicked = { onEvent(TaskScreenEvent.OnUpdateTime(it)) },
-                    onDatePicked = { onEvent(TaskScreenEvent.OnUpdateDate(it)) }
+                    onTimeSelected = { onEvent(TaskScreenEvent.OnUpdateTime(it)) },
+                    onDateSelected = { onEvent(TaskScreenEvent.OnUpdateDate(it)) }
                 )
                 TaskyDivider()
                 RemindBeforeSection(

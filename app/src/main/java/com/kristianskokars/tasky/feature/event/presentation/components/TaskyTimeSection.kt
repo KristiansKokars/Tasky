@@ -1,5 +1,6 @@
 package com.kristianskokars.tasky.feature.event.presentation.components
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -15,10 +16,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.kristianskokars.tasky.R
-import com.kristianskokars.tasky.core.presentation.util.formatToDate
-import com.kristianskokars.tasky.core.presentation.util.formatToHHMM
+import com.kristianskokars.tasky.core.presentation.components.DatePickerDialog
+import com.kristianskokars.tasky.core.presentation.components.TimePickerDialog
+import com.kristianskokars.tasky.lib.formatToDate
+import com.kristianskokars.tasky.lib.formatToHHMM
 import com.vanpra.composematerialdialogs.MaterialDialog
-import com.vanpra.composematerialdialogs.datetime.date.datepicker
 import com.vanpra.composematerialdialogs.datetime.time.timepicker
 import com.vanpra.composematerialdialogs.rememberMaterialDialogState
 import kotlinx.datetime.Clock
@@ -26,7 +28,6 @@ import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.LocalTime
 import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toKotlinLocalDate
 import kotlinx.datetime.toKotlinLocalTime
 import kotlinx.datetime.toLocalDateTime
 
@@ -43,31 +44,20 @@ fun TaskyTimeSection(
     time: LocalDateTime = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()),
     timeState: TimeState = TimeState.At,
     isEditing: Boolean = false,
-    onTimePicked: (LocalTime) -> Unit = {},
-    onDatePicked: (LocalDate) -> Unit = {},
+    onTimeSelected: (LocalTime) -> Unit = {},
+    onDateSelected: (LocalDate) -> Unit = {},
 ) {
     val editTimeDialogState = rememberMaterialDialogState()
     val editDateDialogState = rememberMaterialDialogState()
 
-    // TODO: style dialogs
-    MaterialDialog(
+    TimePickerDialog(
         dialogState = editTimeDialogState,
-        buttons = {
-            positiveButton(stringResource(R.string.ok))
-            negativeButton(stringResource(R.string.cancel))
-        }
-    ) {
-        timepicker { time -> onTimePicked(time.toKotlinLocalTime()) }
-    }
-    MaterialDialog(
+        onTimeSelected = onTimeSelected
+    )
+    DatePickerDialog(
         dialogState = editDateDialogState,
-        buttons = {
-            positiveButton(stringResource(R.string.ok))
-            negativeButton(stringResource(R.string.cancel))
-        }
-    ) {
-        datepicker { date -> onDatePicked(date.toKotlinLocalDate()) }
-    }
+        onDateSelected = onDateSelected
+    )
 
     Column {
         Row(
@@ -92,7 +82,7 @@ fun TaskyTimeSection(
             Row {
                 if (isEditing) {
                     EditIndicatorIcon(
-//                        onEdit = editTimeDialogState::show,
+                        modifier = Modifier.clickable(onClick = editTimeDialogState::show),
                         label = stringResource(R.string.edit_time)
                     )
                 }

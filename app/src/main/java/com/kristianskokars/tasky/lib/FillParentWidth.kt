@@ -1,4 +1,4 @@
-package com.kristianskokars.tasky.core.presentation.util
+package com.kristianskokars.tasky.lib
 
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.layout

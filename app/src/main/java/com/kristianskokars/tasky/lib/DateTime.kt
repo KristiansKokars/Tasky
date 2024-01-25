@@ -1,10 +1,14 @@
-package com.kristianskokars.tasky.core.presentation.util
+package com.kristianskokars.tasky.lib
 
 import android.os.Build
+import kotlinx.datetime.Clock
 import kotlinx.datetime.DayOfWeek
+import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toJavaLocalDateTime
 import kotlinx.datetime.toJavaLocalTime
+import kotlinx.datetime.toLocalDateTime
 import java.text.SimpleDateFormat
 import java.time.format.DateTimeFormatter
 import java.time.format.TextStyle
@@ -43,3 +47,13 @@ fun LocalDateTime.nameOfMonth(locale: Locale): String {
         SimpleDateFormat("MMMM", locale).format(Calendar.getInstance(locale).get(monthNumber))
     }
 }
+
+fun LocalDate.nameOfMonth(locale: Locale): String {
+    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        month.getDisplayName(TextStyle.FULL, locale)
+    } else {
+        SimpleDateFormat("MMMM", locale).format(Calendar.getInstance(locale).get(monthNumber))
+    }
+}
+
+fun currentSystemDate() = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date

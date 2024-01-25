@@ -27,7 +27,7 @@ import com.kristianskokars.tasky.core.presentation.components.TaskySurface
 import com.kristianskokars.tasky.core.presentation.theme.Black
 import com.kristianskokars.tasky.core.presentation.theme.Gray
 import com.kristianskokars.tasky.core.presentation.theme.LightGreen
-import com.kristianskokars.tasky.core.presentation.util.fillParentWidth
+import com.kristianskokars.tasky.lib.fillParentWidth
 import com.kristianskokars.tasky.feature.destinations.EditDescriptionScreenDestination
 import com.kristianskokars.tasky.feature.destinations.EditTitleScreenDestination
 import com.kristianskokars.tasky.feature.event.presentation.components.AgendaBadge
@@ -93,7 +93,7 @@ private fun CreateEventScreenContent(navigator: DestinationsNavigator) {
                 PhotosSection()
                 Spacer(modifier = Modifier.size(32.dp))
                 TaskyDivider()
-                TaskyTimeSection()
+                TaskyTimeSection(isEditing = true)
                 TaskyDivider()
                 TaskyTimeSection()
                 TaskyDivider()
