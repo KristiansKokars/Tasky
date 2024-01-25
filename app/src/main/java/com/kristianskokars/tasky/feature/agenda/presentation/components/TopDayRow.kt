@@ -23,7 +23,6 @@ import androidx.compose.ui.unit.sp
 import com.kristianskokars.tasky.core.presentation.theme.DarkGray
 import com.kristianskokars.tasky.core.presentation.theme.Gray
 import com.kristianskokars.tasky.core.presentation.theme.Orange
-import com.kristianskokars.tasky.core.presentation.theme.White
 import com.kristianskokars.tasky.lib.initial
 import kotlinx.datetime.LocalDate
 

@@ -20,15 +20,12 @@ import com.kristianskokars.tasky.core.presentation.components.DatePickerDialog
 import com.kristianskokars.tasky.core.presentation.components.TimePickerDialog
 import com.kristianskokars.tasky.lib.formatToDate
 import com.kristianskokars.tasky.lib.formatToHHMM
-import com.vanpra.composematerialdialogs.MaterialDialog
-import com.vanpra.composematerialdialogs.datetime.time.timepicker
 import com.vanpra.composematerialdialogs.rememberMaterialDialogState
 import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.LocalTime
 import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toKotlinLocalTime
 import kotlinx.datetime.toLocalDateTime
 
 sealed interface TimeState {

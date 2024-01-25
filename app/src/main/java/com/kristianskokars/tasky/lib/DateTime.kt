@@ -40,14 +40,6 @@ fun DayOfWeek.initial(): String {
     }
 }
 
-fun LocalDateTime.nameOfMonth(locale: Locale): String {
-    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-        month.getDisplayName(TextStyle.FULL, locale)
-    } else {
-        SimpleDateFormat("MMMM", locale).format(Calendar.getInstance(locale).get(monthNumber))
-    }
-}
-
 fun LocalDate.nameOfMonth(locale: Locale): String {
     return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
         month.getDisplayName(TextStyle.FULL, locale)

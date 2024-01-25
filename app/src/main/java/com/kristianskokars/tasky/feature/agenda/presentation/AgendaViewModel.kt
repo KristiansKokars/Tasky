@@ -12,20 +12,18 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
 import kotlinx.datetime.Clock
 import kotlinx.datetime.DateTimeUnit
-import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.plus
 import kotlinx.datetime.toLocalDateTime
 import java.util.Locale
 import javax.inject.Inject
-import kotlin.time.Duration.Companion.days
 
 @HiltViewModel
 class AgendaViewModel @Inject constructor(
+    timeZone: TimeZone,
+    clock: Clock,
     private val repository: AgendaRepository,
-    private val timeZone: TimeZone,
-    private val clock: Clock,
     private val locale: Locale,
     private val backendAuthProvider: BackendAuthProvider,
 ) : ViewModel() {
