@@ -14,6 +14,7 @@ import kotlinx.datetime.Clock
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
+import kotlinx.datetime.atStartOfDayIn
 import kotlinx.datetime.plus
 import kotlinx.datetime.toLocalDateTime
 import java.util.Locale
@@ -21,9 +22,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AgendaViewModel @Inject constructor(
-    timeZone: TimeZone,
-    clock: Clock,
     private val repository: AgendaRepository,
+    private val timeZone: TimeZone,
+    private val clock: Clock,
     private val locale: Locale,
     private val backendAuthProvider: BackendAuthProvider,
 ) : ViewModel() {
@@ -32,35 +33,39 @@ class AgendaViewModel @Inject constructor(
 
     val state = combine(
         repository.currentAgendas(),
+        repository.isLoadingAgendas,
         _localDate,
         _selectedDayIndex
-    ) { agendas, localDate, selectedDayIndex ->
+    ) { agendas, isLoadingAgendas, localDate, selectedDayIndex ->
         val lastDoneAgenda = agendas.lastOrNull { it.isDone }?.id
 
         AgendaState(
             currentChosenDate = localDate,
             agendas = agendas.sortedBy { it.time },
             currentWeekDays = localDate.next6Days(),
-            lastDoneAgenda = lastDoneAgenda,
+            lastDoneAgendaId = lastDoneAgenda,
+            isLoadingAgendas = isLoadingAgendas,
             selectedDayIndex = selectedDayIndex,
             locale = locale,
         )
     }.asStateFlow(viewModelScope, AgendaState())
-
-    init {
-        fetchAgendas()
-    }
 
     fun onEvent(event: AgendaEvent) {
         when (event) {
             is AgendaEvent.DaySelected -> selectNewCurrentDay(event.dayIndex)
             AgendaEvent.Logout -> logout()
             is AgendaEvent.OnDatePicked -> onDatePicked(event.date)
+            AgendaEvent.FetchAgendasForDay -> fetchAgendasForDay()
         }
     }
 
-    private fun selectNewCurrentDay(dayIndex: Int) {
-        _selectedDayIndex.update { dayIndex }
+    private fun selectNewCurrentDay(newDayIndex: Int) {
+        _selectedDayIndex.update { currentDayIndex ->
+            if (currentDayIndex != newDayIndex) {
+                fetchAgendasForDay()
+            }
+            newDayIndex
+        }
     }
 
     private fun logout() {
@@ -73,9 +78,12 @@ class AgendaViewModel @Inject constructor(
         _localDate.update { newDate }
     }
 
-    private fun fetchAgendas() {
+    private fun fetchAgendasForDay() {
         launch {
-            repository.fetchAgendas()
+            repository.fetchAgendasForDay(
+                timeZone,
+                atInstant = _localDate.value.next6Days()[_selectedDayIndex.value].atStartOfDayIn(timeZone)
+            )
         }
     }
 

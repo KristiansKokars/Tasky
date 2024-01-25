@@ -10,6 +10,7 @@ data class AgendaState(
     val locale: Locale = Locale.getDefault(),
     val currentWeekDays: List<LocalDate> = emptyList(),
     val agendas: List<Agenda> = emptyList(),
-    val lastDoneAgenda: String? = null,
+    val isLoadingAgendas: Boolean = false,
+    val lastDoneAgendaId: String? = null,
     val selectedDayIndex: Int = 0
 )

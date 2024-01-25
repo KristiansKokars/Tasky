@@ -20,6 +20,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -36,6 +37,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kristianskokars.tasky.R
 import com.kristianskokars.tasky.core.data.local.model.CreateAgendaType
 import com.kristianskokars.tasky.core.presentation.components.DatePickerDialog
+import com.kristianskokars.tasky.core.presentation.components.LoadingSpinner
 import com.kristianskokars.tasky.core.presentation.components.ScreenSurface
 import com.kristianskokars.tasky.core.presentation.components.TaskySurface
 import com.kristianskokars.tasky.core.presentation.theme.Black
@@ -58,6 +60,10 @@ import com.vanpra.composematerialdialogs.rememberMaterialDialogState
 @Composable
 fun AgendaScreen(viewModel: AgendaViewModel = hiltViewModel(), navigator: DestinationsNavigator) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+
+    LaunchedEffect(key1 = viewModel) {
+        viewModel.onEvent(AgendaEvent.FetchAgendasForDay)
+    }
 
     AgendaScreenContent(state = state, onEvent = viewModel::onEvent, navigator)
 }
@@ -128,29 +134,44 @@ private fun AgendaScreenContent(
                 Text(text = stringResource(R.string.today), style = MaterialTheme.typography.headlineMedium)
             }
             Box {
-                LazyColumn(
-                    contentPadding = PaddingValues(top = 20.dp)
-                ) {
-                    item(key = state.lastDoneAgenda) {
-                        if (state.agendas.isEmpty()) {
-                            Text(text = stringResource(R.string.no_agenda_items_scheduled), color = Black)
-                        }
-                        if (state.lastDoneAgenda == null && state.agendas.isNotEmpty()) {
-                            TimeNeedle()
-                            Spacer(modifier = Modifier.size(8.dp))
-                        }
-                    }
-                    items(state.agendas) { agenda ->
-                        AgendaCard(agenda = agenda)
-                        if (state.lastDoneAgenda == agenda.id) {
-                            Spacer(modifier = Modifier.size(8.dp))
-                            TimeNeedle()
-                            Spacer(modifier = Modifier.size(8.dp))
-                        } else {
-                            Spacer(modifier = Modifier.size(16.dp))
-                        }
-                    }
+                if (state.isLoadingAgendas) {
+                    LoadingSpinner()
+                } else {
+                    AgendaList(
+                        agendas = state.agendas,
+                        lastDoneAgendaId = state.lastDoneAgendaId)
+
                 }
+            }
+        }
+    }
+}
+
+@Composable
+private fun AgendaList(
+    agendas: List<Agenda>,
+    lastDoneAgendaId: String?,
+) {
+    LazyColumn(
+        contentPadding = PaddingValues(top = 20.dp)
+    ) {
+        item(key = lastDoneAgendaId) {
+            if (agendas.isEmpty()) {
+                Text(text = stringResource(R.string.no_agenda_items_scheduled), color = Black)
+            }
+            if (lastDoneAgendaId == null && agendas.isNotEmpty()) {
+                TimeNeedle()
+                Spacer(modifier = Modifier.size(8.dp))
+            }
+        }
+        items(agendas) { agenda ->
+            AgendaCard(agenda = agenda)
+            if (lastDoneAgendaId == agenda.id) {
+                Spacer(modifier = Modifier.size(8.dp))
+                TimeNeedle()
+                Spacer(modifier = Modifier.size(8.dp))
+            } else {
+                Spacer(modifier = Modifier.size(16.dp))
             }
         }
     }
