@@ -20,7 +20,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -60,10 +59,6 @@ import com.vanpra.composematerialdialogs.rememberMaterialDialogState
 @Composable
 fun AgendaScreen(viewModel: AgendaViewModel = hiltViewModel(), navigator: DestinationsNavigator) {
     val state by viewModel.state.collectAsStateWithLifecycle()
-
-    LaunchedEffect(key1 = viewModel) {
-        viewModel.onEvent(AgendaEvent.FetchAgendasForDay)
-    }
 
     AgendaScreenContent(state = state, onEvent = viewModel::onEvent, navigator)
 }

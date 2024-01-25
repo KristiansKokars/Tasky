@@ -50,12 +50,15 @@ class AgendaViewModel @Inject constructor(
         )
     }.asStateFlow(viewModelScope, AgendaState())
 
+    init {
+        fetchAgendasForDay()
+    }
+
     fun onEvent(event: AgendaEvent) {
         when (event) {
             is AgendaEvent.DaySelected -> selectNewCurrentDay(event.dayIndex)
             AgendaEvent.Logout -> logout()
             is AgendaEvent.OnDatePicked -> onDatePicked(event.date)
-            AgendaEvent.FetchAgendasForDay -> fetchAgendasForDay()
         }
     }
 

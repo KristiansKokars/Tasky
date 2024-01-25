@@ -15,6 +15,7 @@ import com.google.accompanist.navigation.material.ExperimentalMaterialNavigation
 import com.kristianskokars.tasky.core.presentation.components.ScreenSurface
 import com.kristianskokars.tasky.feature.NavGraphs
 import com.kristianskokars.tasky.feature.auth.data.model.AuthState
+import com.kristianskokars.tasky.lib.currentGraph
 import com.ramcosta.composedestinations.DestinationsNavHost
 import com.ramcosta.composedestinations.animations.rememberAnimatedNavHostEngine
 import com.ramcosta.composedestinations.navigation.navigate
@@ -34,6 +35,7 @@ class MainActivity : ComponentActivity() {
             val engine = rememberAnimatedNavHostEngine()
             val navControler = engine.rememberNavController()
 
+            // BUG: reruns every time on screen rotations, later refactor for better solution
             LaunchedEffect(key1 = authState) {
                 when (authState) {
                     AuthState.RetrievingFromStorage -> {}
@@ -47,6 +49,8 @@ class MainActivity : ComponentActivity() {
                         viewModel.appHasInitialized()
                     }
                     is AuthState.LoggedIn -> {
+                        if (navControler.currentGraph() != NavGraphs.root) return@LaunchedEffect
+
                         navControler.navigate(NavGraphs.appGraph) {
                             launchSingleTop = true
                             popUpTo(NavGraphs.root.route) {
