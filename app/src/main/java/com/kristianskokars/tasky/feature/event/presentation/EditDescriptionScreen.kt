@@ -31,6 +31,8 @@ import com.kristianskokars.tasky.core.presentation.theme.White
 import com.kristianskokars.tasky.feature.event.presentation.components.EditToolbar
 import com.kristianskokars.tasky.nav.AppGraph
 import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import com.ramcosta.composedestinations.navigation.EmptyDestinationsNavigator
 import com.ramcosta.composedestinations.result.EmptyResultBackNavigator
 import com.ramcosta.composedestinations.result.ResultBackNavigator
 
@@ -39,14 +41,16 @@ import com.ramcosta.composedestinations.result.ResultBackNavigator
 @Composable
 fun EditDescriptionScreen(
     startingDescription: String,
+    navigator: DestinationsNavigator,
     resultNavigator: ResultBackNavigator<String>
 ) {
-    EditDescriptionScreenContent(startingDescription, resultNavigator)
+    EditDescriptionScreenContent(startingDescription, navigator, resultNavigator)
 }
 
 @Composable
 private fun EditDescriptionScreenContent(
     startingDescription: String,
+    navigator: DestinationsNavigator,
     resultNavigator: ResultBackNavigator<String>
 ) {
     var value by rememberSaveable(stateSaver = TextFieldValue.Saver) {
@@ -63,7 +67,8 @@ private fun EditDescriptionScreenContent(
         ) {
             EditToolbar(
                 title = stringResource(id = R.string.edit_description),
-                onSave = { resultNavigator.navigateBack(result = value.text) }
+                onSave = { resultNavigator.navigateBack(result = value.text) },
+                onGoBack = navigator::navigateUp
             )
             Spacer(modifier = Modifier.size(36.dp))
             BasicTextField(
@@ -81,6 +86,7 @@ fun EditDescriptionScreenPreview() {
     ScreenSurface {
         EditDescriptionScreenContent(
             startingDescription = "Description here",
+            navigator = EmptyDestinationsNavigator,
             resultNavigator = EmptyResultBackNavigator()
         )
     }

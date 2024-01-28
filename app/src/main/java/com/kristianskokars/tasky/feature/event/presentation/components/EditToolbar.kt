@@ -36,13 +36,13 @@ import com.kristianskokars.tasky.core.presentation.theme.White
 fun EditToolbar(
     modifier: Modifier = Modifier,
     title: String,
-    onGoBack: () -> Unit = {},
-    onSave: () -> Unit = {},
+    onGoBack: () -> Unit,
+    onSave: () -> Unit,
 ) {
     Column(modifier = modifier) {
         Row(
             modifier = Modifier
-                .padding(vertical = 28.dp)
+                .padding(vertical = 12.dp)
                 .fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically,
@@ -82,7 +82,7 @@ fun EditToolbarPreview() {
             .background(White)
             .padding(bottom = 16.dp, start = 16.dp, end = 16.dp)) {
             CompositionLocalProvider(LocalContentColor provides Black) {
-                EditToolbar(title = "Preview")
+                EditToolbar(title = "Preview", onSave = {}, onGoBack = {})
             }
         }
     }

@@ -93,7 +93,7 @@ private fun TaskScreenContent(
         topBar = {
             AgendaTopBar(
                 isEditing = state.isEditing,
-                isEditingTitle = stringResource(R.string.edit_task),
+                editingTitle = stringResource(R.string.edit_task),
                 onSaveClick = { onEvent(TaskScreenEvent.SaveTask) },
                 onCloseClick = navigator::navigateUp
             )
@@ -131,7 +131,7 @@ private fun TaskScreenContent(
                 )
                 TaskyDivider()
                 RemindBeforeSection(
-                    canEdit = true,
+                    isEditing = true,
                     remindAtTime = state.task.remindAtTime,
                     onChangeRemindAtTime = { newRemindAtTime ->
                         onEvent(TaskScreenEvent.OnChangeRemindAtTime(newRemindAtTime))

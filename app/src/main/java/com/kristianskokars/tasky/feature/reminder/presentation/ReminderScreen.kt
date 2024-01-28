@@ -55,7 +55,7 @@ private fun ReminderScreenContent(navigator: DestinationsNavigator) {
         topBar = {
             AgendaTopBar(
                 isEditing = true,
-                isEditingTitle = stringResource(R.string.edit_reminder).uppercase()
+                editingTitle = stringResource(R.string.edit_reminder).uppercase()
             )
         },
     ) { padding ->

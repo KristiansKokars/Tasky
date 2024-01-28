@@ -30,6 +30,8 @@ import com.kristianskokars.tasky.core.presentation.theme.White
 import com.kristianskokars.tasky.feature.event.presentation.components.EditToolbar
 import com.kristianskokars.tasky.nav.AppGraph
 import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import com.ramcosta.composedestinations.navigation.EmptyDestinationsNavigator
 import com.ramcosta.composedestinations.result.EmptyResultBackNavigator
 import com.ramcosta.composedestinations.result.ResultBackNavigator
 
@@ -38,15 +40,17 @@ import com.ramcosta.composedestinations.result.ResultBackNavigator
 @Composable
 fun EditTitleScreen(
     startingTitle: String,
-    resultNavigator: ResultBackNavigator<String>
+    resultNavigator: ResultBackNavigator<String>,
+    navigator: DestinationsNavigator
 ) {
-    EditTitleScreenContent(startingTitle, resultNavigator)
+    EditTitleScreenContent(startingTitle, resultNavigator, navigator)
 }
 
 @Composable
 private fun EditTitleScreenContent(
     startingTitle: String,
-    resultNavigator: ResultBackNavigator<String>
+    resultNavigator: ResultBackNavigator<String>,
+    navigator: DestinationsNavigator
 ) {
     var value by rememberSaveable(stateSaver = TextFieldValue.Saver) {
         mutableStateOf(TextFieldValue(startingTitle))
@@ -62,7 +66,8 @@ private fun EditTitleScreenContent(
         ) {
             EditToolbar(
                 title = stringResource(id = R.string.edit_title),
-                onSave = { resultNavigator.navigateBack(result = value.text) }
+                onSave = { resultNavigator.navigateBack(result = value.text) },
+                onGoBack = navigator::navigateUp
             )
             Spacer(modifier = Modifier.size(36.dp))
             BasicTextField(
@@ -80,7 +85,8 @@ fun EditTitleScreenPreview() {
     ScreenSurface {
         EditTitleScreenContent(
             startingTitle = "Meeting",
-            resultNavigator = EmptyResultBackNavigator()
+            resultNavigator = EmptyResultBackNavigator(),
+            navigator = EmptyDestinationsNavigator
         )
     }
 }

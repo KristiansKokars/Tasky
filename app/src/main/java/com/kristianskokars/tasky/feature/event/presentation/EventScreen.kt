@@ -15,11 +15,14 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kristianskokars.tasky.R
 import com.kristianskokars.tasky.core.presentation.components.ScreenSurface
 import com.kristianskokars.tasky.core.presentation.components.TaskyDivider
@@ -27,7 +30,6 @@ import com.kristianskokars.tasky.core.presentation.components.TaskySurface
 import com.kristianskokars.tasky.core.presentation.theme.Black
 import com.kristianskokars.tasky.core.presentation.theme.Gray
 import com.kristianskokars.tasky.core.presentation.theme.LightGreen
-import com.kristianskokars.tasky.lib.fillParentWidth
 import com.kristianskokars.tasky.feature.destinations.EditDescriptionScreenDestination
 import com.kristianskokars.tasky.feature.destinations.EditTitleScreenDestination
 import com.kristianskokars.tasky.feature.event.presentation.components.AgendaBadge
@@ -38,28 +40,67 @@ import com.kristianskokars.tasky.feature.event.presentation.components.PhotosSec
 import com.kristianskokars.tasky.feature.event.presentation.components.RemindBeforeSection
 import com.kristianskokars.tasky.feature.event.presentation.components.TaskyTimeSection
 import com.kristianskokars.tasky.feature.event.presentation.components.VisitorsSection
+import com.kristianskokars.tasky.lib.fillParentWidth
+import com.kristianskokars.tasky.lib.formatToLongDate
 import com.kristianskokars.tasky.nav.AppGraph
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.navigation.EmptyDestinationsNavigator
+import com.ramcosta.composedestinations.result.NavResult
+import com.ramcosta.composedestinations.result.ResultRecipient
+
+data class EventScreenNavArgs(val isCreatingNewEvent: Boolean = false)
 
 @AppGraph
-@Destination
+@Destination(navArgsDelegate = EventScreenNavArgs::class)
 @Composable
-fun CreateEventScreen(
+fun EventScreen(
+    viewModel: EventViewModel = hiltViewModel(),
     navigator: DestinationsNavigator,
+    editTitleResultRecipient: ResultRecipient<EditTitleScreenDestination, String>,
+    editDescriptionResultRecipient: ResultRecipient<EditDescriptionScreenDestination, String>,
+) {
+    val state by viewModel.state.collectAsStateWithLifecycle()
 
-    ) {
-    CreateEventScreenContent(navigator = navigator)
+    editTitleResultRecipient.onNavResult { titleResult ->
+        when (titleResult) {
+            NavResult.Canceled -> { /* Ignored */ }
+            is NavResult.Value -> viewModel.onEvent(EventScreenEvent.OnTitleChanged(titleResult.value))
+        }
+    }
+    editDescriptionResultRecipient.onNavResult { descriptionResult ->
+        when (descriptionResult) {
+            NavResult.Canceled -> { /* Ignored */ }
+            is NavResult.Value -> viewModel.onEvent(
+                EventScreenEvent.OnDescriptionChanged(
+                    descriptionResult.value
+                )
+            )
+        }
+    }
+
+    EventScreenContent(
+        onEvent = viewModel::onEvent,
+        state = state,
+        navigator = navigator
+    )
 }
 
 @Composable
-private fun CreateEventScreenContent(navigator: DestinationsNavigator) {
+private fun EventScreenContent(
+    onEvent: (EventScreenEvent) -> Unit,
+    state: EventState,
+    navigator: DestinationsNavigator
+) {
     Scaffold(
         topBar = {
             AgendaTopBar(
-                title = "01 MARCH 2022",
-                isEditingTitle = "01 MARCH 2022",
+                title = state.currentDate.formatToLongDate(),
+                editingTitle = state.currentDate.formatToLongDate(),
+                isEditing = state.isEditing,
+                onCloseClick = navigator::navigateUp,
+                onSaveClick = { onEvent(EventScreenEvent.SaveEdits) },
+                onEditClick = { onEvent(EventScreenEvent.BeginEditing) },
             )
         },
     ) { padding ->
@@ -74,32 +115,34 @@ private fun CreateEventScreenContent(navigator: DestinationsNavigator) {
                 Spacer(modifier = Modifier.size(8.dp))
                 EventTitle(
                     modifier = Modifier.fillParentWidth(16.dp),
-                    title = "Meeting",
+                    title = state.title,
                     onEditTitle = {
-                        navigator.navigate(EditTitleScreenDestination(""))
+                        navigator.navigate(EditTitleScreenDestination(state.title))
                     },
-                    isEditing = true
+                    isEditing = state.isEditing
                 )
                 Spacer(modifier = Modifier.size(8.dp))
                 TaskyDivider()
                 Spacer(modifier = Modifier.size(16.dp))
                 AgendaDescription(
-                    text = "Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint.",
+                    modifier = Modifier.fillParentWidth(16.dp),
+                    text = state.description ?: "",
                     onEditDescription = {
-                        navigator.navigate(EditDescriptionScreenDestination(""))
-                    }
+                        navigator.navigate(EditDescriptionScreenDestination(state.description ?: ""))
+                    },
+                    isEditing = state.isEditing,
                 )
                 Spacer(modifier = Modifier.size(32.dp))
                 PhotosSection()
                 Spacer(modifier = Modifier.size(32.dp))
                 TaskyDivider()
-                TaskyTimeSection(isEditing = true)
+                TaskyTimeSection(isEditing = state.isEditing)
                 TaskyDivider()
-                TaskyTimeSection()
+                TaskyTimeSection(isEditing = state.isEditing)
                 TaskyDivider()
-                RemindBeforeSection()
+                RemindBeforeSection(isEditing = state.isEditing)
                 TaskyDivider()
-                VisitorsSection()
+                VisitorsSection(isEditing = state.isEditing)
                 Spacer(modifier = Modifier.size(44.dp))
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -120,8 +163,8 @@ private fun CreateEventScreenContent(navigator: DestinationsNavigator) {
 
 @Preview(heightDp = 2000)
 @Composable
-private fun CreateEventScreenPreview() {
+private fun EventScreenPreview() {
     ScreenSurface {
-        CreateEventScreenContent(navigator = EmptyDestinationsNavigator)
+        EventScreenContent(onEvent = {}, state = EventState(), navigator = EmptyDestinationsNavigator)
     }
 }

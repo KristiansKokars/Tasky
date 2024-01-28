@@ -6,6 +6,7 @@ import kotlinx.datetime.DayOfWeek
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toJavaLocalDate
 import kotlinx.datetime.toJavaLocalDateTime
 import kotlinx.datetime.toJavaLocalTime
 import kotlinx.datetime.toLocalDateTime
@@ -19,6 +20,12 @@ import java.util.Locale
 fun LocalDateTime.formatToDate(): String {
     val dateFormatter = DateTimeFormatter.ofPattern("MMM d yyyy")
     return toJavaLocalDateTime().format(dateFormatter)
+}
+
+/** Formats a date like: 01 MARCH 2022 */
+fun LocalDate.formatToLongDate(): String {
+    val dateFormatter = DateTimeFormatter.ofPattern("dd MMMM yyyy")
+    return toJavaLocalDate().format(dateFormatter).uppercase()
 }
 
 fun LocalDateTime.formatToHHMM(): String {

@@ -37,7 +37,7 @@ import com.kristianskokars.tasky.core.presentation.theme.White
 fun RemindBeforeSection(
     modifier: Modifier = Modifier,
     remindAtTime: RemindAtTime = RemindAtTime.ThirtyMinutesBefore,
-    canEdit: Boolean = false,
+    isEditing: Boolean = false,
     onChangeRemindAtTime: (RemindAtTime) -> Unit = {},
 ) {
     var isDropdownExpanded by remember {
@@ -65,7 +65,7 @@ fun RemindBeforeSection(
             }
             Spacer(modifier = Modifier.size(12.dp))
             Text(text = remindAtTime.toUIString())
-            if (canEdit) {
+            if (isEditing) {
                 Spacer(modifier = Modifier.weight(1f))
                 Box {
                     EditIndicatorIcon(

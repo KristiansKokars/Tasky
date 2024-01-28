@@ -32,11 +32,10 @@ fun EventTitle(
 ) {
     Row(
         modifier = modifier
-            .then(
-                if (isEditing) Modifier.clickable(
-                    role = Role.Button,
-                    onClick = onEditTitle
-                ) else Modifier
+            .clickable(
+                enabled = isEditing,
+                role = Role.Button,
+                onClick = onEditTitle
             )
             .padding(padding),
         verticalAlignment = Alignment.CenterVertically,

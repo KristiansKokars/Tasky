@@ -27,7 +27,7 @@ import com.kristianskokars.tasky.core.presentation.theme.White
 fun AgendaTopBar(
     modifier: Modifier = Modifier,
     isEditing: Boolean = false,
-    isEditingTitle: String = "",
+    editingTitle: String = "",
     title: String = "01 MARCH 2022",
     onCloseClick: () -> Unit = {},
     onEditClick: () -> Unit = {},
@@ -50,7 +50,7 @@ fun AgendaTopBar(
                 horizontalArrangement = Arrangement.Center
             ) {
                 Text(
-                    text = if (isEditing) isEditingTitle.uppercase() else title,
+                    text = if (isEditing) editingTitle.uppercase() else title,
                     fontWeight = FontWeight.Bold,
                     fontSize = 16.sp
                 )
