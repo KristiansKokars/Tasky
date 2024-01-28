@@ -1,15 +1,20 @@
 package com.kristianskokars.tasky.feature.event.presentation
 
 import android.net.Uri
+import androidx.datastore.core.DataStore
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.kristianskokars.tasky.core.data.local.model.RemindAtTime
+import com.kristianskokars.tasky.core.data.local.model.UserSettings
 import com.kristianskokars.tasky.feature.event.data.EventRepository
+import com.kristianskokars.tasky.feature.event.domain.model.Attendee
 import com.kristianskokars.tasky.feature.navArgs
+import com.kristianskokars.tasky.lib.asStateFlow
 import com.kristianskokars.tasky.lib.launch
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalTime
@@ -25,15 +30,23 @@ class EventViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val photoConverter: PhotoConverter,
     private val repository: EventRepository,
+    private val userStore: DataStore<UserSettings>,
     private val timeZone: TimeZone,
 ) : ViewModel() {
     private val navArgs = savedStateHandle.navArgs<EventScreenNavArgs>()
     private val _state = MutableStateFlow(EventState(isEditing = navArgs.isCreatingNewEvent))
 
-    val state = _state.asStateFlow()
+    val state = combine(
+        userStore.data,
+        _state,
+    ) { user, state ->
+        if (navArgs.isCreatingNewEvent) {
+            // TODO: temporary for getting your own user!
+            state.copy(creator = Attendee(userId = user.userId!!, email = "", fullName = user.fullName!!))
+        } else state
+    }.asStateFlow(viewModelScope, EventState(isEditing = navArgs.isCreatingNewEvent))
 
     fun onEvent(event: EventScreenEvent) {
-        Timber.d("Event: $event")
         when (event) {
             EventScreenEvent.BeginEditing -> onBeginEditing()
             EventScreenEvent.SaveEdits -> onSaveEdits()
@@ -45,6 +58,7 @@ class EventViewModel @Inject constructor(
             is EventScreenEvent.OnUpdateFromTime -> onUpdateFromTime(event.newFromTime)
             is EventScreenEvent.OnUpdateToDate -> onUpdateToDate(event.newToDate)
             is EventScreenEvent.OnUpdateToTime -> onUpdateToTime(event.newToTime)
+            is EventScreenEvent.OnAddAttendee -> onAddAttendee(event.addAttendeeEmail)
         }
     }
 
@@ -117,6 +131,21 @@ class EventViewModel @Inject constructor(
         _state.update { state ->
             val newDateTime = newToTime.atDate(state.toDateTime.date)
             state.copy(toDateTime = newDateTime)
+        }
+    }
+
+    private fun onAddAttendee(newAttendeeEmail: String) {
+        launch {
+            _state.update { it.copy(isCheckingIfAttendeeExists = true) }
+            val response = repository.getAttendee(newAttendeeEmail)
+            _state.update { state ->
+                state.copy(
+                    isCheckingIfAttendeeExists = false,
+                    attendees = if (response != null) {
+                        state.attendees.toMutableList().apply { add(response) }
+                    } else state.attendees
+                )
+            }
         }
     }
 }

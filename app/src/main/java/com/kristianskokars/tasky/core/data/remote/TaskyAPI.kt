@@ -3,6 +3,7 @@ package com.kristianskokars.tasky.core.data.remote
 import com.kristianskokars.tasky.core.data.remote.model.AgendaResponseDTO
 import com.kristianskokars.tasky.core.data.remote.model.CreateTaskRequestDTO
 import com.kristianskokars.tasky.core.data.remote.model.EventRequestDTO
+import com.kristianskokars.tasky.core.data.remote.model.GetAttendeeResponseDTO
 import com.kristianskokars.tasky.core.data.remote.model.LoginRequestDTO
 import com.kristianskokars.tasky.core.data.remote.model.LoginResponseDTO
 import com.kristianskokars.tasky.core.data.remote.model.RegisterRequestDTO
@@ -39,6 +40,9 @@ interface TaskyAPI {
         @Part("create_event_request") createEventRequest: EventRequestDTO,
         @Part photos: List<MultipartBody.Part>
     )
+
+    @GET("attendee")
+    suspend fun getAttendee(@Query("email") email: String): GetAttendeeResponseDTO
 
     @DELETE("task")
     suspend fun deleteTask(

@@ -59,4 +59,11 @@
     <string name="no_agenda_items_scheduled">No agenda items scheduled!</string>
     <string name="today">Today</string>
     <string name="photos">Photos</string>
+    <string name="add">ADD</string>
+    <string name="visitors">Visitors</string>
+    <string name="going">Going</string>
+    <string name="all">All</string>
+    <string name="not_going">Not Going</string>
+    <string name="creator">creator</string>
+    <string name="remove_visitor">Remove visitor</string>
 </resources>

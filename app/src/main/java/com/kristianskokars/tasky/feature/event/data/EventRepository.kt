@@ -3,6 +3,7 @@ package com.kristianskokars.tasky.feature.event.data
 import android.net.Uri
 import com.kristianskokars.tasky.core.data.remote.TaskyAPI
 import com.kristianskokars.tasky.core.data.remote.model.EventRequestDTO
+import com.kristianskokars.tasky.feature.event.domain.model.Attendee
 import com.kristianskokars.tasky.feature.event.presentation.PhotoConverter
 import java.util.UUID
 import javax.inject.Inject
@@ -33,6 +34,17 @@ class EventRepository @Inject constructor(
                 attendeeIds = attendeeIds,
             ),
             photos = photoConverter.photosToMultipart(photos)
+        )
+    }
+
+    suspend fun getAttendee(email: String): Attendee? {
+        val response = api.getAttendee(email)
+        if (!response.doesUserExist || response.attendee == null) return null
+
+        return Attendee(
+            userId = response.attendee.userId,
+            email = response.attendee.email,
+            fullName = response.attendee.fullName,
         )
     }
 }

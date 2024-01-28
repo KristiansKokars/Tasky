@@ -2,6 +2,7 @@ package com.kristianskokars.tasky.feature.event.presentation
 
 import android.net.Uri
 import com.kristianskokars.tasky.core.data.local.model.RemindAtTime
+import com.kristianskokars.tasky.feature.event.domain.model.Attendee
 import com.kristianskokars.tasky.lib.currentSystemDate
 import com.kristianskokars.tasky.lib.currentSystemDateTime
 import kotlinx.datetime.LocalDate
@@ -16,5 +17,8 @@ data class EventState(
     val fromDateTime: LocalDateTime = currentSystemDateTime(),
     val toDateTime: LocalDateTime = currentSystemDateTime(),
     val remindAtTime: RemindAtTime = RemindAtTime.ThirtyMinutesBefore,
+    val creator: Attendee? = null,
+    val attendees: List<Attendee> = emptyList(),
+    val isCheckingIfAttendeeExists: Boolean = false,
     val currentDate: LocalDate = currentSystemDate()
 )

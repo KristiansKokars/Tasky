@@ -9,9 +9,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -19,6 +19,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -27,11 +28,14 @@ import com.kristianskokars.tasky.core.presentation.components.TaskyButton
 import com.kristianskokars.tasky.core.presentation.theme.DarkGray
 import com.kristianskokars.tasky.core.presentation.theme.Gray
 import com.kristianskokars.tasky.core.presentation.theme.LightGray
+import com.kristianskokars.tasky.feature.event.domain.model.Attendee
 
 @Composable
 fun VisitorsSection(
     isEditing: Boolean = false,
     onEditVisitors: () -> Unit = {},
+    creator: Attendee? = null,
+    attendees: List<Attendee>
 ) {
     Column(
         modifier = Modifier
@@ -43,7 +47,7 @@ fun VisitorsSection(
             horizontalArrangement = Arrangement.Center
         ) {
             Text(
-                text = "Visitors",
+                text = stringResource(R.string.visitors),
                 fontWeight = FontWeight.Bold,
                 fontSize = 20.sp
             )
@@ -71,42 +75,48 @@ fun VisitorsSection(
                 modifier = Modifier.weight(1f),
                 onClick = { /*TODO*/ }
             ) {
-                Text(text = "All")
+                Text(text = stringResource(R.string.all))
             }
             TaskyButton(
                 modifier = Modifier.weight(1f),
                 enabled = false,
                 onClick = { /*TODO*/ }
             ) {
-                Text(text = "Going")
+                Text(text = stringResource(R.string.going))
             }
             TaskyButton(
                 modifier = Modifier.weight(1f),
                 enabled = false,
                 onClick = { /*TODO*/ }
             ) {
-                Text(text = "Not Going")
+                Text(text = stringResource(R.string.not_going))
             }
         }
         Spacer(modifier = Modifier.size(20.dp))
         Text(
-            text = "Going",
+            text = stringResource(R.string.going),
             color = DarkGray,
             fontSize = 16.sp,
             fontWeight = FontWeight.Medium
         )
         Spacer(modifier = Modifier.size(16.dp))
-        Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-            VisitorCard(isCreator = true)
-            VisitorCard(isCreator = false)
-            VisitorCard(isCreator = false)
+        LazyColumn(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+            if (creator != null) {
+                item {
+                    VisitorCard(attendee = creator, isCreator = true)
+                }
+            }
+            items(attendees, key = { it.userId }) { attendee ->
+                VisitorCard(attendee, isCreator = false)
+            }
         }
         Spacer(modifier = Modifier.size(20.dp))
-        Text(text = "Not going", color = DarkGray, fontSize = 16.sp, fontWeight = FontWeight.Medium)
+        Text(text = stringResource(R.string.not_going), color = DarkGray, fontSize = 16.sp, fontWeight = FontWeight.Medium)
         Spacer(modifier = Modifier.size(16.dp))
-        Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-            VisitorCard(isCreator = false)
-            VisitorCard(isCreator = false)
+        LazyColumn(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+            items(attendees, key = { it.userId }) { attendee ->
+                VisitorCard(attendee, isCreator = false)
+            }
         }
     }
 }

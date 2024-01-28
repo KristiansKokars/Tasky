@@ -16,4 +16,5 @@ sealed class EventScreenEvent {
     data class OnChangeRemindAtTime(val newRemindAtTime: RemindAtTime) : EventScreenEvent()
     data class OnTitleChanged(val newTitle: String) : EventScreenEvent()
     data class OnDescriptionChanged(val newDescription: String) : EventScreenEvent()
+    data class OnAddAttendee(val addAttendeeEmail: String) : EventScreenEvent()
 }

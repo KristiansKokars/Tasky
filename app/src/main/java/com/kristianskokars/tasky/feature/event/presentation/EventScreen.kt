@@ -9,8 +9,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.Scaffold
@@ -19,7 +17,9 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -34,6 +34,7 @@ import com.kristianskokars.tasky.core.presentation.components.TaskySurface
 import com.kristianskokars.tasky.core.presentation.theme.Black
 import com.kristianskokars.tasky.core.presentation.theme.Gray
 import com.kristianskokars.tasky.core.presentation.theme.LightGreen
+import com.kristianskokars.tasky.feature.agenda.presentation.components.AddVisitorDialog
 import com.kristianskokars.tasky.feature.destinations.EditDescriptionScreenDestination
 import com.kristianskokars.tasky.feature.destinations.EditTitleScreenDestination
 import com.kristianskokars.tasky.feature.event.presentation.components.AgendaBadge
@@ -109,6 +110,8 @@ private fun EventScreenContent(
     navigator: DestinationsNavigator,
     onAddPhotoClick: () -> Unit,
 ) {
+    var isDialogOpen by remember { mutableStateOf(false) }
+
     Scaffold(
         topBar = {
             AgendaTopBar(
@@ -122,10 +125,16 @@ private fun EventScreenContent(
         },
     ) { padding ->
         CompositionLocalProvider(LocalContentColor provides Black) {
+            AddVisitorDialog(
+                isDialogOpen = isDialogOpen,
+                isCheckingIfAttendeeExists = state.isCheckingIfAttendeeExists,
+                onDismissRequest = { isDialogOpen = false },
+                onAddVisitor = {}
+            )
             TaskySurface(
                 modifier = Modifier
                     .padding(padding)
-                    .verticalScroll(rememberScrollState())
+//                    .verticalScroll(rememberScrollState())
             ) {
                 Spacer(modifier = Modifier.size(32.dp))
                 AgendaBadge(text = stringResource(id = R.string.event), badgeColor = LightGreen)
@@ -180,7 +189,12 @@ private fun EventScreenContent(
                     }
                 )
                 TaskyDivider()
-                VisitorsSection(isEditing = state.isEditing)
+                VisitorsSection(
+                    isEditing = state.isEditing,
+                    onEditVisitors = { isDialogOpen = true },
+                    creator = state.creator,
+                    attendees = state.attendees
+                )
                 Spacer(modifier = Modifier.size(44.dp))
                 Row(
                     modifier = Modifier.fillMaxWidth(),
