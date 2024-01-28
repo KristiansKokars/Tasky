@@ -56,3 +56,5 @@ fun LocalDate.nameOfMonth(locale: Locale): String {
 }
 
 fun currentSystemDate() = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date
+
+fun currentSystemDateTime() = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())

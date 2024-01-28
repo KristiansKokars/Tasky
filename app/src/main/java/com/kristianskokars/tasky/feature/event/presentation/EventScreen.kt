@@ -43,6 +43,7 @@ import com.kristianskokars.tasky.feature.event.presentation.components.EventTitl
 import com.kristianskokars.tasky.feature.event.presentation.components.PhotosSection
 import com.kristianskokars.tasky.feature.event.presentation.components.RemindBeforeSection
 import com.kristianskokars.tasky.feature.event.presentation.components.TaskyTimeSection
+import com.kristianskokars.tasky.feature.event.presentation.components.TimeState
 import com.kristianskokars.tasky.feature.event.presentation.components.VisitorsSection
 import com.kristianskokars.tasky.lib.fillParentWidth
 import com.kristianskokars.tasky.lib.formatToLongDate
@@ -155,11 +156,29 @@ private fun EventScreenContent(
                 )
                 Spacer(modifier = Modifier.size(32.dp))
                 TaskyDivider()
-                TaskyTimeSection(isEditing = state.isEditing)
+                TaskyTimeSection(
+                    isEditing = state.isEditing,
+                    time = state.fromDateTime,
+                    timeState = TimeState.From,
+                    onTimeSelected = { onEvent(EventScreenEvent.OnUpdateFromTime(it)) },
+                    onDateSelected = { onEvent(EventScreenEvent.OnUpdateFromDate(it)) }
+                )
                 TaskyDivider()
-                TaskyTimeSection(isEditing = state.isEditing)
+                TaskyTimeSection(
+                    isEditing = state.isEditing,
+                    time = state.toDateTime,
+                    timeState = TimeState.To,
+                    onTimeSelected = { onEvent(EventScreenEvent.OnUpdateToTime(it)) },
+                    onDateSelected = { onEvent(EventScreenEvent.OnUpdateToDate(it)) }
+                )
                 TaskyDivider()
-                RemindBeforeSection(isEditing = state.isEditing)
+                RemindBeforeSection(
+                    isEditing = state.isEditing,
+                    remindAtTime = state.remindAtTime,
+                    onChangeRemindAtTime = { newRemindAtTime ->
+                        onEvent(EventScreenEvent.OnChangeRemindAtTime(newRemindAtTime))
+                    }
+                )
                 TaskyDivider()
                 VisitorsSection(isEditing = state.isEditing)
                 Spacer(modifier = Modifier.size(44.dp))

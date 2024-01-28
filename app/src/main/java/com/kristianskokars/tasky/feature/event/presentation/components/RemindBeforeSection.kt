@@ -1,6 +1,7 @@
 package com.kristianskokars.tasky.feature.event.presentation.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -69,7 +70,7 @@ fun RemindBeforeSection(
                 Spacer(modifier = Modifier.weight(1f))
                 Box {
                     EditIndicatorIcon(
-//                        onEdit = { isDropdownExpanded = true },
+                        modifier = Modifier.clickable { isDropdownExpanded = true },
                         label = stringResource(R.string.edit_reminder)
                     )
                     RemindAtDropdownMenu(

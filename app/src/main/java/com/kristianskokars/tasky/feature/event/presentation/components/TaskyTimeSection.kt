@@ -93,7 +93,7 @@ fun TaskyTimeSection(
             Row {
                 if (isEditing) {
                     EditIndicatorIcon(
-//                        onEdit = editDateDialogState::show,
+                        modifier = Modifier.clickable(onClick = editDateDialogState::show),
                         label = stringResource(R.string.edit_date)
                     )
                 }
