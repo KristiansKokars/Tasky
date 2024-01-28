@@ -1,5 +1,6 @@
 package com.kristianskokars.tasky.feature.event.presentation.components
 
+import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -36,20 +37,24 @@ import com.kristianskokars.tasky.lib.fillParentWidth
 
 @Composable
 fun PhotosSection(
-    photoUrls: List<String> = emptyList()
+    photoUrls: List<Uri> = emptyList(),
+    onAddPhotoClick: () -> Unit,
 ) {
     if (photoUrls.isEmpty()) {
-        AddPhotosText()
+        AddPhotosText(onAddPhotoClick)
     } else {
-        PhotosGallery(photoUrls)
+        PhotosGallery(photoUrls, onAddPhotoClick = onAddPhotoClick, onPhotoClick = {})
     }
 }
 
 @Composable
-private fun AddPhotosText() {
+private fun AddPhotosText(
+    onAddPhotoClick: () -> Unit,
+) {
     Row(
         modifier = Modifier
             .fillParentWidth(parentPadding = 16.dp)
+            .clickable(onClick = onAddPhotoClick)
             .background(LightGray)
             .height(112.dp),
         verticalAlignment = Alignment.CenterVertically,
@@ -71,7 +76,11 @@ private fun AddPhotosText() {
 }
 
 @Composable
-private fun PhotosGallery(photoUrls: List<String>) {
+private fun PhotosGallery(
+    photoUrls: List<Uri>,
+    onPhotoClick: (Uri) -> Unit,
+    onAddPhotoClick: () -> Unit
+) {
     Column(
         modifier = Modifier
             .fillParentWidth(parentPadding = 16.dp)
@@ -80,16 +89,16 @@ private fun PhotosGallery(photoUrls: List<String>) {
             .height(112.dp),
         verticalArrangement = Arrangement.Center,
     ) {
-        Text(text = "Photos", fontWeight = FontWeight.SemiBold, fontSize = 20.sp)
+        Text(text = stringResource(R.string.photos), fontWeight = FontWeight.SemiBold, fontSize = 20.sp)
         Spacer(modifier = Modifier.size(20.dp))
         LazyRow(
             horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             items(photoUrls) { photoUrl ->
-                PhotoCard(photoUrl)
+                PhotoCard(photoUrl, onPhotoClick = onPhotoClick)
             }
             item {
-                AddPhotosCard()
+                AddPhotosCard(onAddPhotoClick = onAddPhotoClick)
             }
         }
     }
@@ -97,13 +106,13 @@ private fun PhotosGallery(photoUrls: List<String>) {
 
 @Composable
 private fun PhotoCard(
-    photoUrl: String,
+    photoUrl: Uri,
     contentDescription: String? = null,
-    onAddPhotoClick: () -> Unit = {},
+    onPhotoClick: (Uri) -> Unit,
 ) {
     ClickableCard(
         clickLabel = stringResource(R.string.view_photo),
-        onClick = onAddPhotoClick
+        onClick = { onPhotoClick(photoUrl) }
     ) {
         AsyncImage(
             modifier = Modifier.fillMaxSize(),

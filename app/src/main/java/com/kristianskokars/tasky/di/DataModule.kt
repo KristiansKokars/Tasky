@@ -7,11 +7,14 @@ import com.kristianskokars.tasky.core.data.local.model.UserSettings
 import com.kristianskokars.tasky.core.data.local.userSettingsStore
 import com.kristianskokars.tasky.core.data.remote.NetworkClient
 import com.kristianskokars.tasky.core.data.remote.TaskyAPI
+import com.kristianskokars.tasky.feature.event.presentation.AndroidPhotoConverter
+import com.kristianskokars.tasky.feature.event.presentation.PhotoConverter
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.Dispatchers
 import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
 import retrofit2.Retrofit
@@ -21,6 +24,11 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object DataModule {
+    @Provides
+    @Singleton
+    fun providePhotoConverter(@ApplicationContext context: Context): PhotoConverter =
+        AndroidPhotoConverter(context, ioDispatcher = Dispatchers.IO)
+
     @Provides
     @Singleton
     fun provideUserSettingsStore(

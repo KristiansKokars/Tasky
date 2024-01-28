@@ -1,5 +1,8 @@
 package com.kristianskokars.tasky.feature.event.presentation
 
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -16,6 +19,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -79,10 +83,21 @@ fun EventScreen(
         }
     }
 
+    val uploadImage = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent(),
+        onResult = { uri: Uri? ->
+            if (uri == null) return@rememberLauncherForActivityResult
+
+            viewModel.onEvent(EventScreenEvent.OnAddPhoto(uri))
+        }
+    )
+    val onUploadImage = remember { { uploadImage.launch("image/*")} }
+
     EventScreenContent(
         onEvent = viewModel::onEvent,
         state = state,
-        navigator = navigator
+        navigator = navigator,
+        onAddPhotoClick = onUploadImage
     )
 }
 
@@ -90,7 +105,8 @@ fun EventScreen(
 private fun EventScreenContent(
     onEvent: (EventScreenEvent) -> Unit,
     state: EventState,
-    navigator: DestinationsNavigator
+    navigator: DestinationsNavigator,
+    onAddPhotoClick: () -> Unit,
 ) {
     Scaffold(
         topBar = {
@@ -133,7 +149,10 @@ private fun EventScreenContent(
                     isEditing = state.isEditing,
                 )
                 Spacer(modifier = Modifier.size(32.dp))
-                PhotosSection()
+                PhotosSection(
+                    photoUrls = state.photos,
+                    onAddPhotoClick = onAddPhotoClick
+                )
                 Spacer(modifier = Modifier.size(32.dp))
                 TaskyDivider()
                 TaskyTimeSection(isEditing = state.isEditing)
@@ -165,6 +184,6 @@ private fun EventScreenContent(
 @Composable
 private fun EventScreenPreview() {
     ScreenSurface {
-        EventScreenContent(onEvent = {}, state = EventState(), navigator = EmptyDestinationsNavigator)
+        EventScreenContent(onEvent = {}, state = EventState(), onAddPhotoClick = {}, navigator = EmptyDestinationsNavigator)
     }
 }

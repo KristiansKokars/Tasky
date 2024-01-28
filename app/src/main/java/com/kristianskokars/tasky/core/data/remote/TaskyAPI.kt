@@ -2,13 +2,17 @@ package com.kristianskokars.tasky.core.data.remote
 
 import com.kristianskokars.tasky.core.data.remote.model.AgendaResponseDTO
 import com.kristianskokars.tasky.core.data.remote.model.CreateTaskRequestDTO
+import com.kristianskokars.tasky.core.data.remote.model.EventRequestDTO
 import com.kristianskokars.tasky.core.data.remote.model.LoginRequestDTO
 import com.kristianskokars.tasky.core.data.remote.model.LoginResponseDTO
 import com.kristianskokars.tasky.core.data.remote.model.RegisterRequestDTO
+import okhttp3.MultipartBody
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
+import retrofit2.http.Multipart
 import retrofit2.http.POST
+import retrofit2.http.Part
 import retrofit2.http.Query
 
 interface TaskyAPI {
@@ -27,6 +31,13 @@ interface TaskyAPI {
     @POST("task")
     suspend fun createTask(
         @Body body: CreateTaskRequestDTO
+    )
+
+    @POST("event")
+    @Multipart
+    suspend fun createEvent(
+        @Part("create_event_request") createEventRequest: EventRequestDTO,
+        @Part photos: List<MultipartBody.Part>
     )
 
     @DELETE("task")
