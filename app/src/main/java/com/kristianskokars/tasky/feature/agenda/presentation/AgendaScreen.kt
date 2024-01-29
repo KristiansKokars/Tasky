@@ -135,8 +135,9 @@ private fun AgendaScreenContent(
                 } else {
                     AgendaList(
                         agendas = state.agendas,
-                        lastDoneAgendaId = state.lastDoneAgendaId)
-
+                        lastDoneAgendaId = state.lastDoneAgendaId,
+                        onTaskIsDone = { onEvent(AgendaEvent.OnTaskToggleDone(it)) }
+                    )
                 }
             }
         }
@@ -147,6 +148,7 @@ private fun AgendaScreenContent(
 private fun AgendaList(
     agendas: List<Agenda>,
     lastDoneAgendaId: String?,
+    onTaskIsDone: (taskId: String) -> Unit
 ) {
     LazyColumn(
         contentPadding = PaddingValues(top = 20.dp)
@@ -161,7 +163,7 @@ private fun AgendaList(
             }
         }
         items(agendas) { agenda ->
-            AgendaCard(agenda = agenda)
+            AgendaCard(agenda = agenda, onTaskIsDone = onTaskIsDone)
             if (lastDoneAgendaId == agenda.id) {
                 Spacer(modifier = Modifier.size(8.dp))
                 TimeNeedle()

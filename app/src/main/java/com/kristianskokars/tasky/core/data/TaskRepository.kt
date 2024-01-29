@@ -2,6 +2,7 @@ package com.kristianskokars.tasky.core.data
 
 import com.kristianskokars.tasky.core.data.remote.TaskyAPI
 import com.kristianskokars.tasky.core.data.remote.model.CreateTaskRequestDTO
+import com.kristianskokars.tasky.core.data.remote.model.UpdateTaskRequestDTO
 import com.kristianskokars.tasky.feature.task.presentation.Task
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toInstant
@@ -23,7 +24,7 @@ class TaskRepository @Inject constructor(
                 title = task.title,
                 description = task.description,
                 time = time.toEpochMilliseconds(),
-                remindAt = time.plus(task.remindAtTime.toDuration()).toEpochMilliseconds(),
+                remindAt = time.minus(task.remindAtTime.toDuration()).toEpochMilliseconds(),
                 isDone = task.isDone,
             )
         )
@@ -32,5 +33,21 @@ class TaskRepository @Inject constructor(
     suspend fun deleteTask(taskId: String) {
         // TODO: error handling
         remote.deleteTask(taskId)
+    }
+
+    suspend fun markTaskAsDone(taskId: String) {
+        // TODO: error handling
+        val task = remote.getTask(taskId)
+
+        remote.updateTask(
+            UpdateTaskRequestDTO(
+                id = task.id,
+                title = task.title,
+                description = task.description,
+                time = task.time,
+                remindAt = task.remindAt,
+                isDone = !task.isDone
+            )
+        )
     }
 }

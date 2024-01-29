@@ -12,7 +12,7 @@ sealed class Agenda {
         override val title: String,
         override val time: Long,
         override val description: String,
-        override val isDone: Boolean
+        override val isDone: Boolean,
     ) : Agenda()
 
     data class Event(

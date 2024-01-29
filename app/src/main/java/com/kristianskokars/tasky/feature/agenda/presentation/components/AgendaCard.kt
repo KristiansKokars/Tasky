@@ -55,7 +55,8 @@ private val agendaDropdownItems
 @Composable
 fun AgendaCard(
     modifier: Modifier = Modifier,
-    agenda: Agenda
+    agenda: Agenda,
+    onTaskIsDone: (taskId: String) -> Unit,
 ) {
     val backgroundColor = when (agenda) {
         is Agenda.Task -> Green
@@ -89,16 +90,23 @@ fun AgendaCard(
             Column {
                 Spacer(modifier = Modifier.size(6.dp))
 
-                if (agenda.isDone) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.ic_checked_circle),
-                        contentDescription = null
-                    )
-                } else {
-                    Icon(
-                        painter = painterResource(id = R.drawable.ic_unchecked_circle),
-                        contentDescription = null
-                    )
+                Box(
+                    modifier = Modifier
+                        .clickable(
+                            onClick = { if (agenda is Agenda.Task) onTaskIsDone(agenda.id) }
+                        )
+                ) {
+                    if (agenda.isDone) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_checked_circle),
+                            contentDescription = null
+                        )
+                    } else {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_unchecked_circle),
+                            contentDescription = null
+                        )
+                    }
                 }
             }
             Spacer(modifier = Modifier.size(12.dp))
@@ -172,7 +180,7 @@ private fun AgendaCardPreview() {
                 .padding(20.dp)
         ) {
             Agenda.previewValues.forEach { agenda ->
-                AgendaCard(agenda = agenda)
+                AgendaCard(agenda = agenda, onTaskIsDone = {})
                 Spacer(modifier = Modifier.size(16.dp))
             }
         }

@@ -2,10 +2,12 @@ package com.kristianskokars.tasky.lib
 
 import android.os.Build
 import kotlinx.datetime.Clock
+import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.DayOfWeek
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
+import kotlinx.datetime.plus
 import kotlinx.datetime.toJavaLocalDate
 import kotlinx.datetime.toJavaLocalDateTime
 import kotlinx.datetime.toJavaLocalTime
@@ -58,3 +60,7 @@ fun LocalDate.nameOfMonth(locale: Locale): String {
 fun currentSystemDate() = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date
 
 fun currentSystemDateTime() = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
+
+fun LocalDate.next6Days(): List<LocalDate> = List(6) { index ->
+    this.plus(index, DateTimeUnit.DAY)
+}

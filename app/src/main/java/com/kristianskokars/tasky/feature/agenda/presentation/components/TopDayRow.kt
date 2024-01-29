@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -75,6 +76,7 @@ private fun Day(
     Column(
         modifier = modifier
             .then(if (isSelected) selectedBackground else Modifier)
+            .width(48.dp)
             .padding(12.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
