@@ -1,15 +1,16 @@
 package com.kristianskokars.tasky.feature.agenda.data
 
+import com.kristianskokars.tasky.core.data.local.db.EventDao
 import com.kristianskokars.tasky.core.data.local.db.TaskDao
+import com.kristianskokars.tasky.core.data.local.db.model.toAgendaEvent
 import com.kristianskokars.tasky.core.data.local.db.model.toAgendaTask
 import com.kristianskokars.tasky.core.data.local.db.model.toDBModel
 import com.kristianskokars.tasky.core.data.remote.TaskyAPI
 import com.kristianskokars.tasky.feature.agenda.data.model.Agenda
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.mapLatest
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
 import kotlinx.datetime.DatePeriod
 import kotlinx.datetime.Instant
@@ -21,21 +22,25 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-@OptIn(ExperimentalCoroutinesApi::class)
 class AgendaRepository @Inject constructor(
     private val api: TaskyAPI,
     private val taskDao: TaskDao,
+    private val eventDao: EventDao,
 ) {
     private val _isLoadingAgendas = MutableStateFlow(false)
     val isLoadingAgendas = _isLoadingAgendas.asStateFlow()
 
     fun currentAgendas(currentDate: LocalDate, timeZone: TimeZone): Flow<List<Agenda>> {
-        return taskDao
-            .getTasksForDay(
-                startingDayMillis = currentDate.atStartOfDayIn(timeZone).toEpochMilliseconds(),
-                endingDayMillis = currentDate.plus(DatePeriod(days = 1)).atStartOfDayIn(timeZone).toEpochMilliseconds(),
-            )
-            .mapLatest { tasks -> tasks.map { it.toAgendaTask() } }
+        val startingDayMillis = currentDate.atStartOfDayIn(timeZone).toEpochMilliseconds()
+        val endingDayMillis = currentDate.plus(DatePeriod(days = 1)).atStartOfDayIn(timeZone).toEpochMilliseconds()
+
+        return combine(
+            taskDao.getTasksForDay(startingDayMillis, endingDayMillis),
+            eventDao.getEventsForDay(startingDayMillis, endingDayMillis),
+        ) { tasks, events ->
+            val agendas = tasks.map { it.toAgendaTask() } + events.map { it.toAgendaEvent() }
+            agendas.sortedBy { it.time }
+        }
     }
 
     suspend fun fetchAgendasForDay(timeZone: TimeZone, atInstant: Instant) {
@@ -46,5 +51,6 @@ class AgendaRepository @Inject constructor(
         )
         _isLoadingAgendas.update { false }
         taskDao.insertTasks(agendas.tasks.map { it.toDBModel() })
+        eventDao.insertEvents(agendas.events.map { it.toDBModel() })
     }
 }

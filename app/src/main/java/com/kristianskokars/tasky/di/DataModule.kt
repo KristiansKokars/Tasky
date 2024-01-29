@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.room.Room
 import com.kristianskokars.tasky.BuildConfig
+import com.kristianskokars.tasky.core.data.local.db.EventDao
 import com.kristianskokars.tasky.core.data.local.db.TaskDao
 import com.kristianskokars.tasky.core.data.local.db.TaskyDatabase
 import com.kristianskokars.tasky.core.data.local.model.UserSettings
@@ -41,6 +42,10 @@ object DataModule {
     @Provides
     @Singleton
     fun provideTaskDao(database: TaskyDatabase): TaskDao = database.taskDao()
+
+    @Provides
+    @Singleton
+    fun provideEventDao(database: TaskyDatabase): EventDao = database.eventDao()
 
     @Provides
     @Singleton

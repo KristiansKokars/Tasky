@@ -49,7 +49,7 @@ class AgendaViewModel @Inject constructor(
 
         AgendaState(
             currentChosenDate = startingDate,
-            agendas = currentAgendas.sortedBy { it.time },
+            agendas = currentAgendas,
             currentWeekDays = startingDate.next6Days(),
             lastDoneAgendaId = lastDoneAgenda,
             isLoadingAgendas = isLoadingAgendas,
