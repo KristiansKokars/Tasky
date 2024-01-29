@@ -1,6 +1,6 @@
 package com.kristianskokars.tasky.core.data
 
-import com.kristianskokars.tasky.core.data.local.db.model.TaskDao
+import com.kristianskokars.tasky.core.data.local.db.TaskDao
 import com.kristianskokars.tasky.core.data.remote.TaskyAPI
 import com.kristianskokars.tasky.core.data.remote.model.CreateTaskRequestDTO
 import com.kristianskokars.tasky.core.data.remote.model.UpdateTaskRequestDTO

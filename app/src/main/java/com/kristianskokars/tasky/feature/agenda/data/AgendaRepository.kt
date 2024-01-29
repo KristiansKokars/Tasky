@@ -1,6 +1,6 @@
 package com.kristianskokars.tasky.feature.agenda.data
 
-import com.kristianskokars.tasky.core.data.local.db.model.TaskDao
+import com.kristianskokars.tasky.core.data.local.db.TaskDao
 import com.kristianskokars.tasky.core.data.local.db.model.toAgendaTask
 import com.kristianskokars.tasky.core.data.local.db.model.toDBModel
 import com.kristianskokars.tasky.core.data.remote.TaskyAPI

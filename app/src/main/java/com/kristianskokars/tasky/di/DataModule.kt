@@ -4,8 +4,8 @@ import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.room.Room
 import com.kristianskokars.tasky.BuildConfig
+import com.kristianskokars.tasky.core.data.local.db.TaskDao
 import com.kristianskokars.tasky.core.data.local.db.TaskyDatabase
-import com.kristianskokars.tasky.core.data.local.db.model.TaskDao
 import com.kristianskokars.tasky.core.data.local.model.UserSettings
 import com.kristianskokars.tasky.core.data.local.userSettingsStore
 import com.kristianskokars.tasky.core.data.remote.NetworkClient
