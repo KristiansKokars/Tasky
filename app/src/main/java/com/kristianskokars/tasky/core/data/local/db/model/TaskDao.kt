@@ -1,0 +1,22 @@
+package com.kristianskokars.tasky.core.data.local.db.model
+
+import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
+import kotlinx.coroutines.flow.Flow
+
+@Dao
+interface TaskDao {
+    @Query("SELECT * FROM $TASK_TABLE_NAME WHERE id = :taskId")
+    suspend fun getTask(taskId: String): TaskDBModel
+
+    @Query("SELECT * FROM $TASK_TABLE_NAME WHERE timeInMillis > :startingDayMillis AND timeInMillis < :endingDayMillis")
+    fun getTasksForDay(startingDayMillis: Long, endingDayMillis: Long): Flow<List<TaskDBModel>>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertTasks(tasks: List<TaskDBModel>)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertTask(task: TaskDBModel)
+}

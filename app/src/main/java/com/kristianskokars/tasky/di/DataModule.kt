@@ -2,7 +2,10 @@ package com.kristianskokars.tasky.di
 
 import android.content.Context
 import androidx.datastore.core.DataStore
+import androidx.room.Room
 import com.kristianskokars.tasky.BuildConfig
+import com.kristianskokars.tasky.core.data.local.db.TaskyDatabase
+import com.kristianskokars.tasky.core.data.local.db.model.TaskDao
 import com.kristianskokars.tasky.core.data.local.model.UserSettings
 import com.kristianskokars.tasky.core.data.local.userSettingsStore
 import com.kristianskokars.tasky.core.data.remote.NetworkClient
@@ -26,6 +29,21 @@ import javax.inject.Singleton
 object DataModule {
     @Provides
     @Singleton
+    fun provideTaskyDatabase(@ApplicationContext context: Context) = Room
+        .databaseBuilder(
+            context,
+            TaskyDatabase::class.java,
+            "tasky-database"
+        )
+        .fallbackToDestructiveMigration()
+        .build()
+
+    @Provides
+    @Singleton
+    fun provideTaskDao(database: TaskyDatabase): TaskDao = database.taskDao()
+
+    @Provides
+    @Singleton
     fun providePhotoConverter(@ApplicationContext context: Context): PhotoConverter =
         AndroidPhotoConverter(context, ioDispatcher = Dispatchers.IO)
 
@@ -37,11 +55,12 @@ object DataModule {
 
     @Provides
     @Singleton
-    fun provideRetrofit(userSettingsStore: DataStore<UserSettings>) = NetworkClient.createRetrofitClient(
-        BuildConfig.apiLink,
-        BuildConfig.apiKey,
-        userSettingsStore
-    )
+    fun provideRetrofit(userSettingsStore: DataStore<UserSettings>) =
+        NetworkClient.createRetrofitClient(
+            BuildConfig.apiLink,
+            BuildConfig.apiKey,
+            userSettingsStore
+        )
 
     @Provides
     @Singleton

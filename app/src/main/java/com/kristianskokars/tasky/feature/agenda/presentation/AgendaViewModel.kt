@@ -9,8 +9,10 @@ import com.kristianskokars.tasky.lib.asStateFlow
 import com.kristianskokars.tasky.lib.launch
 import com.kristianskokars.tasky.lib.next6Days
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDate
@@ -32,17 +34,22 @@ class AgendaViewModel @Inject constructor(
     private val _selectedDayIndex = MutableStateFlow(0)
     private val _startingDate = MutableStateFlow(clock.now().toLocalDateTime(timeZone).date)
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     val state = combine(
-        agendaRepository.currentAgendas(),
+        _startingDate.flatMapLatest { startingDate ->
+            _selectedDayIndex.flatMapLatest { selectedDayIndex ->
+                agendaRepository.currentAgendas(startingDate.next6Days()[selectedDayIndex], timeZone)
+            }
+        },
         agendaRepository.isLoadingAgendas,
         _startingDate,
         _selectedDayIndex
-    ) { agendas, isLoadingAgendas, startingDate, selectedDayIndex ->
-        val lastDoneAgenda = agendas.lastOrNull { it.isDone }?.id
+    ) { currentAgendas, isLoadingAgendas, startingDate, selectedDayIndex ->
+        val lastDoneAgenda = currentAgendas.lastOrNull { it.isDone }?.id
 
         AgendaState(
             currentChosenDate = startingDate,
-            agendas = agendas.sortedBy { it.time },
+            agendas = currentAgendas.sortedBy { it.time },
             currentWeekDays = startingDate.next6Days(),
             lastDoneAgendaId = lastDoneAgenda,
             isLoadingAgendas = isLoadingAgendas,
@@ -87,7 +94,8 @@ class AgendaViewModel @Inject constructor(
 
     private fun fetchAgendasForDay(currentDayIndex: Int) {
         val currentState = state.value
-        val currentDayInstant = currentState.currentWeekDays[currentDayIndex].atStartOfDayIn(timeZone)
+        val currentDayInstant =
+            currentState.currentWeekDays[currentDayIndex].atStartOfDayIn(timeZone)
         launch {
             agendaRepository.fetchAgendasForDay(
                 timeZone,

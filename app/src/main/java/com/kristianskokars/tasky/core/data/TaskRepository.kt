@@ -1,5 +1,6 @@
 package com.kristianskokars.tasky.core.data
 
+import com.kristianskokars.tasky.core.data.local.db.model.TaskDao
 import com.kristianskokars.tasky.core.data.remote.TaskyAPI
 import com.kristianskokars.tasky.core.data.remote.model.CreateTaskRequestDTO
 import com.kristianskokars.tasky.core.data.remote.model.UpdateTaskRequestDTO
@@ -12,7 +13,8 @@ import javax.inject.Singleton
 @Singleton
 class TaskRepository @Inject constructor(
     private val timeZone: TimeZone,
-    private val remote: TaskyAPI
+    private val remote: TaskyAPI,
+    private val local: TaskDao,
 ) {
     suspend fun saveTask(task: Task) {
         // TODO: offline first and create workmanager task to sync!
@@ -37,17 +39,18 @@ class TaskRepository @Inject constructor(
 
     suspend fun markTaskAsDone(taskId: String) {
         // TODO: error handling
-        val task = remote.getTask(taskId)
+        val task = local.getTask(taskId)
 
         remote.updateTask(
             UpdateTaskRequestDTO(
                 id = task.id,
                 title = task.title,
                 description = task.description,
-                time = task.time,
-                remindAt = task.remindAt,
+                time = task.timeInMillis,
+                remindAt = task.remindAtTimeInMillis,
                 isDone = !task.isDone
             )
         )
+        local.insertTask(task.copy(isDone = !task.isDone))
     }
 }

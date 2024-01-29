@@ -117,6 +117,11 @@ dependencies {
     // Date Time Picker
     implementation(libs.compose.datetime)
 
+    // Room
+    implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.room.ktx)
+    ksp(libs.androidx.room.compiler)
+
     // Debug
     debugImplementation(libs.ui.tooling)
     debugImplementation(libs.ui.test.manifest)
