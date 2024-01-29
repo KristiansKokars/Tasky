@@ -1,8 +1,10 @@
 package com.kristianskokars.tasky.feature.agenda.data
 
 import com.kristianskokars.tasky.core.data.local.db.EventDao
+import com.kristianskokars.tasky.core.data.local.db.ReminderDao
 import com.kristianskokars.tasky.core.data.local.db.TaskDao
 import com.kristianskokars.tasky.core.data.local.db.model.toAgendaEvent
+import com.kristianskokars.tasky.core.data.local.db.model.toAgendaReminder
 import com.kristianskokars.tasky.core.data.local.db.model.toAgendaTask
 import com.kristianskokars.tasky.core.data.local.db.model.toDBModel
 import com.kristianskokars.tasky.core.data.remote.TaskyAPI
@@ -26,6 +28,7 @@ class AgendaRepository @Inject constructor(
     private val api: TaskyAPI,
     private val taskDao: TaskDao,
     private val eventDao: EventDao,
+    private val reminderDao: ReminderDao,
 ) {
     private val _isLoadingAgendas = MutableStateFlow(false)
     val isLoadingAgendas = _isLoadingAgendas.asStateFlow()
@@ -37,8 +40,9 @@ class AgendaRepository @Inject constructor(
         return combine(
             taskDao.getTasksForDay(startingDayMillis, endingDayMillis),
             eventDao.getEventsForDay(startingDayMillis, endingDayMillis),
-        ) { tasks, events ->
-            val agendas = tasks.map { it.toAgendaTask() } + events.map { it.toAgendaEvent() }
+            reminderDao.getRemindersForDay(startingDayMillis, endingDayMillis)
+        ) { tasks, events, reminders ->
+            val agendas = tasks.map { it.toAgendaTask() } + events.map { it.toAgendaEvent() } + reminders.map { it.toAgendaReminder() }
             agendas.sortedBy { it.time }
         }
     }
@@ -52,5 +56,6 @@ class AgendaRepository @Inject constructor(
         _isLoadingAgendas.update { false }
         taskDao.insertTasks(agendas.tasks.map { it.toDBModel() })
         eventDao.insertEvents(agendas.events.map { it.toDBModel() })
+        reminderDao.insertReminders(agendas.reminders.map { it.toDBModel() })
     }
 }
