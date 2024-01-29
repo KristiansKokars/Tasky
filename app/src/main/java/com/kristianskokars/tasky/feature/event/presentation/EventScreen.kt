@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.Scaffold
@@ -45,7 +46,7 @@ import com.kristianskokars.tasky.feature.event.presentation.components.PhotosSec
 import com.kristianskokars.tasky.feature.event.presentation.components.RemindBeforeSection
 import com.kristianskokars.tasky.feature.event.presentation.components.TaskyTimeSection
 import com.kristianskokars.tasky.feature.event.presentation.components.TimeState
-import com.kristianskokars.tasky.feature.event.presentation.components.VisitorsSection
+import com.kristianskokars.tasky.feature.event.presentation.components.visitorsSection
 import com.kristianskokars.tasky.lib.fillParentWidth
 import com.kristianskokars.tasky.lib.formatToLongDate
 import com.kristianskokars.tasky.nav.AppGraph
@@ -129,83 +130,89 @@ private fun EventScreenContent(
                 isDialogOpen = isDialogOpen,
                 isCheckingIfAttendeeExists = state.isCheckingIfAttendeeExists,
                 onDismissRequest = { isDialogOpen = false },
-                onAddVisitor = {}
+                onAddVisitor = { onEvent(EventScreenEvent.AddAttendee(it)) }
             )
             TaskySurface(
-                modifier = Modifier
-                    .padding(padding)
-//                    .verticalScroll(rememberScrollState())
+                modifier = Modifier.padding(padding)
             ) {
-                Spacer(modifier = Modifier.size(32.dp))
-                AgendaBadge(text = stringResource(id = R.string.event), badgeColor = LightGreen)
-                Spacer(modifier = Modifier.size(8.dp))
-                EventTitle(
-                    modifier = Modifier.fillParentWidth(16.dp),
-                    title = state.title,
-                    onEditTitle = {
-                        navigator.navigate(EditTitleScreenDestination(state.title))
-                    },
-                    isEditing = state.isEditing
-                )
-                Spacer(modifier = Modifier.size(8.dp))
-                TaskyDivider()
-                Spacer(modifier = Modifier.size(16.dp))
-                AgendaDescription(
-                    modifier = Modifier.fillParentWidth(16.dp),
-                    text = state.description ?: "",
-                    onEditDescription = {
-                        navigator.navigate(EditDescriptionScreenDestination(state.description ?: ""))
-                    },
-                    isEditing = state.isEditing,
-                )
-                Spacer(modifier = Modifier.size(32.dp))
-                PhotosSection(
-                    photoUrls = state.photos,
-                    onAddPhotoClick = onAddPhotoClick
-                )
-                Spacer(modifier = Modifier.size(32.dp))
-                TaskyDivider()
-                TaskyTimeSection(
-                    isEditing = state.isEditing,
-                    time = state.fromDateTime,
-                    timeState = TimeState.From,
-                    onTimeSelected = { onEvent(EventScreenEvent.OnUpdateFromTime(it)) },
-                    onDateSelected = { onEvent(EventScreenEvent.OnUpdateFromDate(it)) }
-                )
-                TaskyDivider()
-                TaskyTimeSection(
-                    isEditing = state.isEditing,
-                    time = state.toDateTime,
-                    timeState = TimeState.To,
-                    onTimeSelected = { onEvent(EventScreenEvent.OnUpdateToTime(it)) },
-                    onDateSelected = { onEvent(EventScreenEvent.OnUpdateToDate(it)) }
-                )
-                TaskyDivider()
-                RemindBeforeSection(
-                    isEditing = state.isEditing,
-                    remindAtTime = state.remindAtTime,
-                    onChangeRemindAtTime = { newRemindAtTime ->
-                        onEvent(EventScreenEvent.OnChangeRemindAtTime(newRemindAtTime))
+                LazyColumn(modifier = Modifier.fillMaxWidth()) {
+                    item {
+                        Spacer(modifier = Modifier.size(32.dp))
+                        AgendaBadge(text = stringResource(id = R.string.event), badgeColor = LightGreen)
+                        Spacer(modifier = Modifier.size(8.dp))
+                        EventTitle(
+                            modifier = Modifier.fillParentWidth(16.dp),
+                            title = state.title,
+                            onEditTitle = {
+                                navigator.navigate(EditTitleScreenDestination(state.title))
+                            },
+                            isEditing = state.isEditing
+                        )
+                        Spacer(modifier = Modifier.size(8.dp))
+                        TaskyDivider()
+                        Spacer(modifier = Modifier.size(16.dp))
+                        AgendaDescription(
+                            modifier = Modifier.fillParentWidth(16.dp),
+                            text = state.description ?: "",
+                            onEditDescription = {
+                                navigator.navigate(EditDescriptionScreenDestination(state.description ?: ""))
+                            },
+                            isEditing = state.isEditing,
+                        )
+                        Spacer(modifier = Modifier.size(32.dp))
+                        PhotosSection(
+                            photoUrls = state.photos,
+                            onAddPhotoClick = onAddPhotoClick
+                        )
+                        Spacer(modifier = Modifier.size(32.dp))
+                        TaskyDivider()
+                        TaskyTimeSection(
+                            isEditing = state.isEditing,
+                            time = state.fromDateTime,
+                            timeState = TimeState.From,
+                            onTimeSelected = { onEvent(EventScreenEvent.OnUpdateFromTime(it)) },
+                            onDateSelected = { onEvent(EventScreenEvent.OnUpdateFromDate(it)) }
+                        )
+                        TaskyDivider()
+                        TaskyTimeSection(
+                            isEditing = state.isEditing,
+                            time = state.toDateTime,
+                            timeState = TimeState.To,
+                            onTimeSelected = { onEvent(EventScreenEvent.OnUpdateToTime(it)) },
+                            onDateSelected = { onEvent(EventScreenEvent.OnUpdateToDate(it)) }
+                        )
+                        TaskyDivider()
+                        RemindBeforeSection(
+                            isEditing = state.isEditing,
+                            remindAtTime = state.remindAtTime,
+                            onChangeRemindAtTime = { newRemindAtTime ->
+                                onEvent(EventScreenEvent.OnChangeRemindAtTime(newRemindAtTime))
+                            }
+                        )
+                        TaskyDivider()
                     }
-                )
-                TaskyDivider()
-                VisitorsSection(
-                    isEditing = state.isEditing,
-                    onEditVisitors = { isDialogOpen = true },
-                    creator = state.creator,
-                    attendees = state.attendees
-                )
-                Spacer(modifier = Modifier.size(44.dp))
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    TextButton(
-                        colors = ButtonDefaults.textButtonColors(contentColor = Gray),
-                        onClick = { /*TODO*/ })
-                    {
-                        Text(text = stringResource(R.string.delete_event))
+                    visitorsSection(
+                        isEditing = state.isEditing,
+                        onEditVisitors = { isDialogOpen = true },
+                        creator = state.creator,
+                        attendees = state.attendees
+                    )
+                    item {
+                        Spacer(modifier = Modifier.size(44.dp))
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Center
+                        ) {
+                            TextButton(
+                                colors = ButtonDefaults.textButtonColors(contentColor = Gray),
+                                onClick = { onEvent(EventScreenEvent.DeleteEvent) }
+                            )
+                            {
+                                Text(text = stringResource(R.string.delete_event))
+                            }
+                        }
+                        Spacer(modifier = Modifier.size(44.dp))
                     }
                 }
             }

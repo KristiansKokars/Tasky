@@ -7,9 +7,10 @@ import com.kristianskokars.tasky.lib.currentSystemDate
 import com.kristianskokars.tasky.lib.currentSystemDateTime
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
+import java.util.UUID
 
 data class EventState(
-    val id: String? = null,
+    val id: String = UUID.randomUUID().toString(),
     val title: String = "Meeting",
     val description: String? = null,
     val isEditing: Boolean = false,

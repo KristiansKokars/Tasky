@@ -1,10 +1,13 @@
 package com.kristianskokars.tasky.core.presentation.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -21,15 +24,20 @@ fun AvatarIcon(
     textColor: Color = White,
     containerColor: Color = Gray
 ) {
-    Text(
+    Box(
         modifier = modifier
-            .padding(8.dp)
-            .clip(CircleShape)
-            .background(containerColor)
-            .padding(6.dp),
-        text = text,
-        color = textColor,
-        fontWeight = FontWeight.SemiBold,
-        fontSize = 13.sp
-    )
+        .size(48.dp)
+        .padding(8.dp)
+        .clip(CircleShape)
+        .background(containerColor)
+    ) {
+        Text(
+            modifier = Modifier.align(Alignment.Center),
+            text = text,
+            color = textColor,
+            fontWeight = FontWeight.SemiBold,
+            fontSize = 13.sp,
+        )
+    }
+
 }

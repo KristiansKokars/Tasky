@@ -41,6 +41,11 @@ interface TaskyAPI {
         @Part photos: List<MultipartBody.Part>
     )
 
+    @DELETE("event")
+    suspend fun deleteEvent(
+        @Query("eventId") eventId: String
+    )
+
     @GET("attendee")
     suspend fun getAttendee(@Query("email") email: String): GetAttendeeResponseDTO
 

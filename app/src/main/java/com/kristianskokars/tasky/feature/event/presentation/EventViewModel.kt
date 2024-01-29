@@ -28,9 +28,9 @@ import javax.inject.Inject
 @HiltViewModel
 class EventViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
+    userStore: DataStore<UserSettings>,
     private val photoConverter: PhotoConverter,
     private val repository: EventRepository,
-    private val userStore: DataStore<UserSettings>,
     private val timeZone: TimeZone,
 ) : ViewModel() {
     private val navArgs = savedStateHandle.navArgs<EventScreenNavArgs>()
@@ -41,8 +41,9 @@ class EventViewModel @Inject constructor(
         _state,
     ) { user, state ->
         if (navArgs.isCreatingNewEvent) {
-            // TODO: temporary for getting your own user!
-            state.copy(creator = Attendee(userId = user.userId!!, email = "", fullName = user.fullName!!))
+            if (user.userId == null || user.fullName == null) return@combine state
+
+            state.copy(creator = Attendee(userId = user.userId, email = "", fullName = user.fullName))
         } else state
     }.asStateFlow(viewModelScope, EventState(isEditing = navArgs.isCreatingNewEvent))
 
@@ -58,7 +59,8 @@ class EventViewModel @Inject constructor(
             is EventScreenEvent.OnUpdateFromTime -> onUpdateFromTime(event.newFromTime)
             is EventScreenEvent.OnUpdateToDate -> onUpdateToDate(event.newToDate)
             is EventScreenEvent.OnUpdateToTime -> onUpdateToTime(event.newToTime)
-            is EventScreenEvent.OnAddAttendee -> onAddAttendee(event.addAttendeeEmail)
+            is EventScreenEvent.AddAttendee -> onAddAttendee(event.addAttendeeEmail)
+            EventScreenEvent.DeleteEvent -> onDeleteEvent()
         }
     }
 
@@ -146,6 +148,12 @@ class EventViewModel @Inject constructor(
                     } else state.attendees
                 )
             }
+        }
+    }
+
+    private fun onDeleteEvent() {
+        launch {
+            repository.deleteEvent(_state.value.id)
         }
     }
 }

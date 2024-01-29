@@ -37,6 +37,10 @@ class EventRepository @Inject constructor(
         )
     }
 
+    suspend fun deleteEvent(eventId: String) {
+        api.deleteEvent(eventId)
+    }
+
     suspend fun getAttendee(email: String): Attendee? {
         val response = api.getAttendee(email)
         if (!response.doesUserExist || response.attendee == null) return null
