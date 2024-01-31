@@ -4,7 +4,7 @@ import com.kristianskokars.tasky.core.data.local.db.TaskDao
 import com.kristianskokars.tasky.core.data.remote.TaskyAPI
 import com.kristianskokars.tasky.core.data.remote.model.CreateTaskRequestDTO
 import com.kristianskokars.tasky.core.data.remote.model.UpdateTaskRequestDTO
-import com.kristianskokars.tasky.feature.task.presentation.Task
+import com.kristianskokars.tasky.feature.task.domain.model.Task
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toInstant
 import javax.inject.Inject

@@ -23,7 +23,7 @@ import com.kristianskokars.tasky.R
 import com.kristianskokars.tasky.core.presentation.components.ScreenSurface
 
 @Composable
-fun EventTitle(
+fun AgendaTitle(
     modifier: Modifier = Modifier,
     title: String,
     isEditing: Boolean = false,
@@ -63,6 +63,6 @@ fun EventTitle(
 @Composable
 fun EventTitlePreview() {
     ScreenSurface {
-        EventTitle(title = "Meeting", isEditing = true)
+        AgendaTitle(title = "Meeting", isEditing = true)
     }
 }

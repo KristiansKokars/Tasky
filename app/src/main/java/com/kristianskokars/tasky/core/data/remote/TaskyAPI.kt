@@ -1,13 +1,16 @@
 package com.kristianskokars.tasky.core.data.remote
 
 import com.kristianskokars.tasky.core.data.remote.model.AgendaResponseDTO
+import com.kristianskokars.tasky.core.data.remote.model.CreateReminderRequestDTO
 import com.kristianskokars.tasky.core.data.remote.model.CreateTaskRequestDTO
 import com.kristianskokars.tasky.core.data.remote.model.EventRequestDTO
 import com.kristianskokars.tasky.core.data.remote.model.GetAttendeeResponseDTO
 import com.kristianskokars.tasky.core.data.remote.model.LoginRequestDTO
 import com.kristianskokars.tasky.core.data.remote.model.LoginResponseDTO
 import com.kristianskokars.tasky.core.data.remote.model.RegisterRequestDTO
+import com.kristianskokars.tasky.core.data.remote.model.ReminderResponseDTO
 import com.kristianskokars.tasky.core.data.remote.model.TaskResponseDTO
+import com.kristianskokars.tasky.core.data.remote.model.UpdateReminderRequestDTO
 import com.kristianskokars.tasky.core.data.remote.model.UpdateTaskRequestDTO
 import okhttp3.MultipartBody
 import retrofit2.http.Body
@@ -65,5 +68,25 @@ interface TaskyAPI {
     @PUT("task")
     suspend fun updateTask(
         @Body body: UpdateTaskRequestDTO
+    )
+
+    @POST("reminder")
+    suspend fun createReminder(
+        @Body body: CreateReminderRequestDTO
+    )
+
+    @GET("reminder")
+    suspend fun getReminder(
+        @Query("reminderId") reminderId: String
+    ): ReminderResponseDTO
+
+    @DELETE("reminder")
+    suspend fun deleteReminder(
+        @Query("reminderId") reminderId: String
+    )
+
+    @PUT("reminder")
+    suspend fun updateReminder(
+        @Body body: UpdateReminderRequestDTO
     )
 }

@@ -46,8 +46,10 @@ import com.kristianskokars.tasky.feature.agenda.presentation.components.AgendaCa
 import com.kristianskokars.tasky.feature.agenda.presentation.components.ProfileIcon
 import com.kristianskokars.tasky.feature.agenda.presentation.components.TopDayRow
 import com.kristianskokars.tasky.feature.destinations.EventScreenDestination
+import com.kristianskokars.tasky.feature.destinations.ReminderScreenDestination
 import com.kristianskokars.tasky.feature.destinations.TaskScreenDestination
 import com.kristianskokars.tasky.feature.event.presentation.EventScreenNavArgs
+import com.kristianskokars.tasky.feature.reminder.presentation.ReminderScreenNavArgs
 import com.kristianskokars.tasky.lib.nameOfMonth
 import com.kristianskokars.tasky.nav.AppGraph
 import com.ramcosta.composedestinations.annotation.Destination
@@ -112,7 +114,7 @@ private fun AgendaScreenContent(
                 onCreateNewAgenda = { agendaType ->
                     when (agendaType) {
                         CreateAgendaType.Event -> navigator.navigate(EventScreenDestination(EventScreenNavArgs(isCreatingNewEvent = true)))
-                        CreateAgendaType.Reminder -> { /* TODO */ }
+                        CreateAgendaType.Reminder -> navigator.navigate(ReminderScreenDestination(ReminderScreenNavArgs(isCreatingNewReminder = true)))
                         CreateAgendaType.Task -> navigator.navigate(TaskScreenDestination)
                     }
                 }

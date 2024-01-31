@@ -40,8 +40,8 @@ import com.kristianskokars.tasky.feature.destinations.EditDescriptionScreenDesti
 import com.kristianskokars.tasky.feature.destinations.EditTitleScreenDestination
 import com.kristianskokars.tasky.feature.event.presentation.components.AgendaBadge
 import com.kristianskokars.tasky.feature.event.presentation.components.AgendaDescription
+import com.kristianskokars.tasky.feature.event.presentation.components.AgendaTitle
 import com.kristianskokars.tasky.feature.event.presentation.components.AgendaTopBar
-import com.kristianskokars.tasky.feature.event.presentation.components.EventTitle
 import com.kristianskokars.tasky.feature.event.presentation.components.PhotosSection
 import com.kristianskokars.tasky.feature.event.presentation.components.RemindBeforeSection
 import com.kristianskokars.tasky.feature.event.presentation.components.TaskyTimeSection
@@ -140,7 +140,7 @@ private fun EventScreenContent(
                         Spacer(modifier = Modifier.size(32.dp))
                         AgendaBadge(text = stringResource(id = R.string.event), badgeColor = LightGreen)
                         Spacer(modifier = Modifier.size(8.dp))
-                        EventTitle(
+                        AgendaTitle(
                             modifier = Modifier.fillParentWidth(16.dp),
                             title = state.title,
                             onEditTitle = {

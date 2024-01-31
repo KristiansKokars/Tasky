@@ -34,10 +34,11 @@ import com.kristianskokars.tasky.feature.destinations.EditDescriptionScreenDesti
 import com.kristianskokars.tasky.feature.destinations.EditTitleScreenDestination
 import com.kristianskokars.tasky.feature.event.presentation.components.AgendaBadge
 import com.kristianskokars.tasky.feature.event.presentation.components.AgendaDescription
+import com.kristianskokars.tasky.feature.event.presentation.components.AgendaTitle
 import com.kristianskokars.tasky.feature.event.presentation.components.AgendaTopBar
-import com.kristianskokars.tasky.feature.event.presentation.components.EventTitle
 import com.kristianskokars.tasky.feature.event.presentation.components.RemindBeforeSection
 import com.kristianskokars.tasky.feature.event.presentation.components.TaskyTimeSection
+import com.kristianskokars.tasky.feature.task.domain.model.Task
 import com.kristianskokars.tasky.nav.AppGraph
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
@@ -104,7 +105,7 @@ private fun TaskScreenContent(
                 Spacer(modifier = Modifier.size(32.dp))
                 AgendaBadge(text = stringResource(id = R.string.task), badgeColor = Green)
                 Spacer(modifier = Modifier.size(32.dp))
-                EventTitle(
+                AgendaTitle(
                     title = state.task.title,
                     onEditTitle = {
                         navigator.navigate(EditTitleScreenDestination(startingTitle = state.task.title))
