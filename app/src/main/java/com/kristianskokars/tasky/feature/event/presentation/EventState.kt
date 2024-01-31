@@ -21,5 +21,6 @@ data class EventState(
     val creator: Attendee? = null,
     val attendees: List<Attendee> = emptyList(),
     val isCheckingIfAttendeeExists: Boolean = false,
+    val errorAttendeeDoesNotExist: Boolean = false,
     val currentDate: LocalDate = currentSystemDate()
 )

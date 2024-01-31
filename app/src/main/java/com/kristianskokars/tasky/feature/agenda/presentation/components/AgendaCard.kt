@@ -93,6 +93,7 @@ fun AgendaCard(
                 Box(
                     modifier = Modifier
                         .clickable(
+                            enabled = agenda is Agenda.Task,
                             onClick = { if (agenda is Agenda.Task) onTaskIsDone(agenda.id) }
                         )
                 ) {

@@ -1,6 +1,9 @@
 package com.kristianskokars.tasky.feature.event.data
 
 import android.net.Uri
+import com.github.michaelbull.result.Err
+import com.github.michaelbull.result.Ok
+import com.github.michaelbull.result.Result
 import com.kristianskokars.tasky.core.data.remote.TaskyAPI
 import com.kristianskokars.tasky.core.data.remote.model.EventRequestDTO
 import com.kristianskokars.tasky.feature.event.domain.model.Attendee
@@ -41,14 +44,16 @@ class EventRepository @Inject constructor(
         api.deleteEvent(eventId)
     }
 
-    suspend fun getAttendee(email: String): Attendee? {
+    suspend fun getAttendee(email: String): Result<Attendee, Unit> {
         val response = api.getAttendee(email)
-        if (!response.doesUserExist || response.attendee == null) return null
+        if (!response.doesUserExist || response.attendee == null) return Err(Unit)
 
-        return Attendee(
-            userId = response.attendee.userId,
-            email = response.attendee.email,
-            fullName = response.attendee.fullName,
+        return Ok(
+            Attendee(
+                userId = response.attendee.userId,
+                email = response.attendee.email,
+                fullName = response.attendee.fullName,
+            )
         )
     }
 }

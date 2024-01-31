@@ -98,26 +98,21 @@ fun LazyListScope.visitorsSection(
         )
         Spacer(modifier = Modifier.size(16.dp))
     }
-//    LazyColumn(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-//
-//    }
     item {
         if (creator != null) {
             VisitorCard(attendee = creator, isCreator = true)
+            Spacer(modifier = Modifier.size(4.dp))
         }
     }
-    items(attendees, key = { it.userId }) { attendee ->
+    items(attendees, key = { it.userId + it.fullName }) { attendee ->
         VisitorCard(attendee, isCreator = false)
+        Spacer(modifier = Modifier.size(4.dp))
     }
     item {
         Spacer(modifier = Modifier.size(20.dp))
         Text(text = stringResource(R.string.not_going), color = DarkGray, fontSize = 16.sp, fontWeight = FontWeight.Medium)
         Spacer(modifier = Modifier.size(16.dp))
     }
-//    LazyColumn(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-//
-//    }
-
     items(attendees, key = { it.userId }) { attendee ->
         VisitorCard(attendee, isCreator = false)
     }

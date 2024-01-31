@@ -5,6 +5,7 @@ import androidx.datastore.core.DataStore
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.github.michaelbull.result.mapBoth
 import com.kristianskokars.tasky.core.data.local.model.RemindAtTime
 import com.kristianskokars.tasky.core.data.local.model.UserSettings
 import com.kristianskokars.tasky.feature.event.data.EventRepository
@@ -138,16 +139,28 @@ class EventViewModel @Inject constructor(
 
     private fun onAddAttendee(newAttendeeEmail: String) {
         launch {
-            _state.update { it.copy(isCheckingIfAttendeeExists = true) }
+            // TODO: add case to inform this happened
+            if (_state.value.attendees.find { it.email == newAttendeeEmail } != null) return@launch
+
+            _state.update { it.copy(isCheckingIfAttendeeExists = true, errorAttendeeDoesNotExist = false) }
             val response = repository.getAttendee(newAttendeeEmail)
-            _state.update { state ->
-                state.copy(
-                    isCheckingIfAttendeeExists = false,
-                    attendees = if (response != null) {
-                        state.attendees.toMutableList().apply { add(response) }
-                    } else state.attendees
-                )
-            }
+            response.mapBoth(
+                success = { attendee ->
+                    _state.update { state ->
+                        // TODO: add case to inform this happened
+                        if (state.creator?.userId == attendee.userId) return@launch
+
+                        val currentAttendees = state.attendees.toMutableList().apply { add(attendee) }
+                        state.copy(
+                            isCheckingIfAttendeeExists = false,
+                            attendees = currentAttendees
+                        )
+                    }
+                },
+                failure = {
+                    _state.update { it.copy(errorAttendeeDoesNotExist = true) }
+                }
+            )
         }
     }
 
