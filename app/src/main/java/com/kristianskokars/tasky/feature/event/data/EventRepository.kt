@@ -60,6 +60,7 @@ class EventRepository @Inject constructor(
 
     suspend fun deleteEvent(eventId: String) {
         api.deleteEvent(eventId)
+        scheduler.cancelAlarm(eventId)
     }
 
     suspend fun getAttendee(email: String): Result<Attendee, Unit> {

@@ -50,5 +50,6 @@ class ReminderRepository @Inject constructor(
     suspend fun deleteReminder(reminderId: String) {
         // TODO: error handling
         remote.deleteReminder(reminderId)
+        scheduler.cancelAlarm(reminderId)
     }
 }

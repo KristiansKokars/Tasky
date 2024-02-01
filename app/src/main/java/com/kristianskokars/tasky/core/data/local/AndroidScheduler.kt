@@ -30,4 +30,15 @@ class AndroidScheduler(
         alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, millis, pendingIntent)
         Timber.d("Alarm scheduled for $id at ${millis.toLocalDateTime()} ($millis)")
     }
+
+    override fun cancelAlarm(id: String) {
+        val pendingIntent = PendingIntent.getBroadcast(
+            context,
+            id.hashCode(),
+            Intent(context, ReminderBroadcastReceiver::class.java),
+            PendingIntent.FLAG_IMMUTABLE
+        )
+        alarmManager.cancel(pendingIntent)
+        Timber.d("Alarm cancelled for $id")
+    }
 }

@@ -53,6 +53,7 @@ class TaskRepository @Inject constructor(
     suspend fun deleteTask(taskId: String) {
         // TODO: error handling
         remote.deleteTask(taskId)
+        scheduler.cancelAlarm(taskId)
     }
 
     suspend fun markTaskAsDone(taskId: String) {
