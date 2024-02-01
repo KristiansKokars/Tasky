@@ -4,6 +4,7 @@ import android.os.Build
 import kotlinx.datetime.Clock
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.DayOfWeek
+import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
@@ -35,6 +36,11 @@ fun LocalDateTime.formatToHHMM(): String {
     return time.toJavaLocalTime().format(dateFormatter)
 }
 
+fun LocalDateTime.formatToDateWithHHMM(): String {
+    val dateFormatter = DateTimeFormatter.ofPattern("MMMM d HH:mm")
+    return toJavaLocalDateTime().format(dateFormatter)
+}
+
 fun Long.formatTime(): String {
     val currentLocale = Locale.getDefault()
     val dateFormatter = SimpleDateFormat("EEE d, HH:mm", currentLocale)
@@ -64,3 +70,7 @@ fun currentSystemDateTime() = Clock.System.now().toLocalDateTime(TimeZone.curren
 fun LocalDate.next6Days(): List<LocalDate> = List(6) { index ->
     this.plus(index, DateTimeUnit.DAY)
 }
+
+fun Long.toLocalDateTime() = Instant.fromEpochMilliseconds(this).toLocalDateTime(
+    TimeZone.currentSystemDefault()
+)

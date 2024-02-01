@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kristianskokars.tasky.R
+import com.kristianskokars.tasky.core.domain.DeepLinks
 import com.kristianskokars.tasky.core.presentation.components.ScreenSurface
 import com.kristianskokars.tasky.core.presentation.components.TaskyDivider
 import com.kristianskokars.tasky.core.presentation.components.TaskySurface
@@ -39,7 +40,9 @@ import com.kristianskokars.tasky.feature.event.presentation.components.AgendaTop
 import com.kristianskokars.tasky.feature.event.presentation.components.RemindBeforeSection
 import com.kristianskokars.tasky.feature.event.presentation.components.TaskyTimeSection
 import com.kristianskokars.tasky.feature.task.domain.model.Task
+import com.kristianskokars.tasky.lib.randomID
 import com.kristianskokars.tasky.nav.AppGraph
+import com.ramcosta.composedestinations.annotation.DeepLink
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.navigation.EmptyDestinationsNavigator
@@ -49,8 +52,15 @@ import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.LocalTime
 
+data class TaskScreenNavArgs(val id: String = randomID(), val isCreatingNewTask: Boolean = false)
+
 @AppGraph
-@Destination
+@Destination(
+    navArgsDelegate = TaskScreenNavArgs::class,
+    deepLinks = [
+        DeepLink(uriPattern = DeepLinks.taskPattern)
+    ]
+)
 @Composable
 fun TaskScreen(
     viewModel: TaskViewModel = hiltViewModel(),

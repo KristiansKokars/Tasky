@@ -6,16 +6,21 @@ import com.github.michaelbull.result.Ok
 import com.github.michaelbull.result.Result
 import com.kristianskokars.tasky.core.data.remote.TaskyAPI
 import com.kristianskokars.tasky.core.data.remote.model.EventRequestDTO
+import com.kristianskokars.tasky.core.domain.DeepLinks
+import com.kristianskokars.tasky.core.domain.Scheduler
 import com.kristianskokars.tasky.feature.event.domain.model.Attendee
 import com.kristianskokars.tasky.feature.event.presentation.PhotoConverter
-import java.util.UUID
+import com.kristianskokars.tasky.lib.randomID
+import kotlinx.datetime.Clock
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class EventRepository @Inject constructor(
+    private val clock: Clock,
     private val api: TaskyAPI,
-    private val photoConverter: PhotoConverter
+    private val photoConverter: PhotoConverter,
+    private val scheduler: Scheduler
 ) {
     suspend fun saveEvent(
         title: String,
@@ -26,9 +31,10 @@ class EventRepository @Inject constructor(
         attendeeIds: List<String>,
         photos: List<Uri>
     ) {
+        val id = randomID()
         api.createEvent(
             createEventRequest = EventRequestDTO(
-                id = UUID.randomUUID().toString(),
+                id = id,
                 title = title,
                 description = description,
                 from = from,
@@ -38,6 +44,18 @@ class EventRepository @Inject constructor(
             ),
             photos = photoConverter.photosToMultipart(photos)
         )
+
+        if (remindAt > clock.now().toEpochMilliseconds()) {
+            scheduler.scheduleExactAlarmAt(
+                remindAt,
+                id,
+                extras = mapOf(
+                    DeepLinks.Type.EVENT.toPair(),
+                    DeepLinks.Extra.NAME.toString() to title,
+                    DeepLinks.Extra.TIME.toString() to remindAt
+                )
+            )
+        }
     }
 
     suspend fun deleteEvent(eventId: String) {

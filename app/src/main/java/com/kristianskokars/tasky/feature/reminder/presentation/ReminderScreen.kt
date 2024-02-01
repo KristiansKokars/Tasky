@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kristianskokars.tasky.R
+import com.kristianskokars.tasky.core.domain.DeepLinks
 import com.kristianskokars.tasky.core.presentation.components.ScreenSurface
 import com.kristianskokars.tasky.core.presentation.components.TaskyDivider
 import com.kristianskokars.tasky.core.presentation.components.TaskySurface
@@ -41,17 +42,24 @@ import com.kristianskokars.tasky.feature.event.presentation.components.AgendaTop
 import com.kristianskokars.tasky.feature.event.presentation.components.RemindBeforeSection
 import com.kristianskokars.tasky.feature.event.presentation.components.TaskyTimeSection
 import com.kristianskokars.tasky.lib.fillParentWidth
+import com.kristianskokars.tasky.lib.randomID
 import com.kristianskokars.tasky.nav.AppGraph
+import com.ramcosta.composedestinations.annotation.DeepLink
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.navigation.EmptyDestinationsNavigator
 import com.ramcosta.composedestinations.result.NavResult
 import com.ramcosta.composedestinations.result.ResultRecipient
 
-data class ReminderScreenNavArgs(val isCreatingNewReminder: Boolean = false)
+data class ReminderScreenNavArgs(val id: String = randomID(), val isCreatingNewReminder: Boolean = false)
 
 @AppGraph
-@Destination(navArgsDelegate = ReminderScreenNavArgs::class)
+@Destination(
+    navArgsDelegate = ReminderScreenNavArgs::class,
+    deepLinks = [
+        DeepLink(uriPattern = DeepLinks.reminderPattern)
+    ]
+)
 @Composable
 fun ReminderScreen(
     viewModel: ReminderViewModel = hiltViewModel(),

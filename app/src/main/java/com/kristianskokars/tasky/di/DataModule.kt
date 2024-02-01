@@ -1,9 +1,11 @@
 package com.kristianskokars.tasky.di
 
+import android.app.AlarmManager
 import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.room.Room
 import com.kristianskokars.tasky.BuildConfig
+import com.kristianskokars.tasky.core.data.local.AndroidScheduler
 import com.kristianskokars.tasky.core.data.local.db.EventDao
 import com.kristianskokars.tasky.core.data.local.db.ReminderDao
 import com.kristianskokars.tasky.core.data.local.db.TaskDao
@@ -12,6 +14,7 @@ import com.kristianskokars.tasky.core.data.local.model.UserSettings
 import com.kristianskokars.tasky.core.data.local.userSettingsStore
 import com.kristianskokars.tasky.core.data.remote.NetworkClient
 import com.kristianskokars.tasky.core.data.remote.TaskyAPI
+import com.kristianskokars.tasky.core.domain.Scheduler
 import com.kristianskokars.tasky.feature.event.presentation.AndroidPhotoConverter
 import com.kristianskokars.tasky.feature.event.presentation.PhotoConverter
 import dagger.Module
@@ -29,6 +32,14 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object DataModule {
+    @Provides
+    @Singleton
+    fun provideAlarmManager(@ApplicationContext context: Context): AlarmManager = context.getSystemService(AlarmManager::class.java)
+
+    @Provides
+    @Singleton
+    fun provideScheduler(@ApplicationContext context: Context, alarmManager: AlarmManager): Scheduler = AndroidScheduler(context, alarmManager)
+
     @Provides
     @Singleton
     fun provideTaskyDatabase(@ApplicationContext context: Context) = Room

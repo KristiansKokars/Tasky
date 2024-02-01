@@ -29,6 +29,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kristianskokars.tasky.R
+import com.kristianskokars.tasky.core.domain.DeepLinks
 import com.kristianskokars.tasky.core.presentation.components.ScreenSurface
 import com.kristianskokars.tasky.core.presentation.components.TaskyDivider
 import com.kristianskokars.tasky.core.presentation.components.TaskySurface
@@ -49,17 +50,24 @@ import com.kristianskokars.tasky.feature.event.presentation.components.TimeState
 import com.kristianskokars.tasky.feature.event.presentation.components.visitorsSection
 import com.kristianskokars.tasky.lib.fillParentWidth
 import com.kristianskokars.tasky.lib.formatToLongDate
+import com.kristianskokars.tasky.lib.randomID
 import com.kristianskokars.tasky.nav.AppGraph
+import com.ramcosta.composedestinations.annotation.DeepLink
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.navigation.EmptyDestinationsNavigator
 import com.ramcosta.composedestinations.result.NavResult
 import com.ramcosta.composedestinations.result.ResultRecipient
 
-data class EventScreenNavArgs(val isCreatingNewEvent: Boolean = false)
+data class EventScreenNavArgs(val id: String = randomID(), val isCreatingNewEvent: Boolean = false)
 
 @AppGraph
-@Destination(navArgsDelegate = EventScreenNavArgs::class)
+@Destination(
+    navArgsDelegate = EventScreenNavArgs::class,
+    deepLinks = [
+        DeepLink(uriPattern = DeepLinks.eventPattern)
+    ]
+)
 @Composable
 fun EventScreen(
     viewModel: EventViewModel = hiltViewModel(),

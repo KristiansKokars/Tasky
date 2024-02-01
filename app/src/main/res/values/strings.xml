@@ -66,4 +66,6 @@
     <string name="not_going">Not Going</string>
     <string name="creator">creator</string>
     <string name="remove_visitor">Remove visitor</string>
+    <string name="reminder_notification_title">Reminder for %s</string>
+    <string name="reminder_notification_description">%1$s happening at: %2$s</string>
 </resources>

@@ -49,7 +49,10 @@ class MainActivity : ComponentActivity() {
                         viewModel.appHasInitialized()
                     }
                     is AuthState.LoggedIn -> {
-                        if (navControler.currentGraph() != NavGraphs.root) return@LaunchedEffect
+                        if (navControler.currentGraph() != NavGraphs.root) {
+                            viewModel.appHasInitialized()
+                            return@LaunchedEffect
+                        }
 
                         navControler.navigate(NavGraphs.appGraph) {
                             launchSingleTop = true
