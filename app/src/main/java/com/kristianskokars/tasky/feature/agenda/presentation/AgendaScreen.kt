@@ -155,7 +155,7 @@ private fun AgendaList(
     LazyColumn(
         contentPadding = PaddingValues(top = 20.dp)
     ) {
-        item(key = lastDoneAgendaId) {
+        item(key = "needle$lastDoneAgendaId") {
             if (agendas.isEmpty()) {
                 Text(text = stringResource(R.string.no_agenda_items_scheduled), color = Black)
             }
@@ -164,7 +164,7 @@ private fun AgendaList(
                 Spacer(modifier = Modifier.size(8.dp))
             }
         }
-        items(agendas) { agenda ->
+        items(agendas, key = { it.id }) { agenda ->
             AgendaCard(agenda = agenda, onTaskIsDone = onTaskIsDone)
             if (lastDoneAgendaId == agenda.id) {
                 Spacer(modifier = Modifier.size(8.dp))
