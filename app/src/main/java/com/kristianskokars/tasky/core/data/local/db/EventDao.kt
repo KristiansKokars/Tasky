@@ -13,7 +13,13 @@ interface EventDao {
     @Query("SELECT * FROM $EVENT_TABLE_NAME WHERE id = :eventId")
     suspend fun getEvent(eventId: String): EventDBModel
 
-    @Query("SELECT * FROM $EVENT_TABLE_NAME WHERE fromInMillis > :startingDayMillis OR toInMillis < :endingDayMillis")
+    @Query(
+        """
+        SELECT * FROM $EVENT_TABLE_NAME 
+        WHERE fromInMillis > :startingDayMillis AND fromInMillis < :endingDayMillis 
+        OR toInMillis > :startingDayMillis AND toInMillis < :endingDayMillis
+        """
+    )
     fun getEventsForDay(startingDayMillis: Long, endingDayMillis: Long): Flow<List<EventDBModel>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
