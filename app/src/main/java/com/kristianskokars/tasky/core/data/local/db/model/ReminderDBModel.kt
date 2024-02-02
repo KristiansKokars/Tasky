@@ -2,8 +2,14 @@ package com.kristianskokars.tasky.core.data.local.db.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.kristianskokars.tasky.core.data.local.model.toRemindAtTimeOrThrow
 import com.kristianskokars.tasky.core.data.remote.model.ReminderResponseDTO
 import com.kristianskokars.tasky.feature.agenda.data.model.Agenda
+import com.kristianskokars.tasky.feature.reminder.domain.model.Reminder
+import com.kristianskokars.tasky.lib.toEpochMilliseconds
+import com.kristianskokars.tasky.lib.toLocalDateTime
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toInstant
 
 const val REMINDER_TABLE_NAME = "reminder"
 
@@ -14,6 +20,22 @@ data class ReminderDBModel(
     val description: String? = null,
     val timeInMillis: Long,
     val remindAtInMillis: Long
+)
+
+fun ReminderDBModel.toReminder() = Reminder(
+    id = id,
+    title = title,
+    description = description ?: "",
+    dateTime = timeInMillis.toLocalDateTime(),
+    remindAtTime = (timeInMillis - remindAtInMillis).toRemindAtTimeOrThrow(),
+)
+
+fun Reminder.toReminderDBModel() = ReminderDBModel(
+    id = id,
+    title = title,
+    description = description,
+    timeInMillis = dateTime.toEpochMilliseconds(),
+    remindAtInMillis = dateTime.toInstant(TimeZone.currentSystemDefault()).minus(remindAtTime.toDuration()).toEpochMilliseconds(),
 )
 
 fun ReminderDBModel.toAgendaReminder() = Agenda.Reminder(

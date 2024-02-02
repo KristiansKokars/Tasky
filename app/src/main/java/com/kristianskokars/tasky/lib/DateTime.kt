@@ -9,6 +9,7 @@ import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.plus
+import kotlinx.datetime.toInstant
 import kotlinx.datetime.toJavaLocalDate
 import kotlinx.datetime.toJavaLocalDateTime
 import kotlinx.datetime.toJavaLocalTime
@@ -84,6 +85,8 @@ fun LocalDate.next6Days(): List<LocalDate> = List(6) { index ->
 fun Long.toLocalDateTime() = Instant.fromEpochMilliseconds(this).toLocalDateTime(
     TimeZone.currentSystemDefault()
 )
+
+fun LocalDateTime.toEpochMilliseconds() = toInstant(TimeZone.currentSystemDefault()).toEpochMilliseconds()
 
 fun allTimesOfDay() = java.time.LocalTime.MIN.toKotlinLocalTime() .. localTimeMax()
 

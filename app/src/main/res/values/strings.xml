@@ -38,6 +38,7 @@
     <string name="delete_task">DELETE TASK</string>
     <string name="delete_task_alert_dialog_title">Delete Task</string>
     <string name="delete_agenda_alert_dialog_title">Delete Agenda</string>
+    <string name="delete_reminder_alert_dialog_title">Delete Reminder</string>
     <string name="edit_task">EDIT TASK</string>
     <string name="delete_event">DELETE EVENT</string>
     <string name="delete_reminder">DELETE REMINDER</string>
@@ -73,9 +74,14 @@
     <string name="no_title">No title added…</string>
     <string name="no_description_added">No description added…</string>
     <string name="failed_save_task">Failed to save task due to a server error.</string>
+    <string name="failed_save_reminder">Failed to save reminder due to a server error.</string>
     <string name="save_task">Saved task.</string>
+    <string name="save_reminder">Saved reminder.</string>
     <string name="deleted_task">Deleted task.</string>
+    <string name="deleted_reminder">Deleted reminder.</string>
     <string name="failed_delete_task">Failed to delete task due to a server error.</string>
+    <string name="failed_delete_reminder">Failed to delete reminder due to a server error.</string>
     <string name="confirm_task_delete">Are you sure you want to delete this task?</string>
     <string name="confirm_agenda_delete">Are you sure you want to delete this agenda item?</string>
+    <string name="confirm_reminder_delete">Are you sure you want to delete this reminder?</string>
 </resources>

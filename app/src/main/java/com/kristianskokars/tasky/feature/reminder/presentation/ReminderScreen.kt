@@ -16,8 +16,12 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -27,7 +31,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kristianskokars.tasky.R
 import com.kristianskokars.tasky.core.domain.DeepLinks
+import com.kristianskokars.tasky.core.presentation.components.LoadingSpinner
 import com.kristianskokars.tasky.core.presentation.components.ScreenSurface
+import com.kristianskokars.tasky.core.presentation.components.TaskyAlertDialog
 import com.kristianskokars.tasky.core.presentation.components.TaskyDivider
 import com.kristianskokars.tasky.core.presentation.components.TaskySurface
 import com.kristianskokars.tasky.core.presentation.theme.Black
@@ -41,9 +47,10 @@ import com.kristianskokars.tasky.feature.event.presentation.components.AgendaTit
 import com.kristianskokars.tasky.feature.event.presentation.components.AgendaTopBar
 import com.kristianskokars.tasky.feature.event.presentation.components.RemindBeforeSection
 import com.kristianskokars.tasky.feature.event.presentation.components.TaskyTimeSection
-import com.kristianskokars.tasky.lib.fillParentWidth
+import com.kristianskokars.tasky.lib.ObserveAsEvents
 import com.kristianskokars.tasky.lib.formatToLongDateUppercase
 import com.kristianskokars.tasky.lib.randomID
+import com.kristianskokars.tasky.lib.showToast
 import com.kristianskokars.tasky.nav.AppGraph
 import com.ramcosta.composedestinations.annotation.DeepLink
 import com.ramcosta.composedestinations.annotation.Destination
@@ -92,6 +99,16 @@ fun ReminderScreen(
         }
     }
 
+    val context = LocalContext.current
+    ObserveAsEvents(flow = viewModel.events) { event ->
+        when (event) {
+            ReminderViewModel.UIEvent.ErrorSaving -> showToast(context, R.string.failed_save_reminder)
+            ReminderViewModel.UIEvent.SavedSuccessfully -> showToast(context, R.string.save_reminder)
+            ReminderViewModel.UIEvent.DeletedSuccessfully -> showToast(context, R.string.deleted_reminder)
+            ReminderViewModel.UIEvent.ErrorDeleting -> showToast(context, R.string.failed_delete_reminder)
+        }
+    }
+
     ReminderScreenContent(
         state = state,
         isDateAllowed = viewModel::isDateAllowed,
@@ -107,11 +124,23 @@ private fun ReminderScreenContent(
     onEvent: (ReminderScreenEvent) -> Unit,
     navigator: DestinationsNavigator
 ) {
+    var showConfirmDeleteDialog by remember { mutableStateOf(false) }
+
+    if (showConfirmDeleteDialog) {
+        TaskyAlertDialog(
+            title = { Text(text = stringResource(id = R.string.delete_reminder_alert_dialog_title)) },
+            text = { Text(text = stringResource(R.string.confirm_reminder_delete)) },
+            onConfirm = { onEvent(ReminderScreenEvent.Delete) },
+            onDismissRequest = { showConfirmDeleteDialog = false }
+        )
+    }
+
     Scaffold(
         topBar = {
             AgendaTopBar(
                 title = state.currentDate.formatToLongDateUppercase(),
                 isEditing = state.isEditing,
+                isSaving = state.isSaving,
                 onCloseClick = navigator::navigateUp,
                 onSaveClick = { onEvent(ReminderScreenEvent.Save) },
                 onEditClick = { onEvent(ReminderScreenEvent.BeginEditing) },
@@ -120,25 +149,30 @@ private fun ReminderScreenContent(
         },
     ) { padding ->
         CompositionLocalProvider(LocalContentColor provides Black) {
-            TaskySurface(modifier = Modifier.padding(padding)) {
-                Spacer(modifier = Modifier.size(32.dp))
+            TaskySurface(modifier = Modifier.padding(padding), showWhiteOverlay = state.isSaving) {
+                if (state.reminder == null) {
+                    Spacer(modifier = Modifier.size(24.dp))
+                    LoadingSpinner()
+                    return@TaskySurface
+                }
+
+                Spacer(modifier = Modifier.size(24.dp))
                 AgendaBadge(
                     text = stringResource(id = R.string.reminder),
                     badgeColor = LightGray,
                     badgeModifier = Modifier.border(1.dp, Gray, RoundedCornerShape(2.dp))
                 )
-                Spacer(modifier = Modifier.size(32.dp))
+                Spacer(modifier = Modifier.size(16.dp))
                 AgendaTitle(
-                    modifier = Modifier.fillParentWidth(16.dp),
                     title = state.reminder.title,
                     isEditing = state.isEditing,
                     onEditTitle = {
                         navigator.navigate(EditTitleScreenDestination(state.reminder.title))
                     }
                 )
-                Spacer(modifier = Modifier.size(24.dp))
+                Spacer(modifier = Modifier.size(8.dp))
                 TaskyDivider()
-                Spacer(modifier = Modifier.size(16.dp))
+                Spacer(modifier = Modifier.size(8.dp))
                 AgendaDescription(
                     text = state.reminder.description,
                     isEditing = state.isEditing,
@@ -146,7 +180,7 @@ private fun ReminderScreenContent(
                         navigator.navigate(EditDescriptionScreenDestination(state.reminder.description))
                     }
                 )
-                Spacer(modifier = Modifier.size(20.dp))
+                Spacer(modifier = Modifier.size(8.dp))
                 TaskyDivider()
                 TaskyTimeSection(
                     dateTime = state.reminder.dateTime,
@@ -175,7 +209,8 @@ private fun ReminderScreenContent(
                 ) {
                     TextButton(
                         colors = ButtonDefaults.textButtonColors(contentColor = Gray),
-                        onClick = { onEvent(ReminderScreenEvent.Delete) })
+                        onClick = { showConfirmDeleteDialog = true }
+                    )
                     {
                         Text(
                             text = stringResource(R.string.delete_reminder),
@@ -184,7 +219,7 @@ private fun ReminderScreenContent(
                         )
                     }
                 }
-                Spacer(modifier = Modifier.padding(32.dp))
+                Spacer(modifier = Modifier.padding(16.dp))
             }
         }
     }
