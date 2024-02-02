@@ -122,6 +122,9 @@ dependencies {
     implementation(libs.androidx.room.ktx)
     ksp(libs.androidx.room.compiler)
 
+    // Fonts
+    implementation(libs.androidx.ui.text.google.fonts)
+
     // Debug
     debugImplementation(libs.ui.tooling)
     debugImplementation(libs.ui.test.manifest)

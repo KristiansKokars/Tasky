@@ -5,10 +5,25 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.googlefonts.Font
+import androidx.compose.ui.text.googlefonts.GoogleFont
 import androidx.compose.ui.unit.sp
 import com.kristianskokars.tasky.R
 
-val Inter = FontFamily(Font(R.font.inter))
+val provider = GoogleFont.Provider(
+    providerAuthority = "com.google.android.gms.fonts",
+    providerPackage = "com.google.android.gms",
+    certificates = R.array.com_google_android_gms_fonts_certs
+)
+
+val interFontName = GoogleFont("Inter")
+val Inter = FontFamily(
+    Font(googleFont = interFontName, fontProvider = provider),
+    Font(googleFont = interFontName, fontProvider = provider, weight = FontWeight.Bold),
+    Font(googleFont = interFontName, fontProvider = provider, weight = FontWeight.SemiBold),
+    Font(googleFont = interFontName, fontProvider = provider, weight = FontWeight.Light),
+    Font(R.font.inter)
+)
 
 val BannerHeadingStyle = TextStyle(
     fontWeight = FontWeight.Bold,
