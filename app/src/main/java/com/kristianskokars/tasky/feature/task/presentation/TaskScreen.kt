@@ -105,7 +105,7 @@ fun TaskScreen(
         when (event) {
             TaskViewModel.UIEvent.ErrorSaving -> showToast(context, R.string.failed_save_task)
             TaskViewModel.UIEvent.SavedSuccessfully -> showToast(context, R.string.save_task)
-            TaskViewModel.UIEvent.DeletedSuccessfully -> showToast(context, R.string.delete_task)
+            TaskViewModel.UIEvent.DeletedSuccessfully -> showToast(context, R.string.deleted_task)
             TaskViewModel.UIEvent.ErrorDeleting -> showToast(context, R.string.failed_delete_task)
         }
     }
@@ -159,10 +159,10 @@ private fun TaskScreenContent(
                 Spacer(modifier = Modifier.size(16.dp))
                 AgendaTitle(
                     title = state.task.title,
+                    isEditing = state.isEditing,
                     onEditTitle = {
                         navigator.navigate(EditTitleScreenDestination(startingTitle = state.task.title))
                     },
-                    isEditing = state.isEditing
                 )
                 Spacer(modifier = Modifier.size(8.dp))
                 TaskyDivider()
