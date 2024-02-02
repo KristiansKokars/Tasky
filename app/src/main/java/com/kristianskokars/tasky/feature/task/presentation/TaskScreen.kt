@@ -16,6 +16,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -40,8 +41,10 @@ import com.kristianskokars.tasky.feature.event.presentation.components.AgendaTop
 import com.kristianskokars.tasky.feature.event.presentation.components.RemindBeforeSection
 import com.kristianskokars.tasky.feature.event.presentation.components.TaskyTimeSection
 import com.kristianskokars.tasky.feature.task.domain.model.Task
+import com.kristianskokars.tasky.lib.ObserveAsEvents
 import com.kristianskokars.tasky.lib.formatToLongDateUppercase
 import com.kristianskokars.tasky.lib.randomID
+import com.kristianskokars.tasky.lib.showToast
 import com.kristianskokars.tasky.nav.AppGraph
 import com.ramcosta.composedestinations.annotation.DeepLink
 import com.ramcosta.composedestinations.annotation.Destination
@@ -89,6 +92,16 @@ fun TaskScreen(
                     descriptionResult.value
                 )
             )
+        }
+    }
+
+    val context = LocalContext.current
+    ObserveAsEvents(flow = viewModel.events) { event ->
+        when (event) {
+            TaskViewModel.UIEvent.ErrorSaving -> showToast(context, R.string.failed_save_task)
+            TaskViewModel.UIEvent.SavedSuccessfully -> showToast(context, R.string.save_task)
+            TaskViewModel.UIEvent.DeletedSuccessfully -> showToast(context, R.string.delete_task)
+            TaskViewModel.UIEvent.ErrorDeleting -> showToast(context, R.string.failed_delete_task)
         }
     }
 

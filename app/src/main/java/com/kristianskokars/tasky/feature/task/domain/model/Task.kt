@@ -1,14 +1,14 @@
 package com.kristianskokars.tasky.feature.task.domain.model
 
 import com.kristianskokars.tasky.core.data.local.model.RemindAtTime
+import com.kristianskokars.tasky.lib.randomID
 import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
-import java.util.UUID
 
 data class Task(
-    val id: String = UUID.randomUUID().toString(),
+    val id: String = randomID(),
     val title: String = "New Task",
     val description: String = "Task description",
     val dateTime: LocalDateTime = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()),
