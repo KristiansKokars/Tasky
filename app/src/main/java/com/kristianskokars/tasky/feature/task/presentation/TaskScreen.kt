@@ -29,6 +29,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kristianskokars.tasky.R
 import com.kristianskokars.tasky.core.domain.DeepLinks
+import com.kristianskokars.tasky.core.presentation.components.LoadingSpinner
 import com.kristianskokars.tasky.core.presentation.components.ScreenSurface
 import com.kristianskokars.tasky.core.presentation.components.TaskyAlertDialog
 import com.kristianskokars.tasky.core.presentation.components.TaskyDivider
@@ -60,7 +61,11 @@ import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.LocalTime
 
-data class TaskScreenNavArgs(val id: String = randomID(), val isCreatingNewTask: Boolean = false)
+data class TaskScreenNavArgs(
+    val id: String = randomID(),
+    val isEditing: Boolean = false,
+    val isCreatingNewTask: Boolean = false
+)
 
 @AppGraph
 @Destination(
@@ -126,8 +131,8 @@ private fun TaskScreenContent(
 
     if (showConfirmDeleteDialog) {
         TaskyAlertDialog(
-            title = { Text(text = stringResource(id = R.string.delete_task_alert_dialog_title)) },
-            text = { Text(text = stringResource(R.string.confirm_task_delete)) },
+            title = { Text(text = stringResource(id = R.string.delete_agenda_alert_dialog_title)) },
+            text = { Text(text = stringResource(R.string.confirm_agenda_delete)) },
             onConfirm = { onEvent(TaskScreenEvent.DeleteTask) },
             onDismissRequest = { showConfirmDeleteDialog = false }
         )
@@ -147,6 +152,12 @@ private fun TaskScreenContent(
     ) { padding ->
         CompositionLocalProvider(LocalContentColor provides Black) {
             TaskySurface(modifier = Modifier.padding(padding), showWhiteOverlay = state.isSaving) {
+                if (state.task == null) {
+                    Spacer(modifier = Modifier.size(24.dp))
+                    LoadingSpinner()
+                    return@TaskySurface
+                }
+
                 Spacer(modifier = Modifier.size(24.dp))
                 AgendaBadge(text = stringResource(id = R.string.task), badgeColor = Green)
                 Spacer(modifier = Modifier.size(16.dp))

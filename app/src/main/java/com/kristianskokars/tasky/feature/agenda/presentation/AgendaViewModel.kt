@@ -68,6 +68,7 @@ class AgendaViewModel @Inject constructor(
             AgendaEvent.Logout -> logout()
             is AgendaEvent.OnDatePicked -> onDatePicked(event.date)
             is AgendaEvent.OnTaskToggleDone -> onTaskIsDone(event.taskId)
+            is AgendaEvent.DeleteAgenda -> deleteAgenda(event.id)
         }
     }
 
@@ -108,5 +109,9 @@ class AgendaViewModel @Inject constructor(
         launch {
             taskRepository.markTaskAsDone(taskId)
         }
+    }
+
+    private fun deleteAgenda(id: String) {
+        // TODO
     }
 }

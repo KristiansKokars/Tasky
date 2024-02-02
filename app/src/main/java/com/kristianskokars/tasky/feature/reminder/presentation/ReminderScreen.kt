@@ -53,7 +53,11 @@ import com.ramcosta.composedestinations.result.NavResult
 import com.ramcosta.composedestinations.result.ResultRecipient
 import kotlinx.datetime.LocalDate
 
-data class ReminderScreenNavArgs(val id: String = randomID(), val isCreatingNewReminder: Boolean = false)
+data class ReminderScreenNavArgs(
+    val id: String = randomID(),
+    val isEditing: Boolean = false,
+    val isCreatingNewReminder: Boolean = false
+)
 
 @AppGraph
 @Destination(

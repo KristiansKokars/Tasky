@@ -6,5 +6,6 @@ sealed class AgendaEvent {
     data class DaySelected(val dayIndex: Int) : AgendaEvent()
     data class OnDatePicked(val date: LocalDate) : AgendaEvent()
     data class OnTaskToggleDone(val taskId: String) : AgendaEvent()
+    data class DeleteAgenda(val id: String) : AgendaEvent()
     data object Logout : AgendaEvent()
 }

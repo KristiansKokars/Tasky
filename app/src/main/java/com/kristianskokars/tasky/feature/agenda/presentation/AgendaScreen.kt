@@ -115,9 +115,23 @@ private fun AgendaScreenContent(
             AddAgendaButton(
                 onCreateNewAgenda = { agendaType ->
                     when (agendaType) {
-                        CreateAgendaType.Event -> navigator.navigate(EventScreenDestination(EventScreenNavArgs(isCreatingNewEvent = true)))
-                        CreateAgendaType.Reminder -> navigator.navigate(ReminderScreenDestination(ReminderScreenNavArgs(isCreatingNewReminder = true)))
-                        CreateAgendaType.Task -> navigator.navigate(TaskScreenDestination(TaskScreenNavArgs(isCreatingNewTask = true)))
+                        CreateAgendaType.Event -> navigator.navigate(
+                            EventScreenDestination(
+                                EventScreenNavArgs(isCreatingNewEvent = true, isEditing = true)
+                            )
+                        )
+
+                        CreateAgendaType.Reminder -> navigator.navigate(
+                            ReminderScreenDestination(
+                                ReminderScreenNavArgs(isCreatingNewReminder = true, isEditing = true)
+                            )
+                        )
+
+                        CreateAgendaType.Task -> navigator.navigate(
+                            TaskScreenDestination(
+                                TaskScreenNavArgs(isCreatingNewTask = true, isEditing = true)
+                            )
+                        )
                     }
                 }
             )
@@ -131,7 +145,10 @@ private fun AgendaScreenContent(
             )
             Spacer(modifier = Modifier.size(20.dp))
             Row(modifier = Modifier.fillMaxWidth()) {
-                Text(text = state.currentWeekDays[state.selectedDayIndex].formatToLongDate(), style = MaterialTheme.typography.headlineMedium)
+                Text(
+                    text = state.currentWeekDays[state.selectedDayIndex].formatToLongDate(),
+                    style = MaterialTheme.typography.headlineMedium
+                )
             }
             Box {
                 if (state.isLoadingAgendas) {
@@ -140,7 +157,22 @@ private fun AgendaScreenContent(
                     AgendaList(
                         agendas = state.agendas,
                         lastDoneAgendaId = state.lastDoneAgendaId,
-                        onTaskIsDone = { onEvent(AgendaEvent.OnTaskToggleDone(it)) }
+                        onTaskIsDone = { onEvent(AgendaEvent.OnTaskToggleDone(it)) },
+                        onOpenClick = { agenda ->
+                            when (agenda) {
+                                is Agenda.Event -> navigator.navigate(EventScreenDestination(id = agenda.id))
+                                is Agenda.Reminder -> navigator.navigate(ReminderScreenDestination(id = agenda.id))
+                                is Agenda.Task -> navigator.navigate(TaskScreenDestination(id = agenda.id))
+                            }
+                        },
+                        onEditClick = { agenda ->
+                            when (agenda) {
+                                is Agenda.Event -> navigator.navigate(EventScreenDestination(id = agenda.id, isEditing = true))
+                                is Agenda.Reminder -> navigator.navigate(ReminderScreenDestination(id = agenda.id, isEditing = true))
+                                is Agenda.Task -> navigator.navigate(TaskScreenDestination(id = agenda.id, isEditing = true))
+                            }
+                        },
+                        onDeleteClick = { onEvent(AgendaEvent.DeleteAgenda(it)) }
                     )
                 }
             }
@@ -152,7 +184,10 @@ private fun AgendaScreenContent(
 private fun AgendaList(
     agendas: List<Agenda>,
     lastDoneAgendaId: String?,
-    onTaskIsDone: (taskId: String) -> Unit
+    onTaskIsDone: (taskId: String) -> Unit,
+    onOpenClick: (agenda: Agenda) -> Unit,
+    onEditClick: (agenda: Agenda) -> Unit,
+    onDeleteClick: (id: String) -> Unit,
 ) {
     LazyColumn(
         contentPadding = PaddingValues(top = 20.dp)
@@ -167,7 +202,13 @@ private fun AgendaList(
             }
         }
         items(agendas, key = { it.id }) { agenda ->
-            AgendaCard(agenda = agenda, onTaskIsDone = onTaskIsDone)
+            AgendaCard(
+                agenda = agenda,
+                onTaskIsDone = onTaskIsDone,
+                onOpenClick = onOpenClick,
+                onEditClick = onEditClick,
+                onDeleteClick = onDeleteClick
+            )
             if (lastDoneAgendaId == agenda.id) {
                 Spacer(modifier = Modifier.size(8.dp))
                 TimeNeedle()

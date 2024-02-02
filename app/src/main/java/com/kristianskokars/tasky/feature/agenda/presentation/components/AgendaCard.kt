@@ -35,6 +35,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.kristianskokars.tasky.R
 import com.kristianskokars.tasky.core.presentation.components.ScreenSurface
+import com.kristianskokars.tasky.core.presentation.components.TaskyAlertDialog
 import com.kristianskokars.tasky.core.presentation.theme.Black
 import com.kristianskokars.tasky.core.presentation.theme.DarkGray
 import com.kristianskokars.tasky.core.presentation.theme.Green
@@ -57,6 +58,9 @@ fun AgendaCard(
     modifier: Modifier = Modifier,
     agenda: Agenda,
     onTaskIsDone: (taskId: String) -> Unit,
+    onOpenClick: (agenda: Agenda) -> Unit,
+    onEditClick: (agenda: Agenda) -> Unit,
+    onDeleteClick: (id: String) -> Unit,
 ) {
     val backgroundColor = when (agenda) {
         is Agenda.Task -> Green
@@ -76,6 +80,16 @@ fun AgendaCard(
 
     var isDropdownOpen by remember {
         mutableStateOf(false)
+    }
+
+    var showConfirmDeleteDialog by remember { mutableStateOf(false) }
+    if (showConfirmDeleteDialog) {
+        TaskyAlertDialog(
+            title = { Text(text = stringResource(id = R.string.delete_task_alert_dialog_title)) },
+            text = { Text(text = stringResource(R.string.confirm_task_delete)) },
+            onConfirm = { onDeleteClick(agenda.id) },
+            onDismissRequest = { showConfirmDeleteDialog = false }
+        )
     }
 
     CompositionLocalProvider(LocalContentColor provides textColor) {
@@ -135,7 +149,13 @@ fun AgendaCard(
                         )
                         AgendaDropdownMenu(
                             items = agendaDropdownItems,
-                            onItemClick = { /* TODO */ },
+                            onItemClick = { index ->
+                                  when (index) {
+                                      0 -> onOpenClick(agenda)
+                                      1 -> onEditClick(agenda)
+                                      2 -> showConfirmDeleteDialog = true
+                                  }
+                            },
                             isExpanded = isDropdownOpen,
                             onDismissRequest = {
                                 isDropdownOpen = false
@@ -181,7 +201,13 @@ private fun AgendaCardPreview() {
                 .padding(20.dp)
         ) {
             Agenda.previewValues.forEach { agenda ->
-                AgendaCard(agenda = agenda, onTaskIsDone = {})
+                AgendaCard(
+                    agenda = agenda,
+                    onTaskIsDone = {},
+                    onOpenClick = {},
+                    onEditClick = {},
+                    onDeleteClick = {}
+                )
                 Spacer(modifier = Modifier.size(16.dp))
             }
         }

@@ -5,8 +5,8 @@ import com.kristianskokars.tasky.lib.currentSystemDate
 import kotlinx.datetime.LocalDate
 
 data class TaskScreenState(
-    val task: Task = Task(),
+    val task: Task? = null,
     val currentDate: LocalDate = currentSystemDate(),
     val isSaving: Boolean = false,
-    val isEditing: Boolean = true,
+    val isEditing: Boolean = false,
 )

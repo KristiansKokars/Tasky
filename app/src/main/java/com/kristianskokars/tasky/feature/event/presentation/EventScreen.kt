@@ -59,7 +59,11 @@ import com.ramcosta.composedestinations.navigation.EmptyDestinationsNavigator
 import com.ramcosta.composedestinations.result.NavResult
 import com.ramcosta.composedestinations.result.ResultRecipient
 
-data class EventScreenNavArgs(val id: String = randomID(), val isCreatingNewEvent: Boolean = false)
+data class EventScreenNavArgs(
+    val id: String = randomID(),
+    val isEditing: Boolean = false,
+    val isCreatingNewEvent: Boolean = false
+)
 
 @AppGraph
 @Destination(

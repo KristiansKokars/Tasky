@@ -13,6 +13,7 @@ import com.kristianskokars.tasky.core.domain.Scheduler
 import com.kristianskokars.tasky.feature.task.domain.model.Task
 import com.kristianskokars.tasky.lib.Success
 import com.kristianskokars.tasky.lib.success
+import kotlinx.coroutines.flow.first
 import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toInstant
@@ -29,8 +30,10 @@ class TaskRepository @Inject constructor(
     private val local: TaskDao,
     private val scheduler: Scheduler
 ) {
+    fun getTask(taskId: String) = local.getTask(taskId)
+
     suspend fun saveTask(task: Task): Result<Success, APIError> {
-        val existingTask = local.getTask(task.id)
+        val existingTask = local.getTask(task.id).first()
         val time = task.dateTime.toInstant(timeZone)
         val remindAtInMillis = time.minus(task.remindAtTime.toDuration()).toEpochMilliseconds()
 
@@ -108,7 +111,7 @@ class TaskRepository @Inject constructor(
     }
 
     suspend fun markTaskAsDone(taskId: String): Result<Success, APIError> {
-        val task = local.getTask(taskId) ?: return Err(APIError.ClientError)
+        val task = local.getTask(taskId).first() ?: return Err(APIError.ClientError)
 
         try {
             remote.updateTask(

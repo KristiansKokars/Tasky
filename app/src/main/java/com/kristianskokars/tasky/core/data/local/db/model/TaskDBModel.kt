@@ -2,8 +2,11 @@ package com.kristianskokars.tasky.core.data.local.db.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.kristianskokars.tasky.core.data.local.model.toRemindAtTimeOrThrow
 import com.kristianskokars.tasky.core.data.remote.model.TaskResponseDTO
 import com.kristianskokars.tasky.feature.agenda.data.model.Agenda
+import com.kristianskokars.tasky.feature.task.domain.model.Task
+import com.kristianskokars.tasky.lib.toLocalDateTime
 
 const val TASK_TABLE_NAME = "task"
 
@@ -15,6 +18,15 @@ data class TaskDBModel(
     val timeInMillis: Long,
     val remindAtTimeInMillis: Long,
     val isDone: Boolean,
+)
+
+fun TaskDBModel.toTask() = Task(
+    id = id,
+    title = title,
+    description = description,
+    dateTime = timeInMillis.toLocalDateTime(),
+    remindAtTime = (timeInMillis - remindAtTimeInMillis).toRemindAtTimeOrThrow(),
+    isDone = isDone
 )
 
 fun TaskDBModel.toAgendaTask() = Agenda.Task(
