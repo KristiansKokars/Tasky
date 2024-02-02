@@ -85,8 +85,8 @@ fun AgendaCard(
     var showConfirmDeleteDialog by remember { mutableStateOf(false) }
     if (showConfirmDeleteDialog) {
         TaskyAlertDialog(
-            title = { Text(text = stringResource(id = R.string.delete_task_alert_dialog_title)) },
-            text = { Text(text = stringResource(R.string.confirm_task_delete)) },
+            title = { Text(text = stringResource(id = R.string.delete_agenda_alert_dialog_title)) },
+            text = { Text(text = stringResource(R.string.confirm_agenda_delete)) },
             onConfirm = { onDeleteClick(agenda.id) },
             onDismissRequest = { showConfirmDeleteDialog = false }
         )
