@@ -14,6 +14,9 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -27,6 +30,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kristianskokars.tasky.R
 import com.kristianskokars.tasky.core.domain.DeepLinks
 import com.kristianskokars.tasky.core.presentation.components.ScreenSurface
+import com.kristianskokars.tasky.core.presentation.components.TaskyAlertDialog
 import com.kristianskokars.tasky.core.presentation.components.TaskyDivider
 import com.kristianskokars.tasky.core.presentation.components.TaskySurface
 import com.kristianskokars.tasky.core.presentation.theme.Black
@@ -118,6 +122,17 @@ private fun TaskScreenContent(
     onEvent: (TaskScreenEvent) -> Unit,
     navigator: DestinationsNavigator
 ) {
+    var showConfirmDeleteDialog by remember { mutableStateOf(false) }
+
+    if (showConfirmDeleteDialog) {
+        TaskyAlertDialog(
+            title = { Text(text = stringResource(id = R.string.delete_task_alert_dialog_title)) },
+            text = { Text(text = stringResource(R.string.confirm_task_delete)) },
+            onConfirm = { onEvent(TaskScreenEvent.DeleteTask) },
+            onDismissRequest = { showConfirmDeleteDialog = false }
+        )
+    }
+
     Scaffold(
         topBar = {
             AgendaTopBar(
@@ -179,7 +194,8 @@ private fun TaskScreenContent(
                 ) {
                     TextButton(
                         colors = ButtonDefaults.textButtonColors(contentColor = Gray),
-                        onClick = { onEvent(TaskScreenEvent.DeleteTask) })
+                        onClick = { showConfirmDeleteDialog = true }
+                    )
                     {
                         Text(
                             text = stringResource(R.string.delete_task),
