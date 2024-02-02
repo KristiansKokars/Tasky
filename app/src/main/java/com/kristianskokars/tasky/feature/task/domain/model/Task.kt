@@ -9,8 +9,8 @@ import java.util.UUID
 
 data class Task(
     val id: String = UUID.randomUUID().toString(),
-    val title: String = "",
-    val description: String = "",
+    val title: String = "New Task",
+    val description: String = "Task description",
     val dateTime: LocalDateTime = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()),
     val remindAtTime: RemindAtTime = RemindAtTime.ThirtyMinutesBefore,
     val isDone: Boolean = false,

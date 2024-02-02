@@ -62,7 +62,7 @@ fun EditToolbar(
             ) {
                 Text(
                     modifier = Modifier.fillMaxWidth(),
-                    textAlign = TextAlign.End,
+                    textAlign = TextAlign.Center,
                     text = stringResource(R.string.save),
                     color = Green,
                     fontWeight = FontWeight.SemiBold,

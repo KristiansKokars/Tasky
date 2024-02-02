@@ -9,7 +9,7 @@ import androidx.compose.ui.unit.dp
 import com.kristianskokars.tasky.R
 
 @Composable
-fun EditIndicatorIcon(modifier: Modifier = Modifier, label: String) {
+fun EditIndicatorIcon(modifier: Modifier = Modifier, label: String? = null) {
     Icon(
         modifier = modifier
             .padding(8.dp),

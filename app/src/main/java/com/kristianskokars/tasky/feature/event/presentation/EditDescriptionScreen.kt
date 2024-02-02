@@ -7,9 +7,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -63,7 +61,6 @@ private fun EditDescriptionScreenContent(
                 .background(White)
                 .padding(horizontal = 16.dp)
                 .fillMaxSize()
-                .verticalScroll(rememberScrollState())
         ) {
             EditToolbar(
                 title = stringResource(id = R.string.edit_description),
@@ -72,6 +69,7 @@ private fun EditDescriptionScreenContent(
             )
             Spacer(modifier = Modifier.size(36.dp))
             BasicTextField(
+                modifier = Modifier.fillMaxSize(),
                 value = value,
                 onValueChange = { value = it },
                 textStyle = TextStyle.Default.copy(fontSize = 16.sp)

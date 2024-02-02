@@ -32,6 +32,7 @@ fun LocalDate.formatToLongDate(): String {
     return toJavaLocalDate().format(dateFormatter).uppercase()
 }
 
+/** Formats a date like: 08:30 */
 fun LocalDateTime.formatToHHMM(): String {
     val dateFormatter = DateTimeFormatter.ofPattern("HH:mm")
     return time.toJavaLocalTime().format(dateFormatter)

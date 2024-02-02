@@ -36,7 +36,8 @@ fun AgendaDescription(
             )
             .padding(padding)
             .fillMaxWidth()
-            .height(IntrinsicSize.Max)
+            .height(IntrinsicSize.Max),
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         if (text.isEmpty()) {
             Text(modifier = Modifier.weight(3f), text = stringResource(R.string.no_description_added), color = Gray.copy(alpha = 0.6f))

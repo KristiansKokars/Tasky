@@ -112,9 +112,9 @@ private fun TaskScreenContent(
     ) { padding ->
         CompositionLocalProvider(LocalContentColor provides Black) {
             TaskySurface(modifier = Modifier.padding(padding)) {
-                Spacer(modifier = Modifier.size(32.dp))
+                Spacer(modifier = Modifier.size(24.dp))
                 AgendaBadge(text = stringResource(id = R.string.task), badgeColor = Green)
-                Spacer(modifier = Modifier.size(32.dp))
+                Spacer(modifier = Modifier.size(16.dp))
                 AgendaTitle(
                     title = state.task.title,
                     onEditTitle = {
@@ -122,9 +122,9 @@ private fun TaskScreenContent(
                     },
                     isEditing = state.isEditing
                 )
-                Spacer(modifier = Modifier.size(24.dp))
+                Spacer(modifier = Modifier.size(8.dp))
                 TaskyDivider()
-                Spacer(modifier = Modifier.size(16.dp))
+                Spacer(modifier = Modifier.size(8.dp))
                 AgendaDescription(
                     text = state.task.description,
                     onEditDescription = {
@@ -132,7 +132,7 @@ private fun TaskScreenContent(
                     },
                     isEditing = state.isEditing
                 )
-                Spacer(modifier = Modifier.size(20.dp))
+                Spacer(modifier = Modifier.size(8.dp))
                 TaskyDivider()
                 TaskyTimeSection(
                     time = state.task.dateTime,
@@ -168,7 +168,7 @@ private fun TaskScreenContent(
                         )
                     }
                 }
-                Spacer(modifier = Modifier.padding(32.dp))
+                Spacer(modifier = Modifier.padding(16.dp))
             }
         }
     }
