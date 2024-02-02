@@ -1,4 +1,4 @@
-package com.kristianskokars.tasky.feature.reminder.data
+package com.kristianskokars.tasky.core.data
 
 import com.github.michaelbull.result.Err
 import com.github.michaelbull.result.Result
@@ -8,10 +8,10 @@ import com.kristianskokars.tasky.core.data.local.db.model.toReminderDBModel
 import com.kristianskokars.tasky.core.data.remote.TaskyAPI
 import com.kristianskokars.tasky.core.data.remote.model.CreateReminderRequestDTO
 import com.kristianskokars.tasky.core.data.remote.model.UpdateReminderRequestDTO
-import com.kristianskokars.tasky.core.domain.APIError
 import com.kristianskokars.tasky.core.domain.DeepLinks
 import com.kristianskokars.tasky.core.domain.Scheduler
-import com.kristianskokars.tasky.feature.reminder.domain.model.Reminder
+import com.kristianskokars.tasky.core.domain.model.APIError
+import com.kristianskokars.tasky.core.domain.model.Reminder
 import com.kristianskokars.tasky.lib.Success
 import com.kristianskokars.tasky.lib.success
 import kotlinx.coroutines.flow.first

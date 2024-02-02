@@ -1,6 +1,6 @@
 package com.kristianskokars.tasky.feature.agenda.presentation
 
-import com.kristianskokars.tasky.feature.agenda.data.model.Agenda
+import com.kristianskokars.tasky.feature.agenda.domain.model.Agenda
 import kotlinx.datetime.LocalDate
 
 sealed class AgendaEvent {

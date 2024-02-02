@@ -29,6 +29,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kristianskokars.tasky.R
 import com.kristianskokars.tasky.core.domain.DeepLinks
+import com.kristianskokars.tasky.core.domain.model.Task
 import com.kristianskokars.tasky.core.presentation.components.LoadingSpinner
 import com.kristianskokars.tasky.core.presentation.components.ScreenSurface
 import com.kristianskokars.tasky.core.presentation.components.TaskyAlertDialog
@@ -45,7 +46,6 @@ import com.kristianskokars.tasky.core.presentation.theme.Green
 import com.kristianskokars.tasky.feature.destinations.EditDescriptionScreenDestination
 import com.kristianskokars.tasky.feature.destinations.EditTitleScreenDestination
 import com.kristianskokars.tasky.feature.event.presentation.components.RemindBeforeSection
-import com.kristianskokars.tasky.feature.task.domain.model.Task
 import com.kristianskokars.tasky.lib.ObserveAsEvents
 import com.kristianskokars.tasky.lib.formatToLongDateUppercase
 import com.kristianskokars.tasky.lib.randomID

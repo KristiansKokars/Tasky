@@ -4,13 +4,13 @@ import androidx.datastore.core.DataStore
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.michaelbull.result.mapBoth
+import com.kristianskokars.tasky.core.data.EventRepository
+import com.kristianskokars.tasky.core.data.ReminderRepository
 import com.kristianskokars.tasky.core.data.TaskRepository
 import com.kristianskokars.tasky.core.data.local.model.UserSettings
 import com.kristianskokars.tasky.feature.agenda.data.AgendaRepository
-import com.kristianskokars.tasky.feature.agenda.data.model.Agenda
+import com.kristianskokars.tasky.feature.agenda.domain.model.Agenda
 import com.kristianskokars.tasky.feature.auth.data.BackendAuthProvider
-import com.kristianskokars.tasky.feature.event.data.EventRepository
-import com.kristianskokars.tasky.feature.reminder.data.ReminderRepository
 import com.kristianskokars.tasky.lib.asStateFlow
 import com.kristianskokars.tasky.lib.launch
 import com.kristianskokars.tasky.lib.next6Days

@@ -8,7 +8,7 @@ import com.kristianskokars.tasky.core.data.local.db.model.toAgendaReminder
 import com.kristianskokars.tasky.core.data.local.db.model.toAgendaTask
 import com.kristianskokars.tasky.core.data.local.db.model.toDBModel
 import com.kristianskokars.tasky.core.data.remote.TaskyAPI
-import com.kristianskokars.tasky.feature.agenda.data.model.Agenda
+import com.kristianskokars.tasky.feature.agenda.domain.model.Agenda
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow

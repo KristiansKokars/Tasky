@@ -42,7 +42,7 @@ import com.kristianskokars.tasky.core.presentation.theme.Green
 import com.kristianskokars.tasky.core.presentation.theme.LightGray
 import com.kristianskokars.tasky.core.presentation.theme.LightGreen
 import com.kristianskokars.tasky.core.presentation.theme.White
-import com.kristianskokars.tasky.feature.agenda.data.model.Agenda
+import com.kristianskokars.tasky.feature.agenda.domain.model.Agenda
 import com.kristianskokars.tasky.lib.formatTime
 
 private val agendaDropdownItems

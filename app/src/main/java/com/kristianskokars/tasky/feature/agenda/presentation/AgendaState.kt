@@ -1,6 +1,6 @@
 package com.kristianskokars.tasky.feature.agenda.presentation
 
-import com.kristianskokars.tasky.feature.agenda.data.model.Agenda
+import com.kristianskokars.tasky.feature.agenda.domain.model.Agenda
 import com.kristianskokars.tasky.lib.currentSystemDate
 import com.kristianskokars.tasky.lib.next6Days
 import kotlinx.datetime.LocalDate

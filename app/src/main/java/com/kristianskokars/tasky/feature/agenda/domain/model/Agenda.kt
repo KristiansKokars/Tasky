@@ -1,4 +1,4 @@
-package com.kristianskokars.tasky.feature.agenda.data.model
+package com.kristianskokars.tasky.feature.agenda.domain.model
 
 sealed class Agenda {
     abstract val id: String

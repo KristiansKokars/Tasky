@@ -1,4 +1,4 @@
-package com.kristianskokars.tasky.core.data.local.model
+package com.kristianskokars.tasky.core.domain.model
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource

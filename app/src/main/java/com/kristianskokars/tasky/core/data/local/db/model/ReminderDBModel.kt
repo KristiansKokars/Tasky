@@ -2,10 +2,10 @@ package com.kristianskokars.tasky.core.data.local.db.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.kristianskokars.tasky.core.data.local.model.toRemindAtTimeOrThrow
 import com.kristianskokars.tasky.core.data.remote.model.ReminderResponseDTO
-import com.kristianskokars.tasky.feature.agenda.data.model.Agenda
-import com.kristianskokars.tasky.feature.reminder.domain.model.Reminder
+import com.kristianskokars.tasky.core.domain.model.Reminder
+import com.kristianskokars.tasky.core.domain.model.toRemindAtTimeOrThrow
+import com.kristianskokars.tasky.feature.agenda.domain.model.Agenda
 import com.kristianskokars.tasky.lib.toEpochMilliseconds
 import com.kristianskokars.tasky.lib.toLocalDateTime
 import kotlinx.datetime.TimeZone

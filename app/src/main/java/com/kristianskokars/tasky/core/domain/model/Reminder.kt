@@ -1,6 +1,5 @@
-package com.kristianskokars.tasky.feature.reminder.domain.model
+package com.kristianskokars.tasky.core.domain.model
 
-import com.kristianskokars.tasky.core.data.local.model.RemindAtTime
 import com.kristianskokars.tasky.lib.randomID
 import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDateTime

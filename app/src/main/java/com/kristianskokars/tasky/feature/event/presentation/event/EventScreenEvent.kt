@@ -1,7 +1,7 @@
 package com.kristianskokars.tasky.feature.event.presentation.event
 
 import android.net.Uri
-import com.kristianskokars.tasky.core.data.local.model.RemindAtTime
+import com.kristianskokars.tasky.core.domain.model.RemindAtTime
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalTime
 

@@ -3,10 +3,10 @@ package com.kristianskokars.tasky.feature.reminder.presentation
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import com.github.michaelbull.result.mapBoth
-import com.kristianskokars.tasky.core.data.local.model.RemindAtTime
+import com.kristianskokars.tasky.core.data.ReminderRepository
+import com.kristianskokars.tasky.core.domain.model.RemindAtTime
+import com.kristianskokars.tasky.core.domain.model.Reminder
 import com.kristianskokars.tasky.feature.navArgs
-import com.kristianskokars.tasky.feature.reminder.data.ReminderRepository
-import com.kristianskokars.tasky.feature.reminder.domain.model.Reminder
 import com.kristianskokars.tasky.lib.allTimesOfDay
 import com.kristianskokars.tasky.lib.currentDate
 import com.kristianskokars.tasky.lib.currentTime

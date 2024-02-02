@@ -1,7 +1,7 @@
 package com.kristianskokars.tasky.feature.auth.presentation.login
 
 import android.os.Parcelable
-import com.kristianskokars.tasky.feature.auth.data.model.LoginError
+import com.kristianskokars.tasky.feature.auth.domain.model.LoginError
 import kotlinx.parcelize.Parcelize
 
 @Parcelize

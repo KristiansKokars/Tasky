@@ -41,7 +41,7 @@ import com.kristianskokars.tasky.core.presentation.components.LoadingSpinner
 import com.kristianskokars.tasky.core.presentation.components.ScreenSurface
 import com.kristianskokars.tasky.core.presentation.components.TaskySurface
 import com.kristianskokars.tasky.core.presentation.theme.Black
-import com.kristianskokars.tasky.feature.agenda.data.model.Agenda
+import com.kristianskokars.tasky.feature.agenda.domain.model.Agenda
 import com.kristianskokars.tasky.feature.agenda.presentation.components.AddAgendaButton
 import com.kristianskokars.tasky.feature.agenda.presentation.components.AgendaCard
 import com.kristianskokars.tasky.feature.agenda.presentation.components.ProfileIcon

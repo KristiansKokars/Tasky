@@ -1,3 +1,3 @@
-package com.kristianskokars.tasky.core.data.local.model
+package com.kristianskokars.tasky.core.domain.model
 
 data class User(val userId: String, val fullName: String)

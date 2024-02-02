@@ -3,7 +3,7 @@ package com.kristianskokars.tasky.core.data.local.db.model
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.kristianskokars.tasky.core.data.remote.model.EventResponseDTO
-import com.kristianskokars.tasky.feature.agenda.data.model.Agenda
+import com.kristianskokars.tasky.feature.agenda.domain.model.Agenda
 
 const val EVENT_TABLE_NAME = "event"
 

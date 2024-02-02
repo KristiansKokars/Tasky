@@ -1,7 +1,7 @@
 package com.kristianskokars.tasky.feature.auth.presentation.register
 
 import android.os.Parcelable
-import com.kristianskokars.tasky.feature.auth.data.model.RegisterError
+import com.kristianskokars.tasky.feature.auth.domain.model.RegisterError
 import kotlinx.parcelize.Parcelize
 
 @Parcelize

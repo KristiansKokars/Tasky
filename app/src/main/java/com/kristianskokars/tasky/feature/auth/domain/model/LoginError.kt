@@ -1,4 +1,4 @@
-package com.kristianskokars.tasky.feature.auth.data.model
+package com.kristianskokars.tasky.feature.auth.domain.model
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize

@@ -1,6 +1,6 @@
 package com.kristianskokars.tasky.feature.reminder.presentation
 
-import com.kristianskokars.tasky.feature.reminder.domain.model.Reminder
+import com.kristianskokars.tasky.core.domain.model.Reminder
 import com.kristianskokars.tasky.lib.allTimesOfDay
 import com.kristianskokars.tasky.lib.currentSystemDate
 import kotlinx.datetime.LocalDate

@@ -1,6 +1,6 @@
 package com.kristianskokars.tasky.feature.task.presentation
 
-import com.kristianskokars.tasky.feature.task.domain.model.Task
+import com.kristianskokars.tasky.core.domain.model.Task
 import com.kristianskokars.tasky.lib.currentSystemDate
 import kotlinx.datetime.LocalDate
 

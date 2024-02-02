@@ -1,4 +1,4 @@
-package com.kristianskokars.tasky.feature.event.data
+package com.kristianskokars.tasky.core.data
 
 import android.net.Uri
 import com.github.michaelbull.result.Err
@@ -6,9 +6,9 @@ import com.github.michaelbull.result.Ok
 import com.github.michaelbull.result.Result
 import com.kristianskokars.tasky.core.data.remote.TaskyAPI
 import com.kristianskokars.tasky.core.data.remote.model.EventRequestDTO
-import com.kristianskokars.tasky.core.domain.APIError
 import com.kristianskokars.tasky.core.domain.DeepLinks
 import com.kristianskokars.tasky.core.domain.Scheduler
+import com.kristianskokars.tasky.core.domain.model.APIError
 import com.kristianskokars.tasky.feature.event.domain.PhotoConverter
 import com.kristianskokars.tasky.feature.event.domain.model.Attendee
 import com.kristianskokars.tasky.lib.Success

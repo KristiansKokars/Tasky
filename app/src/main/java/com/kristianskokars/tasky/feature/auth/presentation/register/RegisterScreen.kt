@@ -42,7 +42,7 @@ import com.kristianskokars.tasky.core.presentation.theme.Green
 import com.kristianskokars.tasky.core.presentation.theme.LighterGray
 import com.kristianskokars.tasky.core.presentation.theme.Red
 import com.kristianskokars.tasky.core.presentation.theme.White
-import com.kristianskokars.tasky.feature.auth.data.model.RegisterError
+import com.kristianskokars.tasky.feature.auth.domain.model.RegisterError
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.navigation.EmptyDestinationsNavigator

@@ -5,9 +5,9 @@ import androidx.lifecycle.ViewModel
 import com.github.michaelbull.result.mapBoth
 import com.kristianskokars.tasky.core.data.TaskRepository
 import com.kristianskokars.tasky.core.data.local.db.model.toTask
-import com.kristianskokars.tasky.core.data.local.model.RemindAtTime
+import com.kristianskokars.tasky.core.domain.model.RemindAtTime
+import com.kristianskokars.tasky.core.domain.model.Task
 import com.kristianskokars.tasky.feature.navArgs
-import com.kristianskokars.tasky.feature.task.domain.model.Task
 import com.kristianskokars.tasky.lib.launch
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel

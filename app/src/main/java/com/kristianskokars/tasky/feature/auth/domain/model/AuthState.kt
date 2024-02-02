@@ -1,6 +1,6 @@
-package com.kristianskokars.tasky.feature.auth.data.model
+package com.kristianskokars.tasky.feature.auth.domain.model
 
-import com.kristianskokars.tasky.core.data.local.model.User
+import com.kristianskokars.tasky.core.domain.model.User
 
 sealed class AuthState {
     data object RetrievingFromStorage : AuthState()
