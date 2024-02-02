@@ -6,12 +6,12 @@ import com.github.michaelbull.result.mapBoth
 import com.kristianskokars.tasky.core.data.ReminderRepository
 import com.kristianskokars.tasky.core.domain.model.RemindAtTime
 import com.kristianskokars.tasky.core.domain.model.Reminder
-import com.kristianskokars.tasky.feature.navArgs
 import com.kristianskokars.tasky.lib.allTimesOfDay
 import com.kristianskokars.tasky.lib.currentDate
 import com.kristianskokars.tasky.lib.currentTime
 import com.kristianskokars.tasky.lib.launch
 import com.kristianskokars.tasky.lib.localTimeMax
+import com.kristianskokars.tasky.navArgs
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow

@@ -44,8 +44,8 @@ import com.kristianskokars.tasky.core.presentation.components.agendacreation.Tas
 import com.kristianskokars.tasky.core.presentation.theme.Black
 import com.kristianskokars.tasky.core.presentation.theme.Gray
 import com.kristianskokars.tasky.core.presentation.theme.LightGray
-import com.kristianskokars.tasky.feature.destinations.EditDescriptionScreenDestination
-import com.kristianskokars.tasky.feature.destinations.EditTitleScreenDestination
+import com.kristianskokars.tasky.destinations.EditDescriptionScreenDestination
+import com.kristianskokars.tasky.destinations.EditTitleScreenDestination
 import com.kristianskokars.tasky.feature.event.presentation.components.RemindBeforeSection
 import com.kristianskokars.tasky.lib.ObserveAsEvents
 import com.kristianskokars.tasky.lib.formatToLongDateUppercase

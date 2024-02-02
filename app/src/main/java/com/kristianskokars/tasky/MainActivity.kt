@@ -13,7 +13,6 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
 import com.kristianskokars.tasky.core.presentation.components.ScreenSurface
-import com.kristianskokars.tasky.feature.NavGraphs
 import com.kristianskokars.tasky.feature.auth.domain.model.AuthState
 import com.kristianskokars.tasky.lib.currentGraph
 import com.ramcosta.composedestinations.DestinationsNavHost

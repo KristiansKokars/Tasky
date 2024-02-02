@@ -44,8 +44,8 @@ import com.kristianskokars.tasky.core.presentation.theme.Green
 import com.kristianskokars.tasky.core.presentation.theme.LighterGray
 import com.kristianskokars.tasky.core.presentation.theme.Purple
 import com.kristianskokars.tasky.core.presentation.theme.Red
+import com.kristianskokars.tasky.destinations.RegisterScreenDestination
 import com.kristianskokars.tasky.feature.auth.domain.model.LoginError
-import com.kristianskokars.tasky.feature.destinations.RegisterScreenDestination
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootNavGraph
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
