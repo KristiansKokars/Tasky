@@ -72,12 +72,13 @@ class TaskViewModel @Inject constructor(
             repository.saveTask(task).mapBoth(
                 success = {
                     _events.send(UIEvent.SavedSuccessfully)
+                    _state.update { it.copy(isSaving = false, isEditing = false) }
                 },
                 failure = {
                     _events.send(UIEvent.ErrorSaving)
+                    _state.update { it.copy(isSaving = false) }
                 }
             )
-            _state.update { it.copy(isSaving = false) }
         }
     }
 
