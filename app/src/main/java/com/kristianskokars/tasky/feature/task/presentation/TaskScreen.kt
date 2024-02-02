@@ -85,17 +85,13 @@ fun TaskScreen(
 
     editTitleResultRecipient.onNavResult { titleResult ->
         when (titleResult) {
-            NavResult.Canceled -> { /* Ignored */
-            }
-
+            NavResult.Canceled -> { /* Ignored */ }
             is NavResult.Value -> viewModel.onEvent(TaskScreenEvent.OnTitleChanged(titleResult.value))
         }
     }
     editDescriptionResultRecipient.onNavResult { descriptionResult ->
         when (descriptionResult) {
-            NavResult.Canceled -> { /* Ignored */
-            }
-
+            NavResult.Canceled -> { /* Ignored */ }
             is NavResult.Value -> viewModel.onEvent(
                 TaskScreenEvent.OnDescriptionChanged(
                     descriptionResult.value
