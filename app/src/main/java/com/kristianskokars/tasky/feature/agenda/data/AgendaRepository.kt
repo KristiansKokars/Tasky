@@ -14,6 +14,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
+import kotlinx.datetime.Clock
 import kotlinx.datetime.DatePeriod
 import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate
@@ -22,6 +23,7 @@ import kotlinx.datetime.atStartOfDayIn
 import kotlinx.datetime.plus
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlin.time.Duration.Companion.minutes
 
 @Singleton
 class AgendaRepository @Inject constructor(
@@ -29,7 +31,9 @@ class AgendaRepository @Inject constructor(
     private val taskDao: TaskDao,
     private val eventDao: EventDao,
     private val reminderDao: ReminderDao,
+    private val clock: Clock,
 ) {
+    private val cacheTimeouts = mutableMapOf<Instant, Instant>()
     private val _isLoadingAgendas = MutableStateFlow(false)
     val isLoadingAgendas = _isLoadingAgendas.asStateFlow()
 
@@ -48,11 +52,15 @@ class AgendaRepository @Inject constructor(
     }
 
     suspend fun fetchAgendasForDay(timeZone: TimeZone, atInstant: Instant) {
+        val cacheTimeoutForDay = cacheTimeouts[atInstant]
+        if (cacheTimeoutForDay != null && clock.now() < cacheTimeoutForDay) return
+
         _isLoadingAgendas.update { true }
         val agendas = api.agendaForTheDay(
             timeZone.id,
             atInstant.toEpochMilliseconds()
         )
+        cacheTimeouts[atInstant] = clock.now().plus(5.minutes)
         _isLoadingAgendas.update { false }
         taskDao.insertTasks(agendas.tasks.map { it.toDBModel() })
         eventDao.insertEvents(agendas.events.map { it.toDBModel() })
