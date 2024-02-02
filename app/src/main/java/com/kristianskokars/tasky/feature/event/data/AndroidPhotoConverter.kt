@@ -5,10 +5,11 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.provider.OpenableColumns
-import android.widget.Toast
 import androidx.core.net.toFile
 import androidx.core.net.toUri
+import com.kristianskokars.tasky.R
 import com.kristianskokars.tasky.feature.event.domain.PhotoConverter
+import com.kristianskokars.tasky.lib.showToast
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -58,9 +59,7 @@ class AndroidPhotoConverter(
             if (photoBytes != null && photoBytes.size < 1_000_000) {
                 return@withContext picture.toUri()
             } else {
-                Toast
-                    .makeText(context, "Could not upload file due to it being too large", Toast.LENGTH_SHORT)
-                    .show()
+                showToast(context, R.string.could_not_upload_file_due_to_it_being_too_large)
                 return@withContext null
             }
         }
