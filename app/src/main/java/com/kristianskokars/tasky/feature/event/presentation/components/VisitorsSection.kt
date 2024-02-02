@@ -35,7 +35,7 @@ fun LazyListScope.visitorsSection(
 ) {
     item {
         Row(
-            modifier = Modifier.padding(vertical = 40.dp),
+            modifier = Modifier.padding(vertical = 24.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center
         ) {

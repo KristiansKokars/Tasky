@@ -10,6 +10,7 @@ import com.kristianskokars.tasky.core.data.remote.model.LoginResponseDTO
 import com.kristianskokars.tasky.core.data.remote.model.RegisterRequestDTO
 import com.kristianskokars.tasky.core.data.remote.model.ReminderResponseDTO
 import com.kristianskokars.tasky.core.data.remote.model.TaskResponseDTO
+import com.kristianskokars.tasky.core.data.remote.model.UpdateEventRequestDTO
 import com.kristianskokars.tasky.core.data.remote.model.UpdateReminderRequestDTO
 import com.kristianskokars.tasky.core.data.remote.model.UpdateTaskRequestDTO
 import okhttp3.MultipartBody
@@ -39,6 +40,12 @@ interface TaskyAPI {
     @Multipart
     suspend fun createEvent(
         @Part("create_event_request") createEventRequest: EventRequestDTO,
+        @Part photos: List<MultipartBody.Part>
+    )
+
+    @PUT("event")
+    suspend fun updateEvent(
+        @Part("update_event_request") updateEventRequest: UpdateEventRequestDTO,
         @Part photos: List<MultipartBody.Part>
     )
 

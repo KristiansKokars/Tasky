@@ -31,6 +31,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kristianskokars.tasky.R
 import com.kristianskokars.tasky.core.domain.DeepLinks
+import com.kristianskokars.tasky.core.presentation.components.LoadingSpinner
 import com.kristianskokars.tasky.core.presentation.components.ScreenSurface
 import com.kristianskokars.tasky.core.presentation.components.TaskyAlertDialog
 import com.kristianskokars.tasky.core.presentation.components.TaskyDivider
@@ -51,7 +52,6 @@ import com.kristianskokars.tasky.feature.event.presentation.components.PhotosSec
 import com.kristianskokars.tasky.feature.event.presentation.components.RemindBeforeSection
 import com.kristianskokars.tasky.feature.event.presentation.components.visitorsSection
 import com.kristianskokars.tasky.lib.ObserveAsEvents
-import com.kristianskokars.tasky.lib.fillParentWidth
 import com.kristianskokars.tasky.lib.formatToLongDateUppercase
 import com.kristianskokars.tasky.lib.randomID
 import com.kristianskokars.tasky.lib.showToast
@@ -115,6 +115,8 @@ fun EventScreen(
     val context = LocalContext.current
     ObserveAsEvents(flow = viewModel.events) { event ->
         when (event) {
+            EventViewModel.UIEvent.ErrorSaving -> showToast(context, R.string.failed_save_event)
+            EventViewModel.UIEvent.SavedSuccessfully -> showToast(context, R.string.save_event)
             EventViewModel.UIEvent.DeletedSuccessfully -> showToast(context, R.string.deleted_event)
             EventViewModel.UIEvent.ErrorDeleting -> showToast(context, R.string.failed_delete_event)
         }
@@ -142,7 +144,7 @@ private fun EventScreenContent(
         TaskyAlertDialog(
             title = { Text(text = stringResource(id = R.string.delete_event_alert_dialog_title)) },
             text = { Text(text = stringResource(R.string.confirm_event_delete)) },
-            onConfirm = { onEvent(EventScreenEvent.DeleteEvent) },
+            onConfirm = { onEvent(EventScreenEvent.Delete) },
             onDismissRequest = { showConfirmDeleteDialog = false }
         )
     }
@@ -154,7 +156,7 @@ private fun EventScreenContent(
                 editingTitle = state.currentDate.formatToLongDateUppercase(),
                 isEditing = state.isEditing,
                 onCloseClick = navigator::navigateUp,
-                onSaveClick = { onEvent(EventScreenEvent.SaveEdits) },
+                onSaveClick = { onEvent(EventScreenEvent.Save) },
                 onEditClick = { onEvent(EventScreenEvent.BeginEditing) },
             )
         },
@@ -169,40 +171,44 @@ private fun EventScreenContent(
             TaskySurface(
                 modifier = Modifier.padding(padding)
             ) {
+                if (state.event == null) {
+                    Spacer(modifier = Modifier.size(24.dp))
+                    LoadingSpinner()
+                    return@TaskySurface
+                }
+
                 LazyColumn(modifier = Modifier.fillMaxWidth()) {
                     item {
-                        Spacer(modifier = Modifier.size(32.dp))
+                        Spacer(modifier = Modifier.size(24.dp))
                         AgendaBadge(text = stringResource(id = R.string.event), badgeColor = LightGreen)
-                        Spacer(modifier = Modifier.size(8.dp))
+                        Spacer(modifier = Modifier.size(16.dp))
                         AgendaTitle(
-                            modifier = Modifier.fillParentWidth(16.dp),
-                            title = state.title,
+                            title = state.event.title,
                             onEditTitle = {
-                                navigator.navigate(EditTitleScreenDestination(state.title))
+                                navigator.navigate(EditTitleScreenDestination(state.event.title))
                             },
                             isEditing = state.isEditing
                         )
                         Spacer(modifier = Modifier.size(8.dp))
                         TaskyDivider()
-                        Spacer(modifier = Modifier.size(16.dp))
+                        Spacer(modifier = Modifier.size(8.dp))
                         AgendaDescription(
-                            modifier = Modifier.fillParentWidth(16.dp),
-                            text = state.description ?: "",
+                            text = state.event.description,
                             onEditDescription = {
-                                navigator.navigate(EditDescriptionScreenDestination(state.description ?: ""))
+                                navigator.navigate(EditDescriptionScreenDestination(state.event.description))
                             },
                             isEditing = state.isEditing,
                         )
-                        Spacer(modifier = Modifier.size(32.dp))
+                        Spacer(modifier = Modifier.size(8.dp))
                         PhotosSection(
-                            photoUrls = state.photos,
+                            photoUrls = state.event.photos,
                             onAddPhotoClick = onAddPhotoClick
                         )
-                        Spacer(modifier = Modifier.size(32.dp))
+                        Spacer(modifier = Modifier.size(16.dp))
                         TaskyDivider()
                         TaskyTimeSection(
                             isEditing = state.isEditing,
-                            dateTime = state.fromDateTime,
+                            dateTime = state.event.fromDateTime,
                             timeState = TimeState.From,
                             onTimeSelected = { onEvent(EventScreenEvent.OnUpdateFromTime(it)) },
                             onDateSelected = { onEvent(EventScreenEvent.OnUpdateFromDate(it)) },
@@ -210,7 +216,7 @@ private fun EventScreenContent(
                         TaskyDivider()
                         TaskyTimeSection(
                             isEditing = state.isEditing,
-                            dateTime = state.toDateTime,
+                            dateTime = state.event.toDateTime,
                             timeState = TimeState.To,
                             onTimeSelected = { onEvent(EventScreenEvent.OnUpdateToTime(it)) },
                             onDateSelected = { onEvent(EventScreenEvent.OnUpdateToDate(it)) },
@@ -218,7 +224,7 @@ private fun EventScreenContent(
                         TaskyDivider()
                         RemindBeforeSection(
                             isEditing = state.isEditing,
-                            remindAtTime = state.remindAtTime,
+                            remindAtTime = state.event.remindAtTime,
                             onChangeRemindAtTime = { newRemindAtTime ->
                                 onEvent(EventScreenEvent.OnChangeRemindAtTime(newRemindAtTime))
                             }
@@ -228,8 +234,8 @@ private fun EventScreenContent(
                     visitorsSection(
                         isEditing = state.isEditing,
                         onEditVisitors = { isDialogOpen = true },
-                        creator = state.creator,
-                        attendees = state.attendees
+                        creator = state.event.creator,
+                        attendees = state.event.attendees
                     )
                     item {
                         Spacer(modifier = Modifier.size(44.dp))
@@ -246,7 +252,7 @@ private fun EventScreenContent(
                                 Text(text = stringResource(R.string.delete_event))
                             }
                         }
-                        Spacer(modifier = Modifier.size(44.dp))
+                        Spacer(modifier = Modifier.size(16.dp))
                     }
                 }
             }

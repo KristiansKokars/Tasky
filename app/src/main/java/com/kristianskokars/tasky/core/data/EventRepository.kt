@@ -1,21 +1,30 @@
 package com.kristianskokars.tasky.core.data
 
-import android.net.Uri
+import androidx.datastore.core.DataStore
 import com.github.michaelbull.result.Err
 import com.github.michaelbull.result.Ok
 import com.github.michaelbull.result.Result
 import com.kristianskokars.tasky.core.data.local.db.EventDao
+import com.kristianskokars.tasky.core.data.local.db.model.toEvent
+import com.kristianskokars.tasky.core.data.local.db.model.toEventDBModel
+import com.kristianskokars.tasky.core.data.local.model.UserSettings
 import com.kristianskokars.tasky.core.data.remote.TaskyAPI
 import com.kristianskokars.tasky.core.data.remote.model.EventRequestDTO
+import com.kristianskokars.tasky.core.data.remote.model.UpdateEventRequestDTO
 import com.kristianskokars.tasky.core.domain.DeepLinks
 import com.kristianskokars.tasky.core.domain.Scheduler
 import com.kristianskokars.tasky.core.domain.model.APIError
+import com.kristianskokars.tasky.core.domain.model.Event
 import com.kristianskokars.tasky.feature.event.domain.PhotoConverter
 import com.kristianskokars.tasky.feature.event.domain.model.Attendee
 import com.kristianskokars.tasky.lib.Success
-import com.kristianskokars.tasky.lib.randomID
 import com.kristianskokars.tasky.lib.success
+import com.kristianskokars.tasky.lib.toEpochMilliseconds
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 import kotlinx.datetime.Clock
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toInstant
 import retrofit2.HttpException
 import java.io.IOException
 import javax.inject.Inject
@@ -24,45 +33,75 @@ import javax.inject.Singleton
 @Singleton
 class EventRepository @Inject constructor(
     private val clock: Clock,
+    private val timeZone: TimeZone,
     private val local: EventDao,
     private val remote: TaskyAPI,
     private val photoConverter: PhotoConverter,
-    private val scheduler: Scheduler
+    private val scheduler: Scheduler,
+    private val userStore: DataStore<UserSettings>
 ) {
-    suspend fun saveEvent(
-        title: String,
-        description: String,
-        from: Long,
-        to: Long,
-        remindAt: Long,
-        attendeeIds: List<String>,
-        photos: List<Uri>
-    ) {
-        val id = randomID()
-        remote.createEvent(
-            createEventRequest = EventRequestDTO(
-                id = id,
-                title = title,
-                description = description,
-                from = from,
-                to = to,
-                remindAt = remindAt,
-                attendeeIds = attendeeIds,
-            ),
-            photos = photoConverter.photosToMultipart(photos)
-        )
+    fun getEvent(eventId: String) = local.getEvent(eventId).map { it?.toEvent() }
 
-        if (remindAt > clock.now().toEpochMilliseconds()) {
+    suspend fun saveEvent(event: Event): Result<Success, APIError> {
+        val existingEvent = local.getEvent(event.id).first()
+        val time = event.fromDateTime.toInstant(timeZone)
+        val remindAtInMillis = time.minus(event.remindAtTime.toDuration()).toEpochMilliseconds()
+        val currentUserId = userStore.data.first().userId ?: return Err(APIError.ClientError)
+
+        try {
+            if (existingEvent == null) {
+                remote.createEvent(
+                    createEventRequest = EventRequestDTO(
+                        id = event.id,
+                        title = event.title,
+                        description = event.description,
+                        from = event.fromDateTime.toEpochMilliseconds(),
+                        to = event.toDateTime.toEpochMilliseconds(),
+                        remindAt = remindAtInMillis,
+                        attendeeIds = event.attendees.map { it.userId },
+                    ),
+                    photos = photoConverter.photosToMultipart(event.photos)
+                )
+            } else {
+                remote.updateEvent(
+                    updateEventRequest = UpdateEventRequestDTO(
+                        id = event.id,
+                        title = event.title,
+                        description = event.description,
+                        from = event.fromDateTime.toEpochMilliseconds(),
+                        to = event.toDateTime.toEpochMilliseconds(),
+                        remindAt = remindAtInMillis,
+                        attendeeIds = event.attendees.map { it.userId },
+                        deletedPhotoKeys = emptyList(), // TODO: create functionality
+                        isGoing = true // TODO: create functionality
+                    ),
+                    photos = photoConverter.photosToMultipart(event.photos)
+                )
+            }
+        } catch (e: HttpException) {
+            return Err(APIError.ServerError)
+        } catch (e: IOException) {
+            return Err(APIError.ClientError)
+        }
+
+        local.insertEvent(event.toEventDBModel(currentUserId))
+
+        if (
+            remindAtInMillis > clock.now().toEpochMilliseconds() &&
+            existingEvent?.remindAtInMillis != remindAtInMillis
+        ) {
             scheduler.scheduleExactAlarmAt(
-                remindAt,
-                id,
+                remindAtInMillis,
+                event.id,
                 extras = mapOf(
                     DeepLinks.Type.EVENT.toPair(),
-                    DeepLinks.Extra.NAME.toString() to title,
-                    DeepLinks.Extra.TIME.toString() to remindAt
+                    DeepLinks.Extra.NAME.toString() to event.title,
+                    DeepLinks.Extra.TIME.toString() to time.toEpochMilliseconds()
                 )
             )
         }
+
+        return success()
     }
 
     suspend fun deleteEvent(eventId: String): Result<Success, APIError> {

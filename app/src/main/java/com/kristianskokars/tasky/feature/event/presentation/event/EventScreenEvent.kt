@@ -8,8 +8,8 @@ import kotlinx.datetime.LocalTime
 sealed class EventScreenEvent {
     data class OnAddPhoto(val newPhoto: Uri) : EventScreenEvent()
     data object BeginEditing : EventScreenEvent()
-    data object SaveEdits : EventScreenEvent()
-    data object DeleteEvent : EventScreenEvent()
+    data object Save : EventScreenEvent()
+    data object Delete : EventScreenEvent()
     data class AddAttendee(val addAttendeeEmail: String) : EventScreenEvent()
     data class OnUpdateFromTime(val newFromTime: LocalTime) : EventScreenEvent()
     data class OnUpdateToTime(val newToTime: LocalTime) : EventScreenEvent()

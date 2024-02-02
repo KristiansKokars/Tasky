@@ -76,8 +76,10 @@
     <string name="no_description_added">No description added…</string>
     <string name="failed_save_task">Failed to save task due to a server error.</string>
     <string name="failed_save_reminder">Failed to save reminder due to a server error.</string>
+    <string name="failed_save_event">Failed to save event due to a server error.</string>
     <string name="save_task">Saved task.</string>
     <string name="save_reminder">Saved reminder.</string>
+    <string name="save_event">Saved event.</string>
     <string name="deleted_task">Deleted task.</string>
     <string name="deleted_reminder">Deleted reminder.</string>
     <string name="deleted_agenda">Deleted agenda item.</string>

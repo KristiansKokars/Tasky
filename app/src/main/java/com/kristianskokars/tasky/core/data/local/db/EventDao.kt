@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface EventDao {
     @Query("SELECT * FROM $EVENT_TABLE_NAME WHERE id = :eventId")
-    suspend fun getEvent(eventId: String): EventDBModel
+    fun getEvent(eventId: String): Flow<EventDBModel?>
 
     @Query(
         """
