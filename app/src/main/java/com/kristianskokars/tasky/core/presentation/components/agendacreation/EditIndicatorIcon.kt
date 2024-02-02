@@ -1,4 +1,4 @@
-package com.kristianskokars.tasky.feature.event.presentation.components
+package com.kristianskokars.tasky.core.presentation.components.agendacreation
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon

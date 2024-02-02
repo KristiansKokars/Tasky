@@ -1,4 +1,4 @@
-package com.kristianskokars.tasky.feature.event.presentation
+package com.kristianskokars.tasky.core.presentation.screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -23,9 +23,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.kristianskokars.tasky.R
 import com.kristianskokars.tasky.core.presentation.components.ScreenSurface
+import com.kristianskokars.tasky.core.presentation.components.agendacreation.EditToolbar
 import com.kristianskokars.tasky.core.presentation.theme.Black
 import com.kristianskokars.tasky.core.presentation.theme.White
-import com.kristianskokars.tasky.feature.event.presentation.components.EditToolbar
 import com.kristianskokars.tasky.nav.AppGraph
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
