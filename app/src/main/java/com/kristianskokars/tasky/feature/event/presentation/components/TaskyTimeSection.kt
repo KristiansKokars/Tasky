@@ -37,7 +37,7 @@ sealed interface TimeState {
 @Composable
 fun TaskyTimeSection(
     modifier: Modifier = Modifier,
-    time: LocalDateTime,
+    dateTime: LocalDateTime,
     timeState: TimeState = TimeState.At,
     isEditing: Boolean = false,
     allowedTimeRange: ClosedRange<LocalTime> = allTimesOfDay(),
@@ -49,11 +49,13 @@ fun TaskyTimeSection(
     val editDateDialogState = rememberMaterialDialogState()
 
     TimePickerDialog(
+        initialTime = dateTime.time,
         allowedTimeRange = allowedTimeRange,
         dialogState = editTimeDialogState,
         onTimeSelected = onTimeSelected
     )
     DatePickerDialog(
+        initialDate = dateTime.date,
         allowedDateValidator = allowedDateValidator,
         dialogState = editDateDialogState,
         onDateSelected = onDateSelected
@@ -87,7 +89,7 @@ fun TaskyTimeSection(
                     }
                 )
                 Spacer(modifier = Modifier.size(16.dp))
-                Text(text = time.formatToHHMM())
+                Text(text = dateTime.formatToHHMM())
                 Spacer(modifier = Modifier.size(36.dp))
                 if (isEditing) {
                     EditIndicatorIcon(
@@ -107,7 +109,7 @@ fun TaskyTimeSection(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = time.formatToDate()
+                    text = dateTime.formatToDate()
                 )
                 Spacer(modifier = Modifier.size(36.dp))
                 if (isEditing) {

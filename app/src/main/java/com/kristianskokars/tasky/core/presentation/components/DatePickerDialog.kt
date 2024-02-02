@@ -5,15 +5,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import com.kristianskokars.tasky.R
 import com.kristianskokars.tasky.core.presentation.theme.Black
+import com.kristianskokars.tasky.lib.currentSystemDate
 import com.vanpra.composematerialdialogs.MaterialDialog
 import com.vanpra.composematerialdialogs.MaterialDialogState
 import com.vanpra.composematerialdialogs.datetime.date.DatePickerDefaults
 import com.vanpra.composematerialdialogs.datetime.date.datepicker
 import kotlinx.datetime.LocalDate
+import kotlinx.datetime.toJavaLocalDate
 import kotlinx.datetime.toKotlinLocalDate
 
 @Composable
 fun DatePickerDialog(
+    initialDate: LocalDate = currentSystemDate(),
     allowedDateValidator: (LocalDate) -> Boolean = { true },
     dialogState: MaterialDialogState,
     onDateSelected: (LocalDate) -> Unit
@@ -36,6 +39,7 @@ fun DatePickerDialog(
         }
     ) {
         datepicker(
+            initialDate = initialDate.toJavaLocalDate(),
             allowedDateValidator = { allowedDateValidator(it.toKotlinLocalDate()) },
             colors = DatePickerDefaults.colors(
                 headerBackgroundColor = Black,

@@ -75,6 +75,8 @@ fun currentSystemDate() = Clock.System.now().toLocalDateTime(TimeZone.currentSys
 
 fun currentSystemDateTime() = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
 
+fun currentSystemTime() = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).time
+
 fun LocalDate.next6Days(): List<LocalDate> = List(6) { index ->
     this.plus(index, DateTimeUnit.DAY)
 }

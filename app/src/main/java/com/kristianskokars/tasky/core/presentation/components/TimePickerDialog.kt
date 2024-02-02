@@ -7,6 +7,7 @@ import com.kristianskokars.tasky.R
 import com.kristianskokars.tasky.core.presentation.theme.Black
 import com.kristianskokars.tasky.core.presentation.theme.LightGray
 import com.kristianskokars.tasky.lib.allTimesOfDay
+import com.kristianskokars.tasky.lib.currentSystemTime
 import com.vanpra.composematerialdialogs.MaterialDialog
 import com.vanpra.composematerialdialogs.MaterialDialogState
 import com.vanpra.composematerialdialogs.datetime.time.TimePickerDefaults
@@ -17,6 +18,7 @@ import kotlinx.datetime.toKotlinLocalTime
 
 @Composable
 fun TimePickerDialog(
+    initialTime: LocalTime = currentSystemTime(),
     allowedTimeRange: ClosedRange<LocalTime> = allTimesOfDay(),
     dialogState: MaterialDialogState,
     onTimeSelected: (LocalTime) -> Unit
@@ -39,6 +41,7 @@ fun TimePickerDialog(
         }
     ) {
         timepicker(
+            initialTime = initialTime.toJavaLocalTime(),
             timeRange = allowedTimeRange.start.toJavaLocalTime() .. allowedTimeRange.endInclusive.toJavaLocalTime(),
             colors = TimePickerDefaults.colors(
                 selectorColor = Black,

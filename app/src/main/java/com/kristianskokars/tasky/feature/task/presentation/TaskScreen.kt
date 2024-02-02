@@ -155,7 +155,7 @@ private fun TaskScreenContent(
                 Spacer(modifier = Modifier.size(8.dp))
                 TaskyDivider()
                 TaskyTimeSection(
-                    time = state.task.dateTime,
+                    dateTime = state.task.dateTime,
                     isEditing = state.isEditing,
                     onTimeSelected = { onEvent(TaskScreenEvent.OnUpdateTime(it)) },
                     onDateSelected = { onEvent(TaskScreenEvent.OnUpdateDate(it)) }

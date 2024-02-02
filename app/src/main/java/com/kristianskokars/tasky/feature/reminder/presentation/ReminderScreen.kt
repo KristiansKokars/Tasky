@@ -145,7 +145,7 @@ private fun ReminderScreenContent(
                 Spacer(modifier = Modifier.size(20.dp))
                 TaskyDivider()
                 TaskyTimeSection(
-                    time = state.reminder.dateTime,
+                    dateTime = state.reminder.dateTime,
                     isEditing = state.isEditing,
                     onTimeSelected = { onEvent(ReminderScreenEvent.OnUpdateTime(it)) },
                     onDateSelected = { onEvent(ReminderScreenEvent.OnUpdateDate(it)) },

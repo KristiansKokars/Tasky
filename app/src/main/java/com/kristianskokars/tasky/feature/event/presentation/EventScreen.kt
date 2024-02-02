@@ -176,7 +176,7 @@ private fun EventScreenContent(
                         TaskyDivider()
                         TaskyTimeSection(
                             isEditing = state.isEditing,
-                            time = state.fromDateTime,
+                            dateTime = state.fromDateTime,
                             timeState = TimeState.From,
                             onTimeSelected = { onEvent(EventScreenEvent.OnUpdateFromTime(it)) },
                             onDateSelected = { onEvent(EventScreenEvent.OnUpdateFromDate(it)) },
@@ -184,7 +184,7 @@ private fun EventScreenContent(
                         TaskyDivider()
                         TaskyTimeSection(
                             isEditing = state.isEditing,
-                            time = state.toDateTime,
+                            dateTime = state.toDateTime,
                             timeState = TimeState.To,
                             onTimeSelected = { onEvent(EventScreenEvent.OnUpdateToTime(it)) },
                             onDateSelected = { onEvent(EventScreenEvent.OnUpdateToDate(it)) },
