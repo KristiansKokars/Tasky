@@ -14,6 +14,7 @@ import kotlinx.datetime.toKotlinLocalDate
 
 @Composable
 fun DatePickerDialog(
+    allowedDateValidator: (LocalDate) -> Boolean = { true },
     dialogState: MaterialDialogState,
     onDateSelected: (LocalDate) -> Unit
 ) {
@@ -35,6 +36,7 @@ fun DatePickerDialog(
         }
     ) {
         datepicker(
+            allowedDateValidator = { allowedDateValidator(it.toKotlinLocalDate()) },
             colors = DatePickerDefaults.colors(
                 headerBackgroundColor = Black,
                 dateActiveBackgroundColor = Black,

@@ -23,7 +23,6 @@ import kotlinx.datetime.TimeZone
 import kotlinx.datetime.atDate
 import kotlinx.datetime.atTime
 import kotlinx.datetime.toInstant
-import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -109,7 +108,6 @@ class EventViewModel @Inject constructor(
 
     private fun onUpdateFromDate(newFromDate: LocalDate) {
         _state.update { state ->
-            Timber.d("Updated time: $newFromDate")
             val newDateTime = newFromDate.atTime(state.fromDateTime.time)
             state.copy(fromDateTime = newDateTime)
         }
@@ -118,7 +116,6 @@ class EventViewModel @Inject constructor(
     private fun onUpdateFromTime(newFromTime: LocalTime) {
         _state.update { state ->
             val newDateTime = newFromTime.atDate(state.fromDateTime.date)
-            Timber.d("NewDateTime: $newDateTime")
             state.copy(fromDateTime = newDateTime)
         }
     }

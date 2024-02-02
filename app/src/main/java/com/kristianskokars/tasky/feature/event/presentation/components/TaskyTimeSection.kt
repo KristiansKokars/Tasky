@@ -18,15 +18,13 @@ import androidx.compose.ui.unit.dp
 import com.kristianskokars.tasky.R
 import com.kristianskokars.tasky.core.presentation.components.DatePickerDialog
 import com.kristianskokars.tasky.core.presentation.components.TimePickerDialog
+import com.kristianskokars.tasky.lib.allTimesOfDay
 import com.kristianskokars.tasky.lib.formatToDate
 import com.kristianskokars.tasky.lib.formatToHHMM
 import com.vanpra.composematerialdialogs.rememberMaterialDialogState
-import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.LocalTime
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toLocalDateTime
 
 sealed interface TimeState {
     data object At : TimeState
@@ -38,9 +36,11 @@ sealed interface TimeState {
 @Composable
 fun TaskyTimeSection(
     modifier: Modifier = Modifier,
-    time: LocalDateTime = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()),
+    time: LocalDateTime,
     timeState: TimeState = TimeState.At,
     isEditing: Boolean = false,
+    allowedTimeRange: ClosedRange<LocalTime> = allTimesOfDay(),
+    allowedDateValidator: (LocalDate) -> Boolean = { true },
     onTimeSelected: (LocalTime) -> Unit = {},
     onDateSelected: (LocalDate) -> Unit = {},
 ) {
@@ -48,10 +48,12 @@ fun TaskyTimeSection(
     val editDateDialogState = rememberMaterialDialogState()
 
     TimePickerDialog(
+        allowedTimeRange = allowedTimeRange,
         dialogState = editTimeDialogState,
         onTimeSelected = onTimeSelected
     )
     DatePickerDialog(
+        allowedDateValidator = allowedDateValidator,
         dialogState = editDateDialogState,
         onDateSelected = onDateSelected
     )

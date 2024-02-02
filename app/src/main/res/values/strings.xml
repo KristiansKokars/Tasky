@@ -68,4 +68,6 @@
     <string name="remove_visitor">Remove visitor</string>
     <string name="reminder_notification_title">Reminder for %s</string>
     <string name="reminder_notification_description">%1$s happening at: %2$s</string>
+    <string name="no_title">No title added…</string>
+    <string name="no_description_added">No description added…</string>
 </resources>

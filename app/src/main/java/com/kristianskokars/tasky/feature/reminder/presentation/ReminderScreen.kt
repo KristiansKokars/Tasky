@@ -50,6 +50,7 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.navigation.EmptyDestinationsNavigator
 import com.ramcosta.composedestinations.result.NavResult
 import com.ramcosta.composedestinations.result.ResultRecipient
+import kotlinx.datetime.LocalDate
 
 data class ReminderScreenNavArgs(val id: String = randomID(), val isCreatingNewReminder: Boolean = false)
 
@@ -86,12 +87,18 @@ fun ReminderScreen(
         }
     }
 
-    ReminderScreenContent(state = state, onEvent = viewModel::onEvent, navigator = navigator)
+    ReminderScreenContent(
+        state = state,
+        isDateAllowed = viewModel::isDateAllowed,
+        onEvent = viewModel::onEvent,
+        navigator = navigator
+    )
 }
 
 @Composable
 private fun ReminderScreenContent(
     state: ReminderScreenState,
+    isDateAllowed: (LocalDate) -> Boolean,
     onEvent: (ReminderScreenEvent) -> Unit,
     navigator: DestinationsNavigator
 ) {
@@ -139,7 +146,9 @@ private fun ReminderScreenContent(
                     time = state.reminder.dateTime,
                     isEditing = state.isEditing,
                     onTimeSelected = { onEvent(ReminderScreenEvent.OnUpdateTime(it)) },
-                    onDateSelected = { onEvent(ReminderScreenEvent.OnUpdateDate(it)) }
+                    onDateSelected = { onEvent(ReminderScreenEvent.OnUpdateDate(it)) },
+                    allowedTimeRange = state.allowedTimeRange,
+                    allowedDateValidator = isDateAllowed
                 )
                 TaskyDivider()
                 RemindBeforeSection(
@@ -181,6 +190,7 @@ private fun ReminderScreenPreview() {
     ScreenSurface {
         ReminderScreenContent(
             state = ReminderScreenState(),
+            isDateAllowed = { true },
             onEvent = {},
             navigator = EmptyDestinationsNavigator
         )

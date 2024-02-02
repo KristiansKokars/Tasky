@@ -17,13 +17,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import com.kristianskokars.tasky.R
+import com.kristianskokars.tasky.core.presentation.theme.Gray
 
 @Composable
 fun AgendaDescription(
     modifier: Modifier = Modifier,
     isEditing: Boolean = false,
     onEditDescription: () -> Unit = {},
-    padding: PaddingValues = PaddingValues(16.dp),
+    padding: PaddingValues = PaddingValues(vertical = 16.dp),
     text: String,
 ) {
     Row(
@@ -37,7 +38,11 @@ fun AgendaDescription(
             .fillMaxWidth()
             .height(IntrinsicSize.Max)
     ) {
-        Text(modifier = Modifier.weight(3f), text = text)
+        if (text.isEmpty()) {
+            Text(modifier = Modifier.weight(3f), text = stringResource(R.string.no_description_added), color = Gray.copy(alpha = 0.6f))
+        } else {
+            Text(modifier = Modifier.weight(3f), text = text)
+        }
 
         if (isEditing) {
             Box(

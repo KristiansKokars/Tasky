@@ -12,6 +12,7 @@ import kotlinx.datetime.plus
 import kotlinx.datetime.toJavaLocalDate
 import kotlinx.datetime.toJavaLocalDateTime
 import kotlinx.datetime.toJavaLocalTime
+import kotlinx.datetime.toKotlinLocalTime
 import kotlinx.datetime.toLocalDateTime
 import java.text.SimpleDateFormat
 import java.time.format.DateTimeFormatter
@@ -74,3 +75,11 @@ fun LocalDate.next6Days(): List<LocalDate> = List(6) { index ->
 fun Long.toLocalDateTime() = Instant.fromEpochMilliseconds(this).toLocalDateTime(
     TimeZone.currentSystemDefault()
 )
+
+fun allTimesOfDay() = java.time.LocalTime.MIN.toKotlinLocalTime() .. localTimeMax()
+
+fun localTimeMax() = java.time.LocalTime.MAX.toKotlinLocalTime()
+
+fun Clock.currentDate(timeZone: TimeZone) = now().toLocalDateTime(timeZone).date
+
+fun Clock.currentTime(timeZone: TimeZone) = now().toLocalDateTime(timeZone).time

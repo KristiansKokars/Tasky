@@ -21,13 +21,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.kristianskokars.tasky.R
 import com.kristianskokars.tasky.core.presentation.components.ScreenSurface
+import com.kristianskokars.tasky.core.presentation.theme.Gray
 
 @Composable
 fun AgendaTitle(
     modifier: Modifier = Modifier,
     title: String,
     isEditing: Boolean = false,
-    padding: PaddingValues = PaddingValues(16.dp),
+    padding: PaddingValues = PaddingValues(vertical = 16.dp),
     onEditTitle: () -> Unit = {}
 ) {
     Row(
@@ -45,13 +46,25 @@ fun AgendaTitle(
             contentDescription = null
         )
         Spacer(modifier = Modifier.size(8.dp))
-        Text(
-            text = title,
-            fontWeight = FontWeight.Bold,
-            fontSize = 26.sp,
-            maxLines = 3,
-            overflow = TextOverflow.Ellipsis,
-        )
+
+        if (title.isEmpty()) {
+            Text(
+                text = stringResource(R.string.no_title),
+                fontWeight = FontWeight.Bold,
+                color = Gray.copy(alpha = 0.6f),
+                fontSize = 26.sp,
+                maxLines = 3,
+                overflow = TextOverflow.Ellipsis,
+            )
+        } else {
+            Text(
+                text = title,
+                fontWeight = FontWeight.Bold,
+                fontSize = 26.sp,
+                maxLines = 3,
+                overflow = TextOverflow.Ellipsis,
+            )
+        }
         if (isEditing) {
             Spacer(modifier = Modifier.weight(1f))
             EditIndicatorIcon(label = stringResource(R.string.edit_title))

@@ -179,7 +179,7 @@ private fun EventScreenContent(
                             time = state.fromDateTime,
                             timeState = TimeState.From,
                             onTimeSelected = { onEvent(EventScreenEvent.OnUpdateFromTime(it)) },
-                            onDateSelected = { onEvent(EventScreenEvent.OnUpdateFromDate(it)) }
+                            onDateSelected = { onEvent(EventScreenEvent.OnUpdateFromDate(it)) },
                         )
                         TaskyDivider()
                         TaskyTimeSection(
@@ -187,7 +187,7 @@ private fun EventScreenContent(
                             time = state.toDateTime,
                             timeState = TimeState.To,
                             onTimeSelected = { onEvent(EventScreenEvent.OnUpdateToTime(it)) },
-                            onDateSelected = { onEvent(EventScreenEvent.OnUpdateToDate(it)) }
+                            onDateSelected = { onEvent(EventScreenEvent.OnUpdateToDate(it)) },
                         )
                         TaskyDivider()
                         RemindBeforeSection(
