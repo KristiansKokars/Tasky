@@ -11,12 +11,14 @@ import com.kristianskokars.tasky.core.data.local.model.UserSettings
 import com.kristianskokars.tasky.core.domain.model.RemindAtTime
 import com.kristianskokars.tasky.feature.event.domain.PhotoConverter
 import com.kristianskokars.tasky.feature.event.domain.model.Attendee
-import com.kristianskokars.tasky.feature.navArgs
 import com.kristianskokars.tasky.lib.asStateFlow
 import com.kristianskokars.tasky.lib.launch
+import com.kristianskokars.tasky.navArgs
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalTime
@@ -36,6 +38,7 @@ class EventViewModel @Inject constructor(
 ) : ViewModel() {
     private val navArgs = savedStateHandle.navArgs<EventScreenNavArgs>()
     private val _state = MutableStateFlow(EventState(isEditing = navArgs.isCreatingNewEvent))
+    private val _events = Channel<UIEvent>()
 
     val state = combine(
         userStore.data,
@@ -47,6 +50,7 @@ class EventViewModel @Inject constructor(
             state.copy(creator = Attendee(userId = user.userId, email = "", fullName = user.fullName))
         } else state
     }.asStateFlow(viewModelScope, EventState(isEditing = navArgs.isCreatingNewEvent))
+    val events = _events.receiveAsFlow()
 
     fun onEvent(event: EventScreenEvent) {
         when (event) {
@@ -164,7 +168,15 @@ class EventViewModel @Inject constructor(
 
     private fun onDeleteEvent() {
         launch {
-            repository.deleteEvent(_state.value.id)
+            repository.deleteEvent(_state.value.id).mapBoth(
+                success = { _events.send(UIEvent.DeletedSuccessfully) },
+                failure = { _events.send(UIEvent.ErrorDeleting) }
+            )
         }
+    }
+
+    sealed class UIEvent {
+        data object DeletedSuccessfully : UIEvent()
+        data object ErrorDeleting : UIEvent()
     }
 }

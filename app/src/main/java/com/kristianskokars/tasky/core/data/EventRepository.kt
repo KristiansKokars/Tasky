@@ -4,6 +4,7 @@ import android.net.Uri
 import com.github.michaelbull.result.Err
 import com.github.michaelbull.result.Ok
 import com.github.michaelbull.result.Result
+import com.kristianskokars.tasky.core.data.local.db.EventDao
 import com.kristianskokars.tasky.core.data.remote.TaskyAPI
 import com.kristianskokars.tasky.core.data.remote.model.EventRequestDTO
 import com.kristianskokars.tasky.core.domain.DeepLinks
@@ -15,13 +16,16 @@ import com.kristianskokars.tasky.lib.Success
 import com.kristianskokars.tasky.lib.randomID
 import com.kristianskokars.tasky.lib.success
 import kotlinx.datetime.Clock
+import retrofit2.HttpException
+import java.io.IOException
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class EventRepository @Inject constructor(
     private val clock: Clock,
-    private val api: TaskyAPI,
+    private val local: EventDao,
+    private val remote: TaskyAPI,
     private val photoConverter: PhotoConverter,
     private val scheduler: Scheduler
 ) {
@@ -35,7 +39,7 @@ class EventRepository @Inject constructor(
         photos: List<Uri>
     ) {
         val id = randomID()
-        api.createEvent(
+        remote.createEvent(
             createEventRequest = EventRequestDTO(
                 id = id,
                 title = title,
@@ -62,14 +66,21 @@ class EventRepository @Inject constructor(
     }
 
     suspend fun deleteEvent(eventId: String): Result<Success, APIError> {
-        api.deleteEvent(eventId)
-        scheduler.cancelAlarm(eventId)
+        try {
+            remote.deleteEvent(eventId)
+            local.deleteEvent(eventId)
+            scheduler.cancelAlarm(eventId)
+        } catch (e: HttpException) {
+            return Err(APIError.ServerError)
+        } catch (e: IOException) {
+            return Err(APIError.ClientError)
+        }
 
         return success()
     }
 
     suspend fun getAttendee(email: String): Result<Attendee, Unit> {
-        val response = api.getAttendee(email)
+        val response = remote.getAttendee(email)
         if (!response.doesUserExist || response.attendee == null) return Err(Unit)
 
         return Ok(

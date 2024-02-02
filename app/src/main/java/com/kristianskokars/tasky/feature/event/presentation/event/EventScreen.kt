@@ -23,6 +23,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -31,6 +32,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kristianskokars.tasky.R
 import com.kristianskokars.tasky.core.domain.DeepLinks
 import com.kristianskokars.tasky.core.presentation.components.ScreenSurface
+import com.kristianskokars.tasky.core.presentation.components.TaskyAlertDialog
 import com.kristianskokars.tasky.core.presentation.components.TaskyDivider
 import com.kristianskokars.tasky.core.presentation.components.TaskySurface
 import com.kristianskokars.tasky.core.presentation.components.agendacreation.AgendaBadge
@@ -42,15 +44,17 @@ import com.kristianskokars.tasky.core.presentation.components.agendacreation.Tim
 import com.kristianskokars.tasky.core.presentation.theme.Black
 import com.kristianskokars.tasky.core.presentation.theme.Gray
 import com.kristianskokars.tasky.core.presentation.theme.LightGreen
+import com.kristianskokars.tasky.destinations.EditDescriptionScreenDestination
+import com.kristianskokars.tasky.destinations.EditTitleScreenDestination
 import com.kristianskokars.tasky.feature.agenda.presentation.components.AddVisitorDialog
-import com.kristianskokars.tasky.feature.destinations.EditDescriptionScreenDestination
-import com.kristianskokars.tasky.feature.destinations.EditTitleScreenDestination
 import com.kristianskokars.tasky.feature.event.presentation.components.PhotosSection
 import com.kristianskokars.tasky.feature.event.presentation.components.RemindBeforeSection
 import com.kristianskokars.tasky.feature.event.presentation.components.visitorsSection
+import com.kristianskokars.tasky.lib.ObserveAsEvents
 import com.kristianskokars.tasky.lib.fillParentWidth
 import com.kristianskokars.tasky.lib.formatToLongDateUppercase
 import com.kristianskokars.tasky.lib.randomID
+import com.kristianskokars.tasky.lib.showToast
 import com.kristianskokars.tasky.nav.AppGraph
 import com.ramcosta.composedestinations.annotation.DeepLink
 import com.ramcosta.composedestinations.annotation.Destination
@@ -108,6 +112,14 @@ fun EventScreen(
     )
     val onUploadImage = remember { { uploadImage.launch("image/*")} }
 
+    val context = LocalContext.current
+    ObserveAsEvents(flow = viewModel.events) { event ->
+        when (event) {
+            EventViewModel.UIEvent.DeletedSuccessfully -> showToast(context, R.string.deleted_event)
+            EventViewModel.UIEvent.ErrorDeleting -> showToast(context, R.string.failed_delete_event)
+        }
+    }
+
     EventScreenContent(
         onEvent = viewModel::onEvent,
         state = state,
@@ -124,6 +136,16 @@ private fun EventScreenContent(
     onAddPhotoClick: () -> Unit,
 ) {
     var isDialogOpen by remember { mutableStateOf(false) }
+    var showConfirmDeleteDialog by remember { mutableStateOf(false) }
+
+    if (showConfirmDeleteDialog) {
+        TaskyAlertDialog(
+            title = { Text(text = stringResource(id = R.string.delete_event_alert_dialog_title)) },
+            text = { Text(text = stringResource(R.string.confirm_event_delete)) },
+            onConfirm = { onEvent(EventScreenEvent.DeleteEvent) },
+            onDismissRequest = { showConfirmDeleteDialog = false }
+        )
+    }
 
     Scaffold(
         topBar = {
@@ -218,7 +240,7 @@ private fun EventScreenContent(
                         ) {
                             TextButton(
                                 colors = ButtonDefaults.textButtonColors(contentColor = Gray),
-                                onClick = { onEvent(EventScreenEvent.DeleteEvent) }
+                                onClick = { showConfirmDeleteDialog = true }
                             )
                             {
                                 Text(text = stringResource(R.string.delete_event))
