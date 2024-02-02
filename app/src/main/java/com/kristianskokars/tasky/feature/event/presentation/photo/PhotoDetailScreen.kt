@@ -1,4 +1,4 @@
-package com.kristianskokars.tasky.feature.event.presentation
+package com.kristianskokars.tasky.feature.event.presentation.photo
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement

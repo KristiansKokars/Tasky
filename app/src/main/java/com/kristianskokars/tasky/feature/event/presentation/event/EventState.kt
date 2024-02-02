@@ -1,4 +1,4 @@
-package com.kristianskokars.tasky.feature.event.presentation
+package com.kristianskokars.tasky.feature.event.presentation.event
 
 import android.net.Uri
 import com.kristianskokars.tasky.core.data.local.model.RemindAtTime

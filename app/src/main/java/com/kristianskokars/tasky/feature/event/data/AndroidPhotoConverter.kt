@@ -1,4 +1,4 @@
-package com.kristianskokars.tasky.feature.event.presentation
+package com.kristianskokars.tasky.feature.event.data
 
 import android.content.Context
 import android.graphics.Bitmap
@@ -8,6 +8,7 @@ import android.provider.OpenableColumns
 import android.widget.Toast
 import androidx.core.net.toFile
 import androidx.core.net.toUri
+import com.kristianskokars.tasky.feature.event.domain.PhotoConverter
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -18,11 +19,6 @@ import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
 import kotlin.random.Random
-
-interface PhotoConverter {
-    suspend fun compressPhoto(uri: Uri): Uri?
-    fun photosToMultipart(photos: List<Uri>): List<MultipartBody.Part>
-}
 
 class AndroidPhotoConverter(
     private val context: Context,

@@ -1,4 +1,4 @@
-package com.kristianskokars.tasky.feature.event.presentation
+package com.kristianskokars.tasky.feature.event.presentation.event
 
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult

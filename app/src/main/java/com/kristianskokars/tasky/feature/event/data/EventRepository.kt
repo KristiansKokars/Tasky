@@ -9,8 +9,8 @@ import com.kristianskokars.tasky.core.data.remote.model.EventRequestDTO
 import com.kristianskokars.tasky.core.domain.APIError
 import com.kristianskokars.tasky.core.domain.DeepLinks
 import com.kristianskokars.tasky.core.domain.Scheduler
+import com.kristianskokars.tasky.feature.event.domain.PhotoConverter
 import com.kristianskokars.tasky.feature.event.domain.model.Attendee
-import com.kristianskokars.tasky.feature.event.presentation.PhotoConverter
 import com.kristianskokars.tasky.lib.Success
 import com.kristianskokars.tasky.lib.randomID
 import com.kristianskokars.tasky.lib.success

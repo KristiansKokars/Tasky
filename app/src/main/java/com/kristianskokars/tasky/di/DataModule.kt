@@ -15,8 +15,8 @@ import com.kristianskokars.tasky.core.data.local.userSettingsStore
 import com.kristianskokars.tasky.core.data.remote.NetworkClient
 import com.kristianskokars.tasky.core.data.remote.TaskyAPI
 import com.kristianskokars.tasky.core.domain.Scheduler
-import com.kristianskokars.tasky.feature.event.presentation.AndroidPhotoConverter
-import com.kristianskokars.tasky.feature.event.presentation.PhotoConverter
+import com.kristianskokars.tasky.feature.event.data.AndroidPhotoConverter
+import com.kristianskokars.tasky.feature.event.domain.PhotoConverter
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

@@ -49,7 +49,7 @@ import com.kristianskokars.tasky.feature.agenda.presentation.components.TopDayRo
 import com.kristianskokars.tasky.feature.destinations.EventScreenDestination
 import com.kristianskokars.tasky.feature.destinations.ReminderScreenDestination
 import com.kristianskokars.tasky.feature.destinations.TaskScreenDestination
-import com.kristianskokars.tasky.feature.event.presentation.EventScreenNavArgs
+import com.kristianskokars.tasky.feature.event.presentation.event.EventScreenNavArgs
 import com.kristianskokars.tasky.feature.reminder.presentation.ReminderScreenNavArgs
 import com.kristianskokars.tasky.feature.task.presentation.TaskScreenNavArgs
 import com.kristianskokars.tasky.lib.ObserveAsEvents

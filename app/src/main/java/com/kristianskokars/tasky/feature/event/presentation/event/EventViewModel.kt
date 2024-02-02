@@ -1,4 +1,4 @@
-package com.kristianskokars.tasky.feature.event.presentation
+package com.kristianskokars.tasky.feature.event.presentation.event
 
 import android.net.Uri
 import androidx.datastore.core.DataStore
@@ -9,6 +9,7 @@ import com.github.michaelbull.result.mapBoth
 import com.kristianskokars.tasky.core.data.local.model.RemindAtTime
 import com.kristianskokars.tasky.core.data.local.model.UserSettings
 import com.kristianskokars.tasky.feature.event.data.EventRepository
+import com.kristianskokars.tasky.feature.event.domain.PhotoConverter
 import com.kristianskokars.tasky.feature.event.domain.model.Attendee
 import com.kristianskokars.tasky.feature.navArgs
 import com.kristianskokars.tasky.lib.asStateFlow
