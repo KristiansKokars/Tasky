@@ -51,6 +51,7 @@ import com.kristianskokars.tasky.feature.destinations.TaskScreenDestination
 import com.kristianskokars.tasky.feature.event.presentation.EventScreenNavArgs
 import com.kristianskokars.tasky.feature.reminder.presentation.ReminderScreenNavArgs
 import com.kristianskokars.tasky.feature.task.presentation.TaskScreenNavArgs
+import com.kristianskokars.tasky.lib.formatToLongDate
 import com.kristianskokars.tasky.lib.nameOfMonth
 import com.kristianskokars.tasky.nav.AppGraph
 import com.ramcosta.composedestinations.annotation.Destination
@@ -130,7 +131,7 @@ private fun AgendaScreenContent(
             )
             Spacer(modifier = Modifier.size(20.dp))
             Row(modifier = Modifier.fillMaxWidth()) {
-                Text(text = stringResource(R.string.today), style = MaterialTheme.typography.headlineMedium)
+                Text(text = state.currentWeekDays[state.selectedDayIndex].formatToLongDate(), style = MaterialTheme.typography.headlineMedium)
             }
             Box {
                 if (state.isLoadingAgendas) {

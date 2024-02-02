@@ -49,7 +49,7 @@ import com.kristianskokars.tasky.feature.event.presentation.components.TaskyTime
 import com.kristianskokars.tasky.feature.event.presentation.components.TimeState
 import com.kristianskokars.tasky.feature.event.presentation.components.visitorsSection
 import com.kristianskokars.tasky.lib.fillParentWidth
-import com.kristianskokars.tasky.lib.formatToLongDate
+import com.kristianskokars.tasky.lib.formatToLongDateUppercase
 import com.kristianskokars.tasky.lib.randomID
 import com.kristianskokars.tasky.nav.AppGraph
 import com.ramcosta.composedestinations.annotation.DeepLink
@@ -124,8 +124,8 @@ private fun EventScreenContent(
     Scaffold(
         topBar = {
             AgendaTopBar(
-                title = state.currentDate.formatToLongDate(),
-                editingTitle = state.currentDate.formatToLongDate(),
+                title = state.currentDate.formatToLongDateUppercase(),
+                editingTitle = state.currentDate.formatToLongDateUppercase(),
                 isEditing = state.isEditing,
                 onCloseClick = navigator::navigateUp,
                 onSaveClick = { onEvent(EventScreenEvent.SaveEdits) },

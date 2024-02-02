@@ -26,8 +26,14 @@ fun LocalDateTime.formatToDate(): String {
     return toJavaLocalDateTime().format(dateFormatter)
 }
 
-/** Formats a date like: 01 MARCH 2022 */
+/** Formats a date like: 01 March 2022 */
 fun LocalDate.formatToLongDate(): String {
+    val dateFormatter = DateTimeFormatter.ofPattern("dd MMMM yyyy")
+    return toJavaLocalDate().format(dateFormatter)
+}
+
+/** Formats a date like: 01 MARCH 2022 */
+fun LocalDate.formatToLongDateUppercase(): String {
     val dateFormatter = DateTimeFormatter.ofPattern("dd MMMM yyyy")
     return toJavaLocalDate().format(dateFormatter).uppercase()
 }
