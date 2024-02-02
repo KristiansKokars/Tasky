@@ -36,7 +36,9 @@ class TaskViewModel @Inject constructor(
 
     private fun saveTask() {
         launch {
+            _state.update { it.copy(isSaving = true) }
             repository.saveTask(_state.value.task)
+            _state.update { it.copy(isSaving = false) }
         }
     }
 

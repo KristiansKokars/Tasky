@@ -42,6 +42,7 @@ import com.kristianskokars.tasky.feature.event.presentation.components.AgendaTop
 import com.kristianskokars.tasky.feature.event.presentation.components.RemindBeforeSection
 import com.kristianskokars.tasky.feature.event.presentation.components.TaskyTimeSection
 import com.kristianskokars.tasky.lib.fillParentWidth
+import com.kristianskokars.tasky.lib.formatToLongDateUppercase
 import com.kristianskokars.tasky.lib.randomID
 import com.kristianskokars.tasky.nav.AppGraph
 import com.ramcosta.composedestinations.annotation.DeepLink
@@ -105,6 +106,7 @@ private fun ReminderScreenContent(
     Scaffold(
         topBar = {
             AgendaTopBar(
+                title = state.currentDate.formatToLongDateUppercase(),
                 isEditing = state.isEditing,
                 onCloseClick = navigator::navigateUp,
                 onSaveClick = { onEvent(ReminderScreenEvent.Save) },

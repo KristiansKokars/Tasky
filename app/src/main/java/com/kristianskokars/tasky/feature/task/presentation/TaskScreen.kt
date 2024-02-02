@@ -40,6 +40,7 @@ import com.kristianskokars.tasky.feature.event.presentation.components.AgendaTop
 import com.kristianskokars.tasky.feature.event.presentation.components.RemindBeforeSection
 import com.kristianskokars.tasky.feature.event.presentation.components.TaskyTimeSection
 import com.kristianskokars.tasky.feature.task.domain.model.Task
+import com.kristianskokars.tasky.lib.formatToLongDateUppercase
 import com.kristianskokars.tasky.lib.randomID
 import com.kristianskokars.tasky.nav.AppGraph
 import com.ramcosta.composedestinations.annotation.DeepLink
@@ -72,13 +73,17 @@ fun TaskScreen(
 
     editTitleResultRecipient.onNavResult { titleResult ->
         when (titleResult) {
-            NavResult.Canceled -> { /* Ignored */ }
+            NavResult.Canceled -> { /* Ignored */
+            }
+
             is NavResult.Value -> viewModel.onEvent(TaskScreenEvent.OnTitleChanged(titleResult.value))
         }
     }
     editDescriptionResultRecipient.onNavResult { descriptionResult ->
         when (descriptionResult) {
-            NavResult.Canceled -> { /* Ignored */ }
+            NavResult.Canceled -> { /* Ignored */
+            }
+
             is NavResult.Value -> viewModel.onEvent(
                 TaskScreenEvent.OnDescriptionChanged(
                     descriptionResult.value
@@ -103,15 +108,17 @@ private fun TaskScreenContent(
     Scaffold(
         topBar = {
             AgendaTopBar(
+                title = state.currentDate.formatToLongDateUppercase(),
                 isEditing = state.isEditing,
+                isSaving = state.isSaving,
                 editingTitle = stringResource(R.string.edit_task),
                 onSaveClick = { onEvent(TaskScreenEvent.SaveTask) },
-                onCloseClick = navigator::navigateUp
+                onCloseClick = navigator::navigateUp,
             )
         },
     ) { padding ->
         CompositionLocalProvider(LocalContentColor provides Black) {
-            TaskySurface(modifier = Modifier.padding(padding)) {
+            TaskySurface(modifier = Modifier.padding(padding), showWhiteOverlay = state.isSaving) {
                 Spacer(modifier = Modifier.size(24.dp))
                 AgendaBadge(text = stringResource(id = R.string.task), badgeColor = Green)
                 Spacer(modifier = Modifier.size(16.dp))
