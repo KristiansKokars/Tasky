@@ -3,6 +3,7 @@ package com.kristianskokars.tasky.core.data
 import com.github.michaelbull.result.Err
 import com.github.michaelbull.result.Result
 import com.kristianskokars.tasky.core.data.local.db.TaskDao
+import com.kristianskokars.tasky.core.data.local.db.model.TaskDBModel
 import com.kristianskokars.tasky.core.data.remote.TaskyAPI
 import com.kristianskokars.tasky.core.data.remote.model.CreateTaskRequestDTO
 import com.kristianskokars.tasky.core.data.remote.model.UpdateTaskRequestDTO
@@ -28,7 +29,6 @@ class TaskRepository @Inject constructor(
     private val local: TaskDao,
     private val scheduler: Scheduler
 ) {
-    // TODO: offline first and create WorkManager task to sync!
     suspend fun saveTask(task: Task): Result<Success, APIError> {
         val existingTask = local.getTask(task.id)
         val time = task.dateTime.toInstant(timeZone)
@@ -64,6 +64,17 @@ class TaskRepository @Inject constructor(
             return Err(APIError.ClientError)
         }
 
+        local.insertTask(
+            TaskDBModel(
+                id = task.id,
+                title = task.title,
+                description = task.description,
+                timeInMillis = time.toEpochMilliseconds(),
+                remindAtTimeInMillis = remindAtInMillis,
+                isDone = task.isDone,
+            )
+        )
+
         if (
             remindAtInMillis > clock.now().toEpochMilliseconds() &&
             existingTask?.remindAtTimeInMillis != remindAtInMillis
@@ -85,6 +96,7 @@ class TaskRepository @Inject constructor(
     suspend fun deleteTask(taskId: String): Result<Success, APIError> {
         try {
             remote.deleteTask(taskId)
+            local.deleteTask(taskId)
         } catch (e: HttpException) {
             return Err(APIError.ServerError)
         } catch (e: IOException) {
