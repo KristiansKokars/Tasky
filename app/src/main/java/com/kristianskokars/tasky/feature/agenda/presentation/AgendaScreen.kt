@@ -108,7 +108,7 @@ private fun AgendaScreenContent(
                         )
                     }
                 },
-                actions = { ProfileIcon(onLogOut = { onEvent(AgendaEvent.Logout) }) }
+                actions = { ProfileIcon(onLogOut = { onEvent(AgendaEvent.Logout) }, nameInitials = state.nameInitials) }
             )
         },
         floatingActionButton = {
@@ -120,13 +120,11 @@ private fun AgendaScreenContent(
                                 EventScreenNavArgs(isCreatingNewEvent = true, isEditing = true)
                             )
                         )
-
                         CreateAgendaType.Reminder -> navigator.navigate(
                             ReminderScreenDestination(
                                 ReminderScreenNavArgs(isCreatingNewReminder = true, isEditing = true)
                             )
                         )
-
                         CreateAgendaType.Task -> navigator.navigate(
                             TaskScreenDestination(
                                 TaskScreenNavArgs(isCreatingNewTask = true, isEditing = true)

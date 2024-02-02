@@ -1,8 +1,10 @@
 package com.kristianskokars.tasky.feature.agenda.presentation
 
+import androidx.datastore.core.DataStore
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kristianskokars.tasky.core.data.TaskRepository
+import com.kristianskokars.tasky.core.data.local.model.UserSettings
 import com.kristianskokars.tasky.feature.agenda.data.AgendaRepository
 import com.kristianskokars.tasky.feature.auth.data.BackendAuthProvider
 import com.kristianskokars.tasky.lib.asStateFlow
@@ -25,11 +27,12 @@ import javax.inject.Inject
 @HiltViewModel
 class AgendaViewModel @Inject constructor(
     clock: Clock,
+    userStore: DataStore<UserSettings>,
     private val agendaRepository: AgendaRepository,
     private val taskRepository: TaskRepository,
     private val timeZone: TimeZone,
     private val locale: Locale,
-    private val backendAuthProvider: BackendAuthProvider,
+    private val backendAuthProvider: BackendAuthProvider
 ) : ViewModel() {
     private val _selectedDayIndex = MutableStateFlow(0)
     private val _startingDate = MutableStateFlow(clock.now().toLocalDateTime(timeZone).date)
@@ -43,11 +46,13 @@ class AgendaViewModel @Inject constructor(
         },
         agendaRepository.isLoadingAgendas,
         _startingDate,
-        _selectedDayIndex
-    ) { currentAgendas, isLoadingAgendas, startingDate, selectedDayIndex ->
+        _selectedDayIndex,
+        userStore.data
+    ) { currentAgendas, isLoadingAgendas, startingDate, selectedDayIndex, user ->
         val lastDoneAgenda = currentAgendas.lastOrNull { it.isDone }?.id
 
         AgendaState(
+            nameInitials = user.fullName?.nameInitials() ?: "",
             currentChosenDate = startingDate,
             agendas = currentAgendas,
             currentWeekDays = startingDate.next6Days(),
@@ -113,5 +118,15 @@ class AgendaViewModel @Inject constructor(
 
     private fun deleteAgenda(id: String) {
         // TODO
+    }
+
+    private fun String.nameInitials(): String {
+        val words = split(" ")
+        if (words.size == 1) {
+            val name = words[0]
+            return "${name[0]}${name[1]}".uppercase()
+        }
+
+        return words.map { it.first() }.joinToString("").uppercase()
     }
 }

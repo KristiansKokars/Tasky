@@ -19,6 +19,7 @@ import com.kristianskokars.tasky.core.presentation.theme.LightBlue
 @Composable
 fun ProfileIcon(
     onLogOut: () -> Unit,
+    nameInitials: String,
 ) {
     var isDropdownOpen by remember { mutableStateOf(false) }
     val logoutText = stringResource(R.string.logout)
@@ -27,7 +28,7 @@ fun ProfileIcon(
     Box(contentAlignment = Alignment.BottomCenter) {
         AvatarIcon(
             modifier = Modifier.clickable { isDropdownOpen = true },
-            text = "AB", // TODO: make sure it is not hardcoded later
+            text = nameInitials,
             textColor = LightBlue,
             containerColor = Light
         )

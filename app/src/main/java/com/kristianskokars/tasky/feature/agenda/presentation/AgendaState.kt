@@ -7,6 +7,7 @@ import kotlinx.datetime.LocalDate
 import java.util.Locale
 
 data class AgendaState(
+    val nameInitials: String = "",
     val currentChosenDate: LocalDate = currentSystemDate(),
     val locale: Locale = Locale.getDefault(),
     val currentWeekDays: List<LocalDate> = currentSystemDate().next6Days(),
