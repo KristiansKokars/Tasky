@@ -24,6 +24,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
@@ -51,8 +52,10 @@ import com.kristianskokars.tasky.feature.destinations.TaskScreenDestination
 import com.kristianskokars.tasky.feature.event.presentation.EventScreenNavArgs
 import com.kristianskokars.tasky.feature.reminder.presentation.ReminderScreenNavArgs
 import com.kristianskokars.tasky.feature.task.presentation.TaskScreenNavArgs
+import com.kristianskokars.tasky.lib.ObserveAsEvents
 import com.kristianskokars.tasky.lib.formatToLongDate
 import com.kristianskokars.tasky.lib.nameOfMonth
+import com.kristianskokars.tasky.lib.showToast
 import com.kristianskokars.tasky.nav.AppGraph
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
@@ -65,6 +68,13 @@ import com.vanpra.composematerialdialogs.rememberMaterialDialogState
 fun AgendaScreen(viewModel: AgendaViewModel = hiltViewModel(), navigator: DestinationsNavigator) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
+    val context = LocalContext.current
+    ObserveAsEvents(flow = viewModel.events) { event ->
+        when (event) {
+            AgendaViewModel.UIEvent.DeletedSuccessfully -> showToast(context, R.string.deleted_agenda)
+            AgendaViewModel.UIEvent.ErrorDeleting -> showToast(context, R.string.failed_delete_agenda)
+        }
+    }
     AgendaScreenContent(state = state, onEvent = viewModel::onEvent, navigator)
 }
 
@@ -185,7 +195,7 @@ private fun AgendaList(
     onTaskIsDone: (taskId: String) -> Unit,
     onOpenClick: (agenda: Agenda) -> Unit,
     onEditClick: (agenda: Agenda) -> Unit,
-    onDeleteClick: (id: String) -> Unit,
+    onDeleteClick: (agenda: Agenda) -> Unit,
 ) {
     LazyColumn(
         contentPadding = PaddingValues(top = 20.dp)

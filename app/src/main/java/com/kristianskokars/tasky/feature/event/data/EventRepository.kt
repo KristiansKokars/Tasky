@@ -6,11 +6,14 @@ import com.github.michaelbull.result.Ok
 import com.github.michaelbull.result.Result
 import com.kristianskokars.tasky.core.data.remote.TaskyAPI
 import com.kristianskokars.tasky.core.data.remote.model.EventRequestDTO
+import com.kristianskokars.tasky.core.domain.APIError
 import com.kristianskokars.tasky.core.domain.DeepLinks
 import com.kristianskokars.tasky.core.domain.Scheduler
 import com.kristianskokars.tasky.feature.event.domain.model.Attendee
 import com.kristianskokars.tasky.feature.event.presentation.PhotoConverter
+import com.kristianskokars.tasky.lib.Success
 import com.kristianskokars.tasky.lib.randomID
+import com.kristianskokars.tasky.lib.success
 import kotlinx.datetime.Clock
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -58,9 +61,11 @@ class EventRepository @Inject constructor(
         }
     }
 
-    suspend fun deleteEvent(eventId: String) {
+    suspend fun deleteEvent(eventId: String): Result<Success, APIError> {
         api.deleteEvent(eventId)
         scheduler.cancelAlarm(eventId)
+
+        return success()
     }
 
     suspend fun getAttendee(email: String): Result<Attendee, Unit> {

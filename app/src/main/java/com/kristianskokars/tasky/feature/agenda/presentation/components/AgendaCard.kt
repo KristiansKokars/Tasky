@@ -60,7 +60,7 @@ fun AgendaCard(
     onTaskIsDone: (taskId: String) -> Unit,
     onOpenClick: (agenda: Agenda) -> Unit,
     onEditClick: (agenda: Agenda) -> Unit,
-    onDeleteClick: (id: String) -> Unit,
+    onDeleteClick: (agenda: Agenda) -> Unit,
 ) {
     val backgroundColor = when (agenda) {
         is Agenda.Task -> Green
@@ -87,7 +87,7 @@ fun AgendaCard(
         TaskyAlertDialog(
             title = { Text(text = stringResource(id = R.string.delete_agenda_alert_dialog_title)) },
             text = { Text(text = stringResource(R.string.confirm_agenda_delete)) },
-            onConfirm = { onDeleteClick(agenda.id) },
+            onConfirm = { onDeleteClick(agenda) },
             onDismissRequest = { showConfirmDeleteDialog = false }
         )
     }

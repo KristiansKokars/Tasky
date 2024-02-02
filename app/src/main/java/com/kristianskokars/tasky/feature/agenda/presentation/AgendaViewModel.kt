@@ -3,18 +3,24 @@ package com.kristianskokars.tasky.feature.agenda.presentation
 import androidx.datastore.core.DataStore
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.github.michaelbull.result.mapBoth
 import com.kristianskokars.tasky.core.data.TaskRepository
 import com.kristianskokars.tasky.core.data.local.model.UserSettings
 import com.kristianskokars.tasky.feature.agenda.data.AgendaRepository
+import com.kristianskokars.tasky.feature.agenda.data.model.Agenda
 import com.kristianskokars.tasky.feature.auth.data.BackendAuthProvider
+import com.kristianskokars.tasky.feature.event.data.EventRepository
+import com.kristianskokars.tasky.feature.reminder.data.ReminderRepository
 import com.kristianskokars.tasky.lib.asStateFlow
 import com.kristianskokars.tasky.lib.launch
 import com.kristianskokars.tasky.lib.next6Days
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDate
@@ -30,12 +36,15 @@ class AgendaViewModel @Inject constructor(
     userStore: DataStore<UserSettings>,
     private val agendaRepository: AgendaRepository,
     private val taskRepository: TaskRepository,
+    private val reminderRepository: ReminderRepository,
+    private val eventRepository: EventRepository,
     private val timeZone: TimeZone,
     private val locale: Locale,
     private val backendAuthProvider: BackendAuthProvider
 ) : ViewModel() {
     private val _selectedDayIndex = MutableStateFlow(0)
     private val _startingDate = MutableStateFlow(clock.now().toLocalDateTime(timeZone).date)
+    private val _events = Channel<UIEvent>()
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val state = combine(
@@ -62,6 +71,7 @@ class AgendaViewModel @Inject constructor(
             locale = locale,
         )
     }.asStateFlow(viewModelScope, AgendaState())
+    val events = _events.receiveAsFlow()
 
     init {
         fetchAgendasForDay(_selectedDayIndex.value)
@@ -73,7 +83,7 @@ class AgendaViewModel @Inject constructor(
             AgendaEvent.Logout -> logout()
             is AgendaEvent.OnDatePicked -> onDatePicked(event.date)
             is AgendaEvent.OnTaskToggleDone -> onTaskIsDone(event.taskId)
-            is AgendaEvent.DeleteAgenda -> deleteAgenda(event.id)
+            is AgendaEvent.DeleteAgenda -> deleteAgenda(event.agenda)
         }
     }
 
@@ -116,8 +126,18 @@ class AgendaViewModel @Inject constructor(
         }
     }
 
-    private fun deleteAgenda(id: String) {
-        // TODO
+    private fun deleteAgenda(agenda: Agenda) {
+        launch {
+            val result = when (agenda) {
+                is Agenda.Event -> eventRepository.deleteEvent(agenda.id)
+                is Agenda.Reminder -> reminderRepository.deleteReminder(agenda.id)
+                is Agenda.Task -> taskRepository.deleteTask(agenda.id)
+            }
+            result.mapBoth(
+                success = { _events.send(UIEvent.DeletedSuccessfully) },
+                failure = { _events.send(UIEvent.ErrorDeleting) }
+            )
+        }
     }
 
     private fun String.nameInitials(): String {
@@ -128,5 +148,10 @@ class AgendaViewModel @Inject constructor(
         }
 
         return words.map { it.first() }.joinToString("").uppercase()
+    }
+
+    sealed class UIEvent {
+        data object DeletedSuccessfully : UIEvent()
+        data object ErrorDeleting : UIEvent()
     }
 }
