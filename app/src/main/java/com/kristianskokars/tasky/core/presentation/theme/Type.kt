@@ -26,6 +26,7 @@ val Inter = FontFamily(
 )
 
 val BannerHeadingStyle = TextStyle(
+    color = White,
     fontWeight = FontWeight.Bold,
     fontSize = 28.sp
 )

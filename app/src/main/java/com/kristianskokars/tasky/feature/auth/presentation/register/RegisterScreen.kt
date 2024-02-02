@@ -41,6 +41,7 @@ import com.kristianskokars.tasky.core.presentation.theme.Black
 import com.kristianskokars.tasky.core.presentation.theme.Green
 import com.kristianskokars.tasky.core.presentation.theme.LighterGray
 import com.kristianskokars.tasky.core.presentation.theme.Red
+import com.kristianskokars.tasky.core.presentation.theme.White
 import com.kristianskokars.tasky.feature.auth.data.model.RegisterError
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
@@ -174,6 +175,7 @@ fun RegisterScreenContent(
                 ) {
                     Icon(
                         painter = painterResource(R.drawable.ic_chevron_left),
+                        tint = White,
                         contentDescription = stringResource(R.string.go_back_to_login)
                     )
                 }
