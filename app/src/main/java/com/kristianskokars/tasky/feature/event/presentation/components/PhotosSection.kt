@@ -1,6 +1,5 @@
 package com.kristianskokars.tasky.feature.event.presentation.components
 
-import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -30,6 +29,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.kristianskokars.tasky.R
+import com.kristianskokars.tasky.core.domain.model.Photo
 import com.kristianskokars.tasky.core.presentation.theme.Gray
 import com.kristianskokars.tasky.core.presentation.theme.LightBlue
 import com.kristianskokars.tasky.core.presentation.theme.LightGray
@@ -37,13 +37,20 @@ import com.kristianskokars.tasky.lib.fillParentWidth
 
 @Composable
 fun PhotosSection(
-    photoUrls: List<Uri> = emptyList(),
+    photos: List<Photo> = emptyList(),
+    isEditing: Boolean,
     onAddPhotoClick: () -> Unit,
+    onPhotoClick: (Photo) -> Unit,
 ) {
-    if (photoUrls.isEmpty()) {
+    if (photos.isEmpty()) {
         AddPhotosText(onAddPhotoClick)
     } else {
-        PhotosGallery(photoUrls, onAddPhotoClick = onAddPhotoClick, onPhotoClick = {})
+        PhotosGallery(
+            photos = photos,
+            isEditing = isEditing,
+            onAddPhotoClick = onAddPhotoClick,
+            onPhotoClick = onPhotoClick
+        )
     }
 }
 
@@ -77,8 +84,9 @@ private fun AddPhotosText(
 
 @Composable
 private fun PhotosGallery(
-    photoUrls: List<Uri>,
-    onPhotoClick: (Uri) -> Unit,
+    photos: List<Photo>,
+    isEditing: Boolean,
+    onPhotoClick: (Photo) -> Unit,
     onAddPhotoClick: () -> Unit
 ) {
     Column(
@@ -94,11 +102,13 @@ private fun PhotosGallery(
         LazyRow(
             horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            items(photoUrls) { photoUrl ->
-                PhotoCard(photoUrl, onPhotoClick = onPhotoClick)
+            items(photos, key = { it.key }) { photo ->
+                PhotoCard(photo, onPhotoClick = onPhotoClick)
             }
-            item {
-                AddPhotosCard(onAddPhotoClick = onAddPhotoClick)
+            if (isEditing) {
+                item {
+                    AddPhotosCard(onAddPhotoClick = onAddPhotoClick)
+                }
             }
         }
     }
@@ -106,17 +116,17 @@ private fun PhotosGallery(
 
 @Composable
 private fun PhotoCard(
-    photoUrl: Uri,
+    photo: Photo,
     contentDescription: String? = null,
-    onPhotoClick: (Uri) -> Unit,
+    onPhotoClick: (Photo) -> Unit,
 ) {
     ClickableCard(
         clickLabel = stringResource(R.string.view_photo),
-        onClick = { onPhotoClick(photoUrl) }
+        onClick = { onPhotoClick(photo) }
     ) {
         AsyncImage(
             modifier = Modifier.fillMaxSize(),
-            model = photoUrl,
+            model = photo.url,
             contentDescription = contentDescription
         )
     }

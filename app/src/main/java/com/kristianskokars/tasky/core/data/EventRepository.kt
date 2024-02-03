@@ -63,6 +63,8 @@ class EventRepository @Inject constructor(
                     photos = photoConverter.photosToMultipart(event.photos)
                 )
             } else {
+                val photosToAdd = event.photos.filter { it !in existingEvent.photos && it.isLocal }
+                val photosToRemove = existingEvent.photos.filter { it !in event.photos }
                 remote.updateEvent(
                     updateEventRequest = UpdateEventRequestDTO(
                         id = event.id,
@@ -72,10 +74,10 @@ class EventRepository @Inject constructor(
                         to = event.toDateTime.toEpochMilliseconds(),
                         remindAt = remindAtInMillis,
                         attendeeIds = event.attendees.map { it.userId },
-                        deletedPhotoKeys = emptyList(), // TODO: create functionality
+                        deletedPhotoKeys = photosToRemove.map { it.key },
                         isGoing = true // TODO: create functionality
                     ),
-                    photos = photoConverter.photosToMultipart(event.photos)
+                    photos = photoConverter.photosToMultipart(photosToAdd)
                 )
             }
         } catch (e: HttpException) {

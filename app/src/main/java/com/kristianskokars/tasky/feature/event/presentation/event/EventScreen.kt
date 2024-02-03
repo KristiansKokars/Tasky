@@ -47,10 +47,12 @@ import com.kristianskokars.tasky.core.presentation.theme.Gray
 import com.kristianskokars.tasky.core.presentation.theme.LightGreen
 import com.kristianskokars.tasky.destinations.EditDescriptionScreenDestination
 import com.kristianskokars.tasky.destinations.EditTitleScreenDestination
+import com.kristianskokars.tasky.destinations.PhotoDetailScreenDestination
 import com.kristianskokars.tasky.feature.agenda.presentation.components.AddVisitorDialog
 import com.kristianskokars.tasky.feature.event.presentation.components.PhotosSection
 import com.kristianskokars.tasky.feature.event.presentation.components.RemindBeforeSection
 import com.kristianskokars.tasky.feature.event.presentation.components.visitorsSection
+import com.kristianskokars.tasky.feature.event.presentation.photo.DeletePhoto
 import com.kristianskokars.tasky.lib.ObserveAsEvents
 import com.kristianskokars.tasky.lib.formatToLongDateUppercase
 import com.kristianskokars.tasky.lib.randomID
@@ -82,6 +84,7 @@ fun EventScreen(
     navigator: DestinationsNavigator,
     editTitleResultRecipient: ResultRecipient<EditTitleScreenDestination, String>,
     editDescriptionResultRecipient: ResultRecipient<EditDescriptionScreenDestination, String>,
+    photoResultRecipient: ResultRecipient<PhotoDetailScreenDestination, DeletePhoto?>
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
@@ -99,6 +102,17 @@ fun EventScreen(
                     descriptionResult.value
                 )
             )
+        }
+    }
+    photoResultRecipient.onNavResult { photoResult ->
+        when (photoResult) {
+            NavResult.Canceled -> { /* Ignored */ }
+            is NavResult.Value -> {
+                val photoResultValue = photoResult.value
+                if (photoResultValue !is DeletePhoto) return@onNavResult
+
+                viewModel.onEvent(EventScreenEvent.OnRemovePhoto(photoResultValue.photo))
+            }
         }
     }
 
@@ -199,12 +213,17 @@ private fun EventScreenContent(
                             },
                             isEditing = state.isEditing,
                         )
-                        Spacer(modifier = Modifier.size(8.dp))
-                        PhotosSection(
-                            photoUrls = state.event.photos,
-                            onAddPhotoClick = onAddPhotoClick
-                        )
-                        Spacer(modifier = Modifier.size(16.dp))
+                        if (state.event.photos.isNotEmpty() || state.isEditing) {
+                            Spacer(modifier = Modifier.size(8.dp))
+                            PhotosSection(
+                                photos = state.event.photos,
+                                isEditing = state.isEditing,
+                                onAddPhotoClick = onAddPhotoClick,
+                                onPhotoClick = { navigator.navigate(PhotoDetailScreenDestination(photo = it)) }
+                            )
+                            Spacer(modifier = Modifier.size(16.dp))
+                        }
+
                         TaskyDivider()
                         TaskyTimeSection(
                             isEditing = state.isEditing,

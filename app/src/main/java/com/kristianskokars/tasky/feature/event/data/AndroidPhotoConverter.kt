@@ -8,6 +8,7 @@ import android.provider.OpenableColumns
 import androidx.core.net.toFile
 import androidx.core.net.toUri
 import com.kristianskokars.tasky.R
+import com.kristianskokars.tasky.core.domain.model.Photo
 import com.kristianskokars.tasky.feature.event.domain.PhotoConverter
 import com.kristianskokars.tasky.lib.showToast
 import kotlinx.coroutines.CoroutineDispatcher
@@ -48,7 +49,7 @@ class AndroidPhotoConverter(
                 outputStream.toByteArray()
             }
 
-            val picture = File(context.cacheDir.toString(), "photo-${Random.nextInt()}")
+            val picture = File(context.cacheDir.toString(), "photo-${Random.nextInt()}.jpeg")
             picture.createNewFile()
             FileOutputStream(picture).use { fos ->
                 fos.write(photoBytes)
@@ -65,17 +66,17 @@ class AndroidPhotoConverter(
         }
     }
 
-    override fun photosToMultipart(photos: List<Uri>): List<MultipartBody.Part> {
+    override fun photosToMultipart(photos: List<Photo>): List<MultipartBody.Part> {
         val parts = mutableListOf<MultipartBody.Part>()
-        for ((i, item) in photos.withIndex()) {
-            parts.add(prepareFilePart(context, "photo[$i]", item))
+        for (item in photos) {
+            parts.add(prepareFilePart(item.key, Uri.parse(item.url)))
         }
         return parts
     }
 
-    private fun prepareFilePart(context: Context, partName: String, fileUri: Uri): MultipartBody.Part{
+    private fun prepareFilePart(partName: String, fileUri: Uri): MultipartBody.Part {
         val file = fileUri.toFile()
-        val requestBody = file.asRequestBody(context.contentResolver.getType(fileUri)!!.toMediaTypeOrNull())
+        val requestBody = file.asRequestBody("image/jpeg".toMediaTypeOrNull())
         return MultipartBody.Part.createFormData(partName, file.name, requestBody)
     }
 }

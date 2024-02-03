@@ -9,6 +9,7 @@ import com.github.michaelbull.result.mapBoth
 import com.kristianskokars.tasky.core.data.EventRepository
 import com.kristianskokars.tasky.core.data.local.model.UserSettings
 import com.kristianskokars.tasky.core.domain.model.Event
+import com.kristianskokars.tasky.core.domain.model.Photo
 import com.kristianskokars.tasky.core.domain.model.RemindAtTime
 import com.kristianskokars.tasky.feature.event.domain.PhotoConverter
 import com.kristianskokars.tasky.feature.event.domain.model.Attendee
@@ -39,7 +40,8 @@ class EventViewModel @Inject constructor(
     private val _state = MutableStateFlow(
         EventState(
             event = if (navArgs.isCreatingNewEvent) Event() else null,
-            isEditing = navArgs.isCreatingNewEvent)
+            isEditing = navArgs.isEditing
+        )
     )
     private val _events = Channel<UIEvent>()
 
@@ -75,6 +77,7 @@ class EventViewModel @Inject constructor(
             is EventScreenEvent.OnDescriptionChanged -> onDescriptionChanged(event.newDescription)
             is EventScreenEvent.OnTitleChanged -> onTitleChanged(event.newTitle)
             is EventScreenEvent.OnAddPhoto -> onAddPhoto(event.newPhoto)
+            is EventScreenEvent.OnRemovePhoto -> onRemovePhoto(event.photoToRemove)
             is EventScreenEvent.OnChangeRemindAtTime -> onChangeRemindAtTime(event.newRemindAtTime)
             is EventScreenEvent.OnUpdateFromDate -> onUpdateFromDate(event.newFromDate)
             is EventScreenEvent.OnUpdateFromTime -> onUpdateFromTime(event.newFromTime)
@@ -131,10 +134,21 @@ class EventViewModel @Inject constructor(
 
                 state.copy(
                     event = event.copy(
-                        photos = event.photos.toMutableList().apply { add(compressedPhoto) }
+                        photos = event.photos.toMutableList().apply {
+                            add(Photo(isLocal = true, key = "photo${size}", url = compressedPhoto.toString()))
+                        }
                     )
                 )
             }
+        }
+    }
+
+    private fun onRemovePhoto(photoToRemove: Photo) {
+        _state.update { state ->
+            val event = state.event ?: return@update state
+            val photo = event.photos.find { it.key == photoToRemove.key } ?: return@update state
+
+            state.copy(event = event.copy(photos = event.photos.toMutableList().apply { remove(photo) }))
         }
     }
 

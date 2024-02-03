@@ -1,12 +1,14 @@
 package com.kristianskokars.tasky.feature.event.presentation.event
 
 import android.net.Uri
+import com.kristianskokars.tasky.core.domain.model.Photo
 import com.kristianskokars.tasky.core.domain.model.RemindAtTime
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalTime
 
 sealed class EventScreenEvent {
     data class OnAddPhoto(val newPhoto: Uri) : EventScreenEvent()
+    data class OnRemovePhoto(val photoToRemove: Photo) : EventScreenEvent()
     data object BeginEditing : EventScreenEvent()
     data object Save : EventScreenEvent()
     data object Delete : EventScreenEvent()

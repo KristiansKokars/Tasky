@@ -4,7 +4,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.kristianskokars.tasky.core.data.remote.model.TaskResponseDTO
 import com.kristianskokars.tasky.core.domain.model.Task
-import com.kristianskokars.tasky.core.domain.model.toRemindAtTimeOrThrow
+import com.kristianskokars.tasky.core.domain.model.toRemindAtTimeOrDefaultThirtyMinutesBefore
 import com.kristianskokars.tasky.feature.agenda.domain.model.Agenda
 import com.kristianskokars.tasky.lib.toLocalDateTime
 import kotlinx.datetime.Clock
@@ -26,7 +26,7 @@ fun TaskDBModel.toTask() = Task(
     title = title,
     description = description,
     dateTime = timeInMillis.toLocalDateTime(),
-    remindAtTime = (timeInMillis - remindAtTimeInMillis).toRemindAtTimeOrThrow(),
+    remindAtTime = (timeInMillis - remindAtTimeInMillis).toRemindAtTimeOrDefaultThirtyMinutesBefore(),
     isDone = isDone
 )
 

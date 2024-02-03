@@ -44,6 +44,7 @@ interface TaskyAPI {
     )
 
     @PUT("event")
+    @Multipart
     suspend fun updateEvent(
         @Part("update_event_request") updateEventRequest: UpdateEventRequestDTO,
         @Part photos: List<MultipartBody.Part>

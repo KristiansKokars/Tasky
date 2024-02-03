@@ -44,14 +44,14 @@ sealed interface RemindAtTime {
     }
 }
 
-fun Long.toRemindAtTimeOrThrow(): RemindAtTime {
+fun Long.toRemindAtTimeOrDefaultThirtyMinutesBefore(): RemindAtTime {
     val duration = toDuration(DurationUnit.MILLISECONDS)
     return when {
         duration.inWholeMinutes == 10L -> RemindAtTime.TenMinutesBefore
-        duration.inWholeMinutes == 30L -> RemindAtTime.TenMinutesBefore
+        duration.inWholeMinutes == 30L -> RemindAtTime.ThirtyMinutesBefore
         duration.inWholeHours == 1L -> RemindAtTime.OneHourBefore
         duration.inWholeHours == 6L -> RemindAtTime.SixHoursBefore
         duration.inWholeDays == 1L -> RemindAtTime.OneDayBefore
-        else -> throw IllegalStateException("Duration was not a valid remind at time object")
+        else -> RemindAtTime.ThirtyMinutesBefore
     }
 }
