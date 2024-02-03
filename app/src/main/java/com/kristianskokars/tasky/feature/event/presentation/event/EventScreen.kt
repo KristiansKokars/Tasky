@@ -219,7 +219,7 @@ private fun EventScreenContent(
                                 photos = state.event.photos,
                                 isEditing = state.isEditing,
                                 onAddPhotoClick = onAddPhotoClick,
-                                onPhotoClick = { navigator.navigate(PhotoDetailScreenDestination(photo = it)) }
+                                onPhotoClick = { navigator.navigate(PhotoDetailScreenDestination(photo = it, canDelete = state.isEditing)) }
                             )
                             Spacer(modifier = Modifier.size(16.dp))
                         }

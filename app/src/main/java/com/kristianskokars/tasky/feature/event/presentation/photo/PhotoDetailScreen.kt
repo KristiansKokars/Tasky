@@ -3,18 +3,16 @@ package com.kristianskokars.tasky.feature.event.presentation.photo
 import android.os.Parcelable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -46,19 +44,22 @@ data class DeletePhoto(val photo: Photo): Parcelable
 @Composable
 fun PhotoDetailScreen(
     photo: Photo,
+    canDelete: Boolean,
     resultNavigator: ResultBackNavigator<DeletePhoto?>
 ) {
-    PhotoDetailScreenContent(photo = photo, resultNavigator = resultNavigator)
+    PhotoDetailScreenContent(photo = photo, canDelete = canDelete, resultNavigator = resultNavigator)
 }
 
 @Composable
 private fun PhotoDetailScreenContent(
     photo: Photo,
+    canDelete: Boolean,
     resultNavigator: ResultBackNavigator<DeletePhoto?>
 ) {
     Scaffold(
         topBar = {
             PhotoTopBar(
+                canDelete = canDelete,
                 onCloseClick = { resultNavigator.navigateBack(null) },
                 onDeleteClick = { resultNavigator.navigateBack(DeletePhoto(photo)) }
             )
@@ -87,10 +88,11 @@ private fun PhotoDetailScreenContent(
 @Composable
 private fun PhotoTopBar(
     modifier: Modifier = Modifier,
+    canDelete: Boolean,
     onCloseClick: () -> Unit,
     onDeleteClick: () -> Unit,
 ) {
-    TopAppBar(
+    CenterAlignedTopAppBar(
         modifier = modifier,
         colors = TopAppBarDefaults.topAppBarColors(containerColor = Black),
         navigationIcon = {
@@ -103,26 +105,22 @@ private fun PhotoTopBar(
             }
         },
         title = {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center
-            ) {
-                Text(
-                    text = stringResource(R.string.photo),
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 16.sp
-                )
-            }
+            Text(
+                text = stringResource(R.string.photo),
+                fontWeight = FontWeight.Bold,
+                fontSize = 16.sp
+            )
         },
         actions = {
-            IconButton(onClick = onDeleteClick) {
-                Icon(
-                    modifier = Modifier.size(24.dp),
-                    painter = painterResource(R.drawable.ic_delete),
-                    contentDescription = stringResource(R.string.delete_photo),
-                    tint = White
-                )
+            if (canDelete) {
+                IconButton(onClick = onDeleteClick) {
+                    Icon(
+                        modifier = Modifier.size(24.dp),
+                        painter = painterResource(R.drawable.ic_delete),
+                        contentDescription = stringResource(R.string.delete_photo),
+                        tint = White
+                    )
+                }
             }
         }
     )
@@ -134,6 +132,7 @@ private fun PhotoDetailScreenPreview() {
     ScreenSurface {
         PhotoDetailScreenContent(
             photo = Photo("", ""),
+            canDelete = true,
             resultNavigator = EmptyResultBackNavigator()
         )
     }
