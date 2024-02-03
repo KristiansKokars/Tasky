@@ -223,7 +223,6 @@ private fun EventScreenContent(
                             )
                             Spacer(modifier = Modifier.size(16.dp))
                         }
-
                         TaskyDivider()
                         TaskyTimeSection(
                             isEditing = state.isEditing,
