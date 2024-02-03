@@ -111,7 +111,7 @@ fun AgendaCard(
                             onClick = { if (agenda is Agenda.Task) onTaskIsDone(agenda.id) }
                         )
                 ) {
-                    if (agenda.isDone) {
+                    if ((agenda is Agenda.Task && agenda.isDone) || (agenda !is Agenda.Task && agenda.isInThePast)) {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_checked_circle),
                             contentDescription = null
@@ -138,7 +138,7 @@ fun AgendaCard(
                         fontSize = 20.sp,
                         maxLines = 3,
                         overflow = TextOverflow.Ellipsis,
-                        textDecoration = if (agenda.isDone) TextDecoration.LineThrough else TextDecoration.None
+                        textDecoration = if ((agenda is Agenda.Task && agenda.isDone) || (agenda !is Agenda.Task && agenda.isInThePast)) TextDecoration.LineThrough else TextDecoration.None
                     )
                     Box(contentAlignment = Alignment.TopStart) {
                         Icon(

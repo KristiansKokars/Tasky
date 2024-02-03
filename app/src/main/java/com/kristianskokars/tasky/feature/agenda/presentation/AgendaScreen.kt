@@ -158,6 +158,7 @@ private fun AgendaScreenContent(
                     style = MaterialTheme.typography.headlineMedium
                 )
             }
+            Spacer(modifier = Modifier.size(20.dp))
             Box {
                 if (state.isLoadingAgendas) {
                     LoadingSpinner()
@@ -197,9 +198,7 @@ private fun AgendaList(
     onEditClick: (agenda: Agenda) -> Unit,
     onDeleteClick: (agenda: Agenda) -> Unit,
 ) {
-    LazyColumn(
-        contentPadding = PaddingValues(top = 20.dp)
-    ) {
+    LazyColumn(contentPadding = PaddingValues(bottom = 64.dp)) {
         item(key = "needle$lastDoneAgendaId") {
             if (agendas.isEmpty()) {
                 Text(text = stringResource(R.string.no_agenda_items_scheduled), color = Black)

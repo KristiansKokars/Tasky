@@ -8,6 +8,7 @@ import com.kristianskokars.tasky.core.domain.model.toRemindAtTimeOrThrow
 import com.kristianskokars.tasky.feature.agenda.domain.model.Agenda
 import com.kristianskokars.tasky.lib.toEpochMilliseconds
 import com.kristianskokars.tasky.lib.toLocalDateTime
+import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toInstant
 
@@ -38,12 +39,12 @@ fun Reminder.toReminderDBModel() = ReminderDBModel(
     remindAtInMillis = dateTime.toInstant(TimeZone.currentSystemDefault()).minus(remindAtTime.toDuration()).toEpochMilliseconds(),
 )
 
-fun ReminderDBModel.toAgendaReminder() = Agenda.Reminder(
+fun ReminderDBModel.toAgendaReminder(clock: Clock) = Agenda.Reminder(
     id = id,
     title = title,
     atTime = timeInMillis,
     description = description ?: "",
-    isDone = false
+    isInThePast = clock.now().toEpochMilliseconds() > timeInMillis
 )
 
 fun ReminderResponseDTO.toDBModel() = ReminderDBModel(

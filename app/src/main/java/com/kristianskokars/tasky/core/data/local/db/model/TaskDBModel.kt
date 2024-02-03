@@ -7,6 +7,7 @@ import com.kristianskokars.tasky.core.domain.model.Task
 import com.kristianskokars.tasky.core.domain.model.toRemindAtTimeOrThrow
 import com.kristianskokars.tasky.feature.agenda.domain.model.Agenda
 import com.kristianskokars.tasky.lib.toLocalDateTime
+import kotlinx.datetime.Clock
 
 const val TASK_TABLE_NAME = "task"
 
@@ -29,12 +30,13 @@ fun TaskDBModel.toTask() = Task(
     isDone = isDone
 )
 
-fun TaskDBModel.toAgendaTask() = Agenda.Task(
+fun TaskDBModel.toAgendaTask(clock: Clock) = Agenda.Task(
     id = id,
     title = title,
     atTime = timeInMillis,
     description = description,
-    isDone = isDone
+    isDone = isDone,
+    isInThePast = clock.now().toEpochMilliseconds() > timeInMillis
 )
 
 fun TaskResponseDTO.toDBModel() = TaskDBModel(

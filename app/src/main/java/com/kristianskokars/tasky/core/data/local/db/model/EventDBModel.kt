@@ -8,6 +8,7 @@ import com.kristianskokars.tasky.core.domain.model.toRemindAtTimeOrThrow
 import com.kristianskokars.tasky.feature.agenda.domain.model.Agenda
 import com.kristianskokars.tasky.lib.toEpochMilliseconds
 import com.kristianskokars.tasky.lib.toLocalDateTime
+import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toInstant
 
@@ -48,13 +49,13 @@ fun Event.toEventDBModel(currentUserId: String) = EventDBModel(
     isUserEventCreator = currentUserId == creator?.userId
 )
 
-fun EventDBModel.toAgendaEvent() = Agenda.Event(
+fun EventDBModel.toAgendaEvent(clock: Clock) = Agenda.Event(
     id = id,
     title = title,
     atTime = fromInMillis,
     toTime = toInMillis,
     description = description,
-    isDone = false
+    isInThePast = clock.now().toEpochMilliseconds() > toInMillis
 )
 
 fun EventResponseDTO.toDBModel() = EventDBModel(

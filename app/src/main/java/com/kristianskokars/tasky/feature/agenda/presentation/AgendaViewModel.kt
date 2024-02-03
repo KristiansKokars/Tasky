@@ -58,7 +58,7 @@ class AgendaViewModel @Inject constructor(
         _selectedDayIndex,
         userStore.data
     ) { currentAgendas, isLoadingAgendas, startingDate, selectedDayIndex, user ->
-        val lastDoneAgenda = currentAgendas.lastOrNull { it.isDone }?.id
+        val lastDoneAgenda = currentAgendas.lastOrNull { it.isInThePast }?.id
 
         AgendaState(
             nameInitials = user.fullName?.nameInitials() ?: "",

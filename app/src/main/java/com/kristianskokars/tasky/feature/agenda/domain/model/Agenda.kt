@@ -5,14 +5,15 @@ sealed class Agenda {
     abstract val title: String
     abstract val description: String
     abstract val atTime: Long
-    abstract val isDone: Boolean
+    abstract val isInThePast: Boolean
 
     data class Task(
         override val id: String,
         override val title: String,
         override val atTime: Long,
         override val description: String,
-        override val isDone: Boolean,
+        override val isInThePast: Boolean,
+        val isDone: Boolean,
     ) : Agenda()
 
     data class Event(
@@ -20,7 +21,7 @@ sealed class Agenda {
         override val title: String,
         override val atTime: Long,
         override val description: String,
-        override val isDone: Boolean,
+        override val isInThePast: Boolean,
         val toTime: Long
     ) : Agenda()
 
@@ -29,7 +30,7 @@ sealed class Agenda {
         override val title: String,
         override val atTime: Long,
         override val description: String,
-        override val isDone: Boolean
+        override val isInThePast: Boolean,
     ) : Agenda()
 
     companion object {
@@ -39,7 +40,8 @@ sealed class Agenda {
                 title = "Project X",
                 atTime = 1678003200000L,
                 description = "Just work",
-                isDone = true
+                isDone = true,
+                isInThePast = true
             ),
             Event(
                 id = "1",
@@ -47,21 +49,21 @@ sealed class Agenda {
                 atTime = 1678003200000L,
                 toTime = 1678004200000L,
                 description = "Amet minim mollit non deserunt",
-                isDone = false
+                isInThePast = true,
             ),
             Reminder(
                 id = "2",
                 title = "Lunch break",
                 atTime = 1678003200000L,
                 description = "Just food",
-                isDone = false
+                isInThePast = false,
             ),
             Reminder(
                 id = "3",
                 title = "Project X",
                 atTime = 1678003200000L,
                 description = "Amet minim mollit non deserunt ullamco est",
-                isDone = false
+                isInThePast = false
             )
         )
     }
