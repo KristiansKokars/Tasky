@@ -32,7 +32,7 @@ fun TaskDBModel.toTask() = Task(
 fun TaskDBModel.toAgendaTask() = Agenda.Task(
     id = id,
     title = title,
-    time = timeInMillis,
+    atTime = timeInMillis,
     description = description,
     isDone = isDone
 )

@@ -47,7 +47,7 @@ class AgendaRepository @Inject constructor(
             reminderDao.getRemindersForDay(startingDayMillis, endingDayMillis)
         ) { tasks, events, reminders ->
             val agendas = tasks.map { it.toAgendaTask() } + events.map { it.toAgendaEvent() } + reminders.map { it.toAgendaReminder() }
-            agendas.sortedBy { it.time }
+            agendas.sortedBy { it.atTime }
         }
     }
 

@@ -51,7 +51,8 @@ fun Event.toEventDBModel(currentUserId: String) = EventDBModel(
 fun EventDBModel.toAgendaEvent() = Agenda.Event(
     id = id,
     title = title,
-    time = fromInMillis,
+    atTime = fromInMillis,
+    toTime = toInMillis,
     description = description,
     isDone = false
 )

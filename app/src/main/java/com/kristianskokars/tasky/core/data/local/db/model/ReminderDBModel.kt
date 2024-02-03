@@ -41,7 +41,7 @@ fun Reminder.toReminderDBModel() = ReminderDBModel(
 fun ReminderDBModel.toAgendaReminder() = Agenda.Reminder(
     id = id,
     title = title,
-    time = timeInMillis,
+    atTime = timeInMillis,
     description = description ?: "",
     isDone = false
 )

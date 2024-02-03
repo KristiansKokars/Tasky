@@ -180,7 +180,10 @@ fun AgendaCard(
                     horizontalArrangement = Arrangement.End
                 ) {
                     Text(
-                        text = agenda.time.formatTime(),
+                        text = when (agenda) {
+                            is Agenda.Event -> "${agenda.atTime.formatTime()} - ${agenda.toTime.formatTime()}"
+                            else -> agenda.atTime.formatTime()
+                        },
                         fontWeight = FontWeight.Light,
                         fontSize = 14.sp,
                         lineHeight = 12.sp

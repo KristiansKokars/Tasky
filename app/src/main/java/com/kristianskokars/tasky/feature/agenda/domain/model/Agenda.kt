@@ -4,13 +4,13 @@ sealed class Agenda {
     abstract val id: String
     abstract val title: String
     abstract val description: String
-    abstract val time: Long
+    abstract val atTime: Long
     abstract val isDone: Boolean
 
     data class Task(
         override val id: String,
         override val title: String,
-        override val time: Long,
+        override val atTime: Long,
         override val description: String,
         override val isDone: Boolean,
     ) : Agenda()
@@ -18,15 +18,16 @@ sealed class Agenda {
     data class Event(
         override val id: String,
         override val title: String,
-        override val time: Long,
+        override val atTime: Long,
         override val description: String,
-        override val isDone: Boolean
+        override val isDone: Boolean,
+        val toTime: Long
     ) : Agenda()
 
     data class Reminder(
         override val id: String,
         override val title: String,
-        override val time: Long,
+        override val atTime: Long,
         override val description: String,
         override val isDone: Boolean
     ) : Agenda()
@@ -36,28 +37,29 @@ sealed class Agenda {
             Task(
                 id = "0",
                 title = "Project X",
-                time = 1678003200000L,
+                atTime = 1678003200000L,
                 description = "Just work",
                 isDone = true
             ),
             Event(
                 id = "1",
                 title = "Meeting",
-                time = 1678003200000L,
+                atTime = 1678003200000L,
+                toTime = 1678004200000L,
                 description = "Amet minim mollit non deserunt",
                 isDone = false
             ),
             Reminder(
                 id = "2",
                 title = "Lunch break",
-                time = 1678003200000L,
+                atTime = 1678003200000L,
                 description = "Just food",
                 isDone = false
             ),
             Reminder(
                 id = "3",
                 title = "Project X",
-                time = 1678003200000L,
+                atTime = 1678003200000L,
                 description = "Amet minim mollit non deserunt ullamco est",
                 isDone = false
             )
