@@ -87,6 +87,7 @@ fun EventScreen(
     photoResultRecipient: ResultRecipient<PhotoDetailScreenDestination, DeletePhoto?>
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+    var isAddAttendeeDialogOpen by remember { mutableStateOf(false) }
 
     editTitleResultRecipient.onNavResult { titleResult ->
         when (titleResult) {
@@ -133,12 +134,18 @@ fun EventScreen(
             EventViewModel.UIEvent.SavedSuccessfully -> showToast(context, R.string.save_event)
             EventViewModel.UIEvent.DeletedSuccessfully -> showToast(context, R.string.deleted_event)
             EventViewModel.UIEvent.ErrorDeleting -> showToast(context, R.string.failed_delete_event)
+            is EventViewModel.UIEvent.AttendeeAddedSuccessfuly -> showToast(context, context.getString(R.string.added_attendee_success, event.addedAttendee.fullName))
+            is EventViewModel.UIEvent.AttendeeNotFound -> showToast(context, context.getString(R.string.failed_to_find_attendee, event.failedEmail))
+            is EventViewModel.UIEvent.FailedToAddAttendee -> showToast(context, context.getString(R.string.failed_to_add_attendee, event.failedEmail))
         }
     }
 
     EventScreenContent(
         onEvent = viewModel::onEvent,
         state = state,
+        isAddAttendeeDialogOpen = isAddAttendeeDialogOpen,
+        onOpenAttendeeDialog = { isAddAttendeeDialogOpen = true },
+        onCloseAttendeeDialog = { isAddAttendeeDialogOpen = false },
         navigator = navigator,
         onAddPhotoClick = onUploadImage
     )
@@ -148,10 +155,12 @@ fun EventScreen(
 private fun EventScreenContent(
     onEvent: (EventScreenEvent) -> Unit,
     state: EventState,
+    isAddAttendeeDialogOpen: Boolean,
+    onOpenAttendeeDialog: () -> Unit,
+    onCloseAttendeeDialog: () -> Unit,
     navigator: DestinationsNavigator,
     onAddPhotoClick: () -> Unit,
 ) {
-    var isDialogOpen by remember { mutableStateOf(false) }
     var showConfirmDeleteDialog by remember { mutableStateOf(false) }
 
     if (showConfirmDeleteDialog) {
@@ -177,9 +186,9 @@ private fun EventScreenContent(
     ) { padding ->
         CompositionLocalProvider(LocalContentColor provides Black) {
             AddVisitorDialog(
-                isDialogOpen = isDialogOpen,
+                isDialogOpen = isAddAttendeeDialogOpen,
                 isCheckingIfAttendeeExists = state.isCheckingIfAttendeeExists,
-                onDismissRequest = { isDialogOpen = false },
+                onDismissRequest = onCloseAttendeeDialog,
                 onAddVisitor = { onEvent(EventScreenEvent.AddAttendee(it)) }
             )
             TaskySurface(
@@ -251,7 +260,7 @@ private fun EventScreenContent(
                     }
                     visitorsSection(
                         isEditing = state.isEditing,
-                        onEditVisitors = { isDialogOpen = true },
+                        onEditVisitors = onOpenAttendeeDialog,
                         creator = state.event.creator,
                         attendees = state.event.attendees
                     )
@@ -282,6 +291,14 @@ private fun EventScreenContent(
 @Composable
 private fun EventScreenPreview() {
     ScreenSurface {
-        EventScreenContent(onEvent = {}, state = EventState(), onAddPhotoClick = {}, navigator = EmptyDestinationsNavigator)
+        EventScreenContent(
+            onEvent = {},
+            state = EventState(),
+            isAddAttendeeDialogOpen = false,
+            onOpenAttendeeDialog = {},
+            onCloseAttendeeDialog = {},
+            onAddPhotoClick = {},
+            navigator = EmptyDestinationsNavigator
+        )
     }
 }

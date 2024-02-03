@@ -65,7 +65,7 @@ fun AddVisitorDialogContent(
     Column(
         modifier = Modifier
             .background(White, RoundedCornerShape(10.dp))
-            .padding(16.dp)
+            .padding(8.dp)
             .fillMaxWidth(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -79,19 +79,18 @@ fun AddVisitorDialogContent(
                 )
             }
         }
-        Spacer(modifier = Modifier.size(30.dp))
         Text(text = stringResource(R.string.add_visitor), color = Black, fontSize = 20.sp, fontWeight = FontWeight.Bold)
-        Spacer(modifier = Modifier.size(30.dp))
+        Spacer(modifier = Modifier.size(24.dp))
         TaskyTextField(text = emailAddress, onValueChange = { emailAddress = it }, placeholder = { Text(text = stringResource(id = R.string.email_address)) })
-        Spacer(modifier = Modifier.size(30.dp))
-        TaskyButton(onClick = { onAddVisitor(emailAddress) }) {
+        Spacer(modifier = Modifier.size(24.dp))
+        TaskyButton(onClick = { onAddVisitor(emailAddress) }, enabled = !isCheckingIfAttendeeExists) {
             if (isCheckingIfAttendeeExists) {
                 LoadingSpinner()
             } else {
                 Text(text = stringResource(R.string.add), fontWeight = FontWeight.Bold, fontSize = 16.sp)
             }
         }
-        Spacer(modifier = Modifier.size(30.dp))
+        Spacer(modifier = Modifier.size(24.dp))
     }
 }
 

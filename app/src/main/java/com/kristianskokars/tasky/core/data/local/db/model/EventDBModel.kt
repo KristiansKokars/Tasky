@@ -2,11 +2,13 @@ package com.kristianskokars.tasky.core.data.local.db.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.kristianskokars.tasky.core.data.remote.model.AttendeeResponseDTO
 import com.kristianskokars.tasky.core.data.remote.model.EventResponseDTO
 import com.kristianskokars.tasky.core.domain.model.Event
 import com.kristianskokars.tasky.core.domain.model.Photo
 import com.kristianskokars.tasky.core.domain.model.toRemindAtTimeOrDefaultThirtyMinutesBefore
 import com.kristianskokars.tasky.feature.agenda.domain.model.Agenda
+import com.kristianskokars.tasky.feature.event.domain.model.Attendee
 import com.kristianskokars.tasky.lib.toEpochMilliseconds
 import com.kristianskokars.tasky.lib.toLocalDateTime
 import kotlinx.datetime.Clock
@@ -25,7 +27,8 @@ data class EventDBModel(
     val remindAtInMillis: Long,
     val host: String,
     val isUserEventCreator: Boolean,
-    val photos: List<Photo>
+    val photos: List<Photo>,
+    val attendees: List<Attendee>,
 )
 
 fun EventDBModel.toEvent() = Event(
@@ -49,7 +52,8 @@ fun Event.toEventDBModel(currentUserId: String) = EventDBModel(
     remindAtInMillis = fromDateTime.toInstant(TimeZone.currentSystemDefault()).minus(remindAtTime.toDuration()).toEpochMilliseconds(),
     host = creator?.userId ?: "",
     isUserEventCreator = currentUserId == creator?.userId,
-    photos = photos.map { it.copy(key = it.key, url = it.url) }
+    photos = photos.map { it.copy(key = it.key, url = it.url) },
+    attendees = attendees,
 )
 
 fun EventDBModel.toAgendaEvent(clock: Clock) = Agenda.Event(
@@ -70,5 +74,15 @@ fun EventResponseDTO.toDBModel() = EventDBModel(
     remindAtInMillis = remindAt,
     host = host,
     isUserEventCreator = isUserEventCreator,
-    photos = photos.map { Photo(key = it.key, url = it.url, isLocal = false) }
+    photos = photos.map { Photo(key = it.key, url = it.url, isLocal = false) },
+    attendees = attendees.map { it.toAttendee() }
+)
+
+fun AttendeeResponseDTO.toAttendee() = Attendee(
+    userId = userId,
+    email = email,
+    fullName = fullName,
+    eventId = eventId,
+    isGoing = isGoing,
+    remindAt = remindAt
 )

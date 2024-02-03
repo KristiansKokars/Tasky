@@ -10,5 +10,4 @@ data class EventState(
     val isEditing: Boolean = false,
     val isSaving: Boolean = false,
     val isCheckingIfAttendeeExists: Boolean = false,
-    val errorAttendeeDoesNotExist: Boolean = false,
 )

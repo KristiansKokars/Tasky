@@ -199,10 +199,12 @@ class EventViewModel @Inject constructor(
     private fun onAddAttendee(newAttendeeEmail: String) {
         launch {
             val attendees = _state.value.event?.attendees ?: return@launch
-            // TODO: add case to inform this happened
-            if (attendees.find { it.email == newAttendeeEmail } != null) return@launch
+            if (attendees.find { it.email == newAttendeeEmail } != null) {
+                _events.send(UIEvent.AttendeeNotFound(newAttendeeEmail))
+                return@launch
+            }
 
-            _state.update { it.copy(isCheckingIfAttendeeExists = true, errorAttendeeDoesNotExist = false) }
+            _state.update { it.copy(isCheckingIfAttendeeExists = true) }
             val response = repository.getAttendee(newAttendeeEmail)
             response.mapBoth(
                 success = { attendee ->
@@ -217,9 +219,11 @@ class EventViewModel @Inject constructor(
                             event = event.copy(attendees = currentAttendees)
                         )
                     }
+                    _events.send(UIEvent.AttendeeAddedSuccessfuly(attendee))
                 },
                 failure = {
-                    _state.update { it.copy(errorAttendeeDoesNotExist = true) }
+                    _state.update { it.copy(isCheckingIfAttendeeExists = false) }
+                    _events.send(UIEvent.FailedToAddAttendee(newAttendeeEmail))
                 }
             )
         }
@@ -241,5 +245,8 @@ class EventViewModel @Inject constructor(
         data object ErrorSaving : UIEvent()
         data object DeletedSuccessfully : UIEvent()
         data object ErrorDeleting : UIEvent()
+        data class AttendeeAddedSuccessfuly(val addedAttendee: Attendee) : UIEvent()
+        data class FailedToAddAttendee(val failedEmail: String) : UIEvent()
+        data class AttendeeNotFound(val failedEmail: String) : UIEvent()
     }
 }
