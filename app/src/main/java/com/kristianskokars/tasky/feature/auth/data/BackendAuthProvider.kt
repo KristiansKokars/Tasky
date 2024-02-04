@@ -64,7 +64,8 @@ class BackendAuthProvider @Inject constructor(
                 userSettings.copy(
                     token = response.token,
                     userId = response.userId,
-                    fullName = response.fullName
+                    fullName = response.fullName,
+                    email = email
                 )
             }
         } catch (exception: HttpException) {
@@ -80,7 +81,7 @@ class BackendAuthProvider @Inject constructor(
 
     suspend fun logout() {
         userSettingsStore.updateData { userSettings ->
-            userSettings.copy(userId = null, fullName = null, token = null)
+            userSettings.copy(userId = null, fullName = null, token = null, email = null)
         }
     }
 }
