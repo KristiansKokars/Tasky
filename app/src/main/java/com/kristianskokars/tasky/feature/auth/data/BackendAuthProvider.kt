@@ -1,8 +1,10 @@
 package com.kristianskokars.tasky.feature.auth.data
 
 import androidx.datastore.core.DataStore
+import androidx.room.withTransaction
 import com.github.michaelbull.result.Err
 import com.github.michaelbull.result.Result
+import com.kristianskokars.tasky.core.data.local.db.TaskyDatabase
 import com.kristianskokars.tasky.core.data.local.model.UserSettings
 import com.kristianskokars.tasky.core.data.remote.TaskyAPI
 import com.kristianskokars.tasky.core.data.remote.model.LoginRequestDTO
@@ -25,6 +27,7 @@ import javax.inject.Singleton
 
 @Singleton
 class BackendAuthProvider @Inject constructor(
+    private val database: TaskyDatabase,
     private val api: TaskyAPI,
     private val userSettingsStore: DataStore<UserSettings>,
     @IOScope ioScope: CoroutineScope
@@ -82,6 +85,9 @@ class BackendAuthProvider @Inject constructor(
     suspend fun logout() {
         userSettingsStore.updateData { userSettings ->
             userSettings.copy(userId = null, fullName = null, token = null, email = null)
+        }
+        database.withTransaction {
+            database.clearAllTables()
         }
     }
 }
