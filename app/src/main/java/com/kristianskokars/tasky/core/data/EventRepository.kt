@@ -112,7 +112,14 @@ class EventRepository @Inject constructor(
 
     suspend fun deleteEvent(eventId: String): Result<Success, APIError> {
         try {
-            remote.deleteEvent(eventId)
+            val existingEvent = local.getEvent(eventId).first() ?: return Err(APIError.ClientError)
+
+            if (existingEvent.isUserEventCreator) {
+                remote.deleteEvent(eventId)
+            } else {
+                remote.deleteAttendee(eventId)
+            }
+
             withContext(NonCancellable) {
                 local.deleteEvent(eventId)
                 scheduler.cancelAlarm(eventId)

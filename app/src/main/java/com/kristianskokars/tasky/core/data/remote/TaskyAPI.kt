@@ -58,6 +58,11 @@ interface TaskyAPI {
     @GET("attendee")
     suspend fun getAttendee(@Query("email") email: String): GetAttendeeResponseDTO
 
+    @DELETE("attendee")
+    suspend fun deleteAttendee(
+        @Query("eventId") eventId: String
+    )
+
     @POST("task")
     suspend fun createTask(
         @Body body: CreateTaskRequestDTO
