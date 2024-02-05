@@ -20,8 +20,10 @@ import com.kristianskokars.tasky.feature.event.domain.model.Attendee
 import com.kristianskokars.tasky.lib.Success
 import com.kristianskokars.tasky.lib.success
 import com.kristianskokars.tasky.lib.toEpochMilliseconds
+import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.withContext
 import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toInstant
@@ -86,21 +88,23 @@ class EventRepository @Inject constructor(
             return Err(APIError.ClientError)
         }
 
-        local.insertEvent(event.toEventDBModel(currentUserId))
+        withContext(NonCancellable) {
+            local.insertEvent(event.toEventDBModel(currentUserId))
 
-        if (
-            remindAtInMillis > clock.now().toEpochMilliseconds() &&
-            existingEvent?.remindAtInMillis != remindAtInMillis
-        ) {
-            scheduler.scheduleExactAlarmAt(
-                remindAtInMillis,
-                event.id,
-                extras = mapOf(
-                    DeepLinks.Type.EVENT.toPair(),
-                    DeepLinks.Extra.NAME.toString() to event.title,
-                    DeepLinks.Extra.TIME.toString() to time.toEpochMilliseconds()
+            if (
+                remindAtInMillis > clock.now().toEpochMilliseconds() &&
+                existingEvent?.remindAtInMillis != remindAtInMillis
+            ) {
+                scheduler.scheduleExactAlarmAt(
+                    remindAtInMillis,
+                    event.id,
+                    extras = mapOf(
+                        DeepLinks.Type.EVENT.toPair(),
+                        DeepLinks.Extra.NAME.toString() to event.title,
+                        DeepLinks.Extra.TIME.toString() to time.toEpochMilliseconds()
+                    )
                 )
-            )
+            }
         }
 
         return success()
@@ -109,8 +113,10 @@ class EventRepository @Inject constructor(
     suspend fun deleteEvent(eventId: String): Result<Success, APIError> {
         try {
             remote.deleteEvent(eventId)
-            local.deleteEvent(eventId)
-            scheduler.cancelAlarm(eventId)
+            withContext(NonCancellable) {
+                local.deleteEvent(eventId)
+                scheduler.cancelAlarm(eventId)
+            }
         } catch (e: HttpException) {
             return Err(APIError.ServerError)
         } catch (e: IOException) {

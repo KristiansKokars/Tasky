@@ -14,8 +14,10 @@ import com.kristianskokars.tasky.core.domain.model.APIError
 import com.kristianskokars.tasky.core.domain.model.Reminder
 import com.kristianskokars.tasky.lib.Success
 import com.kristianskokars.tasky.lib.success
+import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.withContext
 import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toInstant
@@ -68,21 +70,23 @@ class ReminderRepository @Inject constructor(
             return Err(APIError.ClientError)
         }
 
-        local.insertReminder(reminder.toReminderDBModel())
+        withContext(NonCancellable) {
+            local.insertReminder(reminder.toReminderDBModel())
 
-        if (
-            remindAtInMillis > clock.now().toEpochMilliseconds() &&
-            existingReminder?.remindAtInMillis != remindAtInMillis
-        ) {
-            scheduler.scheduleExactAlarmAt(
-                remindAtInMillis,
-                reminder.id,
-                extras = mapOf(
-                    DeepLinks.Type.REMINDER.toPair(),
-                    DeepLinks.Extra.NAME.toString() to reminder.title,
-                    DeepLinks.Extra.TIME.toString() to time.toEpochMilliseconds()
+            if (
+                remindAtInMillis > clock.now().toEpochMilliseconds() &&
+                existingReminder?.remindAtInMillis != remindAtInMillis
+            ) {
+                scheduler.scheduleExactAlarmAt(
+                    remindAtInMillis,
+                    reminder.id,
+                    extras = mapOf(
+                        DeepLinks.Type.REMINDER.toPair(),
+                        DeepLinks.Extra.NAME.toString() to reminder.title,
+                        DeepLinks.Extra.TIME.toString() to time.toEpochMilliseconds()
+                    )
                 )
-            )
+            }
         }
 
         return success()
@@ -91,8 +95,10 @@ class ReminderRepository @Inject constructor(
     suspend fun deleteReminder(reminderId: String): Result<Success, APIError> {
         try {
             remote.deleteReminder(reminderId)
-            local.deleteReminder(reminderId)
-            scheduler.cancelAlarm(reminderId)
+            withContext(NonCancellable) {
+                local.deleteReminder(reminderId)
+                scheduler.cancelAlarm(reminderId)
+            }
         } catch (e: HttpException) {
             return Err(APIError.ServerError)
         } catch (e: IOException) {

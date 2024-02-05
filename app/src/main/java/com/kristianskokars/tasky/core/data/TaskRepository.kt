@@ -13,7 +13,9 @@ import com.kristianskokars.tasky.core.domain.model.APIError
 import com.kristianskokars.tasky.core.domain.model.Task
 import com.kristianskokars.tasky.lib.Success
 import com.kristianskokars.tasky.lib.success
+import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.withContext
 import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toInstant
@@ -67,30 +69,32 @@ class TaskRepository @Inject constructor(
             return Err(APIError.ClientError)
         }
 
-        local.insertTask(
-            TaskDBModel(
-                id = task.id,
-                title = task.title,
-                description = task.description,
-                timeInMillis = time.toEpochMilliseconds(),
-                remindAtTimeInMillis = remindAtInMillis,
-                isDone = task.isDone,
-            )
-        )
-
-        if (
-            remindAtInMillis > clock.now().toEpochMilliseconds() &&
-            existingTask?.remindAtTimeInMillis != remindAtInMillis
-        ) {
-            scheduler.scheduleExactAlarmAt(
-                remindAtInMillis,
-                task.id,
-                extras = mapOf(
-                    DeepLinks.Type.TASK.toPair(),
-                    DeepLinks.Extra.NAME.toString() to task.title,
-                    DeepLinks.Extra.TIME.toString() to time.toEpochMilliseconds()
+        withContext(NonCancellable) {
+            local.insertTask(
+                TaskDBModel(
+                    id = task.id,
+                    title = task.title,
+                    description = task.description,
+                    timeInMillis = time.toEpochMilliseconds(),
+                    remindAtTimeInMillis = remindAtInMillis,
+                    isDone = task.isDone,
                 )
             )
+
+            if (
+                remindAtInMillis > clock.now().toEpochMilliseconds() &&
+                existingTask?.remindAtTimeInMillis != remindAtInMillis
+            ) {
+                scheduler.scheduleExactAlarmAt(
+                    remindAtInMillis,
+                    task.id,
+                    extras = mapOf(
+                        DeepLinks.Type.TASK.toPair(),
+                        DeepLinks.Extra.NAME.toString() to task.title,
+                        DeepLinks.Extra.TIME.toString() to time.toEpochMilliseconds()
+                    )
+                )
+            }
         }
 
         return success()
@@ -99,13 +103,15 @@ class TaskRepository @Inject constructor(
     suspend fun deleteTask(taskId: String): Result<Success, APIError> {
         try {
             remote.deleteTask(taskId)
-            local.deleteTask(taskId)
+            withContext(NonCancellable) {
+                local.deleteTask(taskId)
+                scheduler.cancelAlarm(taskId)
+            }
         } catch (e: HttpException) {
             return Err(APIError.ServerError)
         } catch (e: IOException) {
             return Err(APIError.ClientError)
         }
-        scheduler.cancelAlarm(taskId)
 
         return success()
     }
@@ -124,12 +130,12 @@ class TaskRepository @Inject constructor(
                     isDone = !task.isDone
                 )
             )
+            withContext(NonCancellable) { local.insertTask(task.copy(isDone = !task.isDone)) }
         } catch (e: HttpException) {
             return Err(APIError.ServerError)
         } catch (e: IOException) {
             return Err(APIError.ClientError)
         }
-        local.insertTask(task.copy(isDone = !task.isDone))
 
         return success()
     }
