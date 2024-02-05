@@ -40,7 +40,8 @@ fun EventDBModel.toEvent() = Event(
     toDateTime = toInMillis.toLocalDateTime(),
     remindAtTime = (fromInMillis - remindAtInMillis).toRemindAtTimeOrDefaultThirtyMinutesBefore(),
     creatorUserId = host,
-    attendees = emptyList()
+    attendees = attendees,
+    isUserEventCreator = isUserEventCreator
 )
 
 fun Event.toEventDBModel(currentUserId: String) = EventDBModel(

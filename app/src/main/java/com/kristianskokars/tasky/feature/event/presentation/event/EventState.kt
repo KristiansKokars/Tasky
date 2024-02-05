@@ -12,7 +12,11 @@ data class EventState(
     val isEditing: Boolean = false,
     val isSaving: Boolean = false,
     val isCheckingIfAttendeeExists: Boolean = false,
+    val isCurrentUserGoing: Boolean = false,
     val selectedStatusFilter: AttendeeStatusFilter = AttendeeStatusFilter.ALL,
     val goingAttendees: List<Attendee> = emptyList(),
     val notGoingAttendees: List<Attendee> = emptyList(),
-)
+) {
+    val isHostEditing get() = isEditing && event?.isUserEventCreator == true
+    val isCurrentUserHost get() = event?.isUserEventCreator == true
+}

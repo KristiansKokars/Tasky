@@ -33,6 +33,7 @@ fun LazyListScope.visitorsSection(
     isEditing: Boolean = false,
     onEditVisitors: () -> Unit = {},
     creatorUserId: String? = null,
+    canRemoveAttendee: Boolean,
     goingAttendees: List<Attendee>,
     notGoingAttendees: List<Attendee>,
     onRemoveAttendee: (Attendee) -> Unit
@@ -76,7 +77,12 @@ fun LazyListScope.visitorsSection(
             AttendeeSectionTitle(text = stringResource(R.string.going))
         }
         items(goingAttendees, key = { it.userId }) { attendee ->
-            VisitorCard(attendee, isCreator = attendee.userId == creatorUserId, onRemoveAttendee = onRemoveAttendee)
+            VisitorCard(
+                attendee = attendee,
+                isCreator = attendee.userId == creatorUserId,
+                onRemoveAttendee = onRemoveAttendee,
+                canRemoveAttendee = canRemoveAttendee
+            )
             Spacer(modifier = Modifier.size(4.dp))
         }
     }
@@ -85,7 +91,12 @@ fun LazyListScope.visitorsSection(
             AttendeeSectionTitle(text = stringResource(R.string.not_going))
         }
         items(notGoingAttendees, key = { it.userId }) { attendee ->
-            VisitorCard(attendee, isCreator = attendee.userId == creatorUserId, onRemoveAttendee = onRemoveAttendee)
+            VisitorCard(
+                attendee = attendee,
+                isCreator = attendee.userId == creatorUserId,
+                onRemoveAttendee = onRemoveAttendee,
+                canRemoveAttendee = canRemoveAttendee
+            )
             Spacer(modifier = Modifier.size(4.dp))
         }
     }

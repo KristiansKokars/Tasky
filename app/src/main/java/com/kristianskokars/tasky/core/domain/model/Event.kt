@@ -15,4 +15,5 @@ data class Event(
     val remindAtTime: RemindAtTime = RemindAtTime.ThirtyMinutesBefore,
     val attendees: List<Attendee> = emptyList(),
     val creatorUserId: String,
+    val isUserEventCreator: Boolean,
 )

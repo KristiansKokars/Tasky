@@ -81,8 +81,10 @@ class EventViewModel @Inject constructor(
                                 eventId = eventId,
                                 isGoing = true,
                             )
-                        )
-                    )
+                        ),
+                        isUserEventCreator = true
+                    ),
+                    isCurrentUserGoing = true
                 )
             }
         }
@@ -91,8 +93,16 @@ class EventViewModel @Inject constructor(
     private fun fetchEvent(eventId: String) {
         launch {
             val event = repository.getEvent(eventId).first() ?: return@launch
+            val currentUserId = userStore.data.first().userId ?: return@launch
 
-            _state.update { it.copy(event = event) }
+            _state.update { state ->
+                state.copy(
+                    event = event,
+                    isCurrentUserGoing =
+                        event.isUserEventCreator ||
+                        event.attendees.find { it.userId == currentUserId }?.isGoing ?: false
+                )
+            }
         }
     }
 
@@ -113,6 +123,8 @@ class EventViewModel @Inject constructor(
             is EventScreenEvent.RemoveAttendee -> onRemoveAttendee(event.attendeeToRemove)
             is EventScreenEvent.SwitchStatusFilter -> onSwitchAttendeeFilter(event.newFilter)
             EventScreenEvent.BeginEditing -> onBeginEditing()
+            EventScreenEvent.JoinEventAsAttendee -> joinEventAsAttendee()
+            EventScreenEvent.LeaveEventAsAttendee -> leaveEventAsAttendee()
         }
     }
 
@@ -286,6 +298,35 @@ class EventViewModel @Inject constructor(
         _state.update { state ->
             state.copy(selectedStatusFilter = newAttendeeFilter)
         }
+    }
+
+    private fun joinEventAsAttendee() {
+        changeAttendeeIsGoingStatus(isGoing = true)
+    }
+
+    private fun leaveEventAsAttendee() {
+        changeAttendeeIsGoingStatus(isGoing = false)
+    }
+
+    private fun changeAttendeeIsGoingStatus(isGoing: Boolean) {
+        launch {
+            _state.update { state ->
+                val currentEvent = state.event ?: return@update state
+                val currentUserId = userStore.data.first().userId ?: return@launch
+
+                val updatedAttendees = currentEvent.attendees.toMutableList().apply {
+                    val currentAttendee = find { it.userId == currentUserId } ?: return@apply
+
+                    remove(currentAttendee)
+                    add(currentAttendee.copy(isGoing = isGoing))
+                }
+                state.copy(
+                    isCurrentUserGoing = isGoing,
+                    event = currentEvent.copy(attendees = updatedAttendees)
+                )
+            }
+        }
+        saveEvent()
     }
 
     sealed class UIEvent {

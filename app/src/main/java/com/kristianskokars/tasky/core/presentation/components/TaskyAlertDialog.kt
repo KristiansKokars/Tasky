@@ -32,11 +32,18 @@ fun TaskyAlertDialog(
         icon = { Icon(painter = painterResource(id = R.drawable.ic_delete), contentDescription = null)},
         dismissButton = { TextButton(onClick = onDismissRequest, colors = ButtonDefaults.textButtonColors(contentColor = Black)) {
             Text(text = stringResource(id = R.string.cancel))
-        }
-        },
-        confirmButton = { TextButton(onClick = onConfirm, colors = ButtonDefaults.textButtonColors(contentColor = Red)) {
-            Text(text = stringResource(id = R.string.ok))
         } },
+        confirmButton = {
+            TextButton(
+                onClick = {
+                    onDismissRequest()
+                    onConfirm()
+                },
+                colors = ButtonDefaults.textButtonColors(contentColor = Red)
+            ) {
+                Text(text = stringResource(id = R.string.ok))
+            }
+       },
         title = title,
         text = text
     )

@@ -162,6 +162,7 @@ private fun EventScreenContent(
     onAddPhotoClick: () -> Unit,
 ) {
     var showConfirmDeleteDialog by remember { mutableStateOf(false) }
+    var showConfirmLeaveDialog by remember { mutableStateOf(false) }
 
     if (showConfirmDeleteDialog) {
         TaskyAlertDialog(
@@ -169,6 +170,15 @@ private fun EventScreenContent(
             text = { Text(text = stringResource(R.string.confirm_event_delete)) },
             onConfirm = { onEvent(EventScreenEvent.Delete) },
             onDismissRequest = { showConfirmDeleteDialog = false }
+        )
+    }
+
+    if (showConfirmLeaveDialog) {
+        TaskyAlertDialog(
+            title = { Text(text = stringResource(id = R.string.leave_event_alert_dialog_title)) },
+            text = { Text(text = stringResource(R.string.confirm_leave_event)) },
+            onConfirm = { onEvent(EventScreenEvent.LeaveEventAsAttendee) },
+            onDismissRequest = { showConfirmLeaveDialog = false }
         )
     }
 
@@ -210,7 +220,7 @@ private fun EventScreenContent(
                             onEditTitle = {
                                 navigator.navigate(EditTitleScreenDestination(state.event.title))
                             },
-                            isEditing = state.isEditing
+                            isEditing = state.isHostEditing
                         )
                         Spacer(modifier = Modifier.size(8.dp))
                         TaskyDivider()
@@ -220,21 +230,21 @@ private fun EventScreenContent(
                             onEditDescription = {
                                 navigator.navigate(EditDescriptionScreenDestination(state.event.description))
                             },
-                            isEditing = state.isEditing,
+                            isEditing = state.isHostEditing,
                         )
                         if (state.event.photos.isNotEmpty() || state.isEditing) {
                             Spacer(modifier = Modifier.size(8.dp))
                             PhotosSection(
                                 photos = state.event.photos,
-                                isEditing = state.isEditing,
+                                isEditing = state.isHostEditing,
                                 onAddPhotoClick = onAddPhotoClick,
-                                onPhotoClick = { navigator.navigate(PhotoDetailScreenDestination(photo = it, canDelete = state.isEditing)) }
+                                onPhotoClick = { navigator.navigate(PhotoDetailScreenDestination(photo = it, canDelete = state.isHostEditing)) }
                             )
                             Spacer(modifier = Modifier.size(16.dp))
                         }
                         TaskyDivider()
                         TaskyTimeSection(
-                            isEditing = state.isEditing,
+                            isEditing = state.isHostEditing,
                             dateTime = state.event.fromDateTime,
                             timeState = TimeState.From,
                             onTimeSelected = { onEvent(EventScreenEvent.OnUpdateFromTime(it)) },
@@ -242,7 +252,7 @@ private fun EventScreenContent(
                         )
                         TaskyDivider()
                         TaskyTimeSection(
-                            isEditing = state.isEditing,
+                            isEditing = state.isHostEditing,
                             dateTime = state.event.toDateTime,
                             timeState = TimeState.To,
                             onTimeSelected = { onEvent(EventScreenEvent.OnUpdateToTime(it)) },
@@ -261,12 +271,13 @@ private fun EventScreenContent(
                     visitorsSection(
                         onSwitchStatusFilter = { onEvent(EventScreenEvent.SwitchStatusFilter(it)) },
                         selectedStatusFilter = state.selectedStatusFilter,
-                        isEditing = state.isEditing,
+                        isEditing = state.isHostEditing,
                         onEditVisitors = onOpenAttendeeDialog,
                         creatorUserId = state.event.creatorUserId,
                         goingAttendees = state.goingAttendees,
                         notGoingAttendees = state.notGoingAttendees,
-                        onRemoveAttendee = { onEvent(EventScreenEvent.RemoveAttendee(it)) }
+                        onRemoveAttendee = { onEvent(EventScreenEvent.RemoveAttendee(it)) },
+                        canRemoveAttendee = state.isCurrentUserHost,
                     )
                     item {
                         Spacer(modifier = Modifier.size(44.dp))
@@ -275,13 +286,36 @@ private fun EventScreenContent(
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.Center
                         ) {
-                            TextButton(
-                                colors = ButtonDefaults.textButtonColors(contentColor = Gray),
-                                onClick = { showConfirmDeleteDialog = true }
-                            )
-                            {
-                                Text(text = stringResource(R.string.delete_event))
+                            when {
+                                state.event.isUserEventCreator -> {
+                                    TextButton(
+                                        colors = ButtonDefaults.textButtonColors(contentColor = Gray),
+                                        onClick = { showConfirmDeleteDialog = true }
+                                    )
+                                    {
+                                        Text(text = stringResource(R.string.delete_event))
+                                    }
+                                }
+                                state.isCurrentUserGoing -> {
+                                    TextButton(
+                                        colors = ButtonDefaults.textButtonColors(contentColor = Gray),
+                                        onClick = { showConfirmLeaveDialog = true }
+                                    )
+                                    {
+                                        Text(text = stringResource(R.string.leave_event))
+                                    }
+                                }
+                                !state.isCurrentUserGoing -> {
+                                    TextButton(
+                                        colors = ButtonDefaults.textButtonColors(contentColor = Gray),
+                                        onClick = { onEvent(EventScreenEvent.JoinEventAsAttendee) }
+                                    )
+                                    {
+                                        Text(text = stringResource(R.string.join_event))
+                                    }
+                                }
                             }
+
                         }
                         Spacer(modifier = Modifier.size(16.dp))
                     }

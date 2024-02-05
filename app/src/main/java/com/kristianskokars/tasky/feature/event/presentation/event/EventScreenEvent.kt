@@ -24,4 +24,6 @@ sealed class EventScreenEvent {
     data class OnTitleChanged(val newTitle: String) : EventScreenEvent()
     data class OnDescriptionChanged(val newDescription: String) : EventScreenEvent()
     data class SwitchStatusFilter(val newFilter: AttendeeStatusFilter) : EventScreenEvent()
+    data object LeaveEventAsAttendee : EventScreenEvent()
+    data object JoinEventAsAttendee : EventScreenEvent()
 }

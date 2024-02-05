@@ -35,6 +35,7 @@ import com.kristianskokars.tasky.feature.event.domain.model.Attendee
 fun VisitorCard(
     attendee: Attendee,
     isCreator: Boolean,
+    canRemoveAttendee: Boolean,
     onRemoveAttendee: (Attendee) -> Unit,
 ) {
     var showConfirmRemoveAttendeeDialog by remember { mutableStateOf(false) }
@@ -63,7 +64,7 @@ fun VisitorCard(
                 fontWeight = FontWeight.Medium,
                 color = LightBlue
             )
-        } else {
+        } else if (canRemoveAttendee) {
             IconButton(onClick = { showConfirmRemoveAttendeeDialog = true }) {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_delete),
