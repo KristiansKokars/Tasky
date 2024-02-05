@@ -8,6 +8,7 @@ import com.kristianskokars.tasky.core.data.EventRepository
 import com.kristianskokars.tasky.core.data.ReminderRepository
 import com.kristianskokars.tasky.core.data.TaskRepository
 import com.kristianskokars.tasky.core.data.local.model.UserSettings
+import com.kristianskokars.tasky.core.presentation.util.nameInitials
 import com.kristianskokars.tasky.feature.agenda.data.AgendaRepository
 import com.kristianskokars.tasky.feature.agenda.domain.model.Agenda
 import com.kristianskokars.tasky.feature.auth.data.BackendAuthProvider
@@ -138,16 +139,6 @@ class AgendaViewModel @Inject constructor(
                 failure = { _events.send(UIEvent.ErrorDeleting) }
             )
         }
-    }
-
-    private fun String.nameInitials(): String {
-        val words = split(" ")
-        if (words.size == 1) {
-            val name = words[0]
-            return "${name[0]}${name[1]}".uppercase()
-        }
-
-        return words.map { it.first() }.joinToString("").uppercase()
     }
 
     sealed class UIEvent {

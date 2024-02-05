@@ -13,14 +13,16 @@ import com.kristianskokars.tasky.core.domain.model.Photo
 import com.kristianskokars.tasky.core.domain.model.RemindAtTime
 import com.kristianskokars.tasky.feature.event.domain.PhotoConverter
 import com.kristianskokars.tasky.feature.event.domain.model.Attendee
+import com.kristianskokars.tasky.feature.event.domain.model.AttendeeStatusFilter
 import com.kristianskokars.tasky.lib.asStateFlow
 import com.kristianskokars.tasky.lib.launch
+import com.kristianskokars.tasky.lib.randomID
 import com.kristianskokars.tasky.navArgs
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.datetime.LocalDate
@@ -32,34 +34,58 @@ import javax.inject.Inject
 @HiltViewModel
 class EventViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
-    userStore: DataStore<UserSettings>,
+    private val userStore: DataStore<UserSettings>,
     private val photoConverter: PhotoConverter,
     private val repository: EventRepository,
 ) : ViewModel() {
     private val navArgs = savedStateHandle.navArgs<EventScreenNavArgs>()
-    private val _state = MutableStateFlow(
-        EventState(
-            event = if (navArgs.isCreatingNewEvent) Event() else null,
-            isEditing = navArgs.isEditing
-        )
-    )
+    private val _state = MutableStateFlow(EventState(isEditing = navArgs.isEditing))
     private val _events = Channel<UIEvent>()
 
-    val state = combine(
-        userStore.data,
-        _state,
-    ) { user, state ->
-        if (navArgs.isCreatingNewEvent) {
-            if (user.userId == null || user.fullName == null) return@combine state
+    val state = _state.map {  state ->
+        val currentEvent = state.event ?: return@map state
 
-            val creator = Attendee(userId = user.userId, email = "", fullName = user.fullName)
-            state.copy(event = state.event?.copy(creator = creator))
-        } else state
-    }.asStateFlow(viewModelScope, EventState(isEditing = navArgs.isCreatingNewEvent))
+        val (goingAttendees, notGoingAttendees) = currentEvent.attendees.partition { it.isGoing }
+        state.copy(goingAttendees = goingAttendees, notGoingAttendees = notGoingAttendees)
+    }.asStateFlow(viewModelScope, EventState(isEditing = navArgs.isEditing))
     val events = _events.receiveAsFlow()
 
     init {
-        if (!navArgs.isCreatingNewEvent) fetchEvent(navArgs.id)
+        if (navArgs.isCreatingNewEvent) {
+            createNewEvent()
+        } else {
+            fetchEvent(navArgs.id)
+        }
+    }
+
+    private fun createNewEvent() {
+        launch {
+            val currentUser = userStore.data.first()
+            val currentUserId = currentUser.userId ?: return@launch
+            val currentUserEmail = currentUser.email ?: return@launch
+            val currentUserFullName = currentUser.fullName ?: return@launch
+
+            _state.update { state ->
+                if (state.event != null) return@launch
+
+                val eventId = randomID()
+                state.copy(
+                    event = Event(
+                        id = eventId,
+                        creatorUserId = currentUserId,
+                        attendees = listOf(
+                            Attendee(
+                                userId = currentUserId,
+                                email = currentUserEmail,
+                                fullName = currentUserFullName,
+                                eventId = eventId,
+                                isGoing = true,
+                            )
+                        )
+                    )
+                )
+            }
+        }
     }
 
     private fun fetchEvent(eventId: String) {
@@ -84,6 +110,8 @@ class EventViewModel @Inject constructor(
             is EventScreenEvent.OnUpdateToDate -> onUpdateToDate(event.newToDate)
             is EventScreenEvent.OnUpdateToTime -> onUpdateToTime(event.newToTime)
             is EventScreenEvent.AddAttendee -> onAddAttendee(event.addAttendeeEmail)
+            is EventScreenEvent.RemoveAttendee -> onRemoveAttendee(event.attendeeToRemove)
+            is EventScreenEvent.SwitchStatusFilter -> onSwitchAttendeeFilter(event.newFilter)
             EventScreenEvent.BeginEditing -> onBeginEditing()
         }
     }
@@ -198,20 +226,22 @@ class EventViewModel @Inject constructor(
 
     private fun onAddAttendee(newAttendeeEmail: String) {
         launch {
-            val attendees = _state.value.event?.attendees ?: return@launch
+            val currentEvent = _state.value.event ?: return@launch
+
+            val attendees = currentEvent.attendees
             if (attendees.find { it.email == newAttendeeEmail } != null) {
                 _events.send(UIEvent.AttendeeNotFound(newAttendeeEmail))
                 return@launch
             }
 
             _state.update { it.copy(isCheckingIfAttendeeExists = true) }
-            val response = repository.getAttendee(newAttendeeEmail)
+            val response = repository.getAttendee(newAttendeeEmail, currentEvent.id)
             response.mapBoth(
                 success = { attendee ->
                     _state.update { state ->
                         val event = state.event ?: return@update state
                         // TODO: add case to inform this happened
-                        if (event.creator?.userId == attendee.userId) return@launch
+                        if (event.creatorUserId == attendee.userId) return@launch
 
                         val currentAttendees = event.attendees.toMutableList().apply { add(attendee) }
                         state.copy(
@@ -229,6 +259,18 @@ class EventViewModel @Inject constructor(
         }
     }
 
+    private fun onRemoveAttendee(attendeeToRemove: Attendee) {
+        _state.update { state ->
+            val currentEvent = state.event ?: return@update state
+
+            state.copy(
+                event = currentEvent.copy(
+                    attendees = currentEvent.attendees.toMutableList().apply { remove(attendeeToRemove) }
+                )
+            )
+        }
+    }
+
     private fun deleteEvent() {
         launch {
             val event = _state.value.event ?: return@launch
@@ -237,6 +279,12 @@ class EventViewModel @Inject constructor(
                 success = { _events.send(UIEvent.DeletedSuccessfully) },
                 failure = { _events.send(UIEvent.ErrorDeleting) }
             )
+        }
+    }
+
+    private fun onSwitchAttendeeFilter(newAttendeeFilter: AttendeeStatusFilter) {
+        _state.update { state ->
+            state.copy(selectedStatusFilter = newAttendeeFilter)
         }
     }
 

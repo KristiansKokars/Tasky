@@ -9,5 +9,4 @@ data class Attendee(
     val fullName: String,
     val eventId: String,
     val isGoing: Boolean,
-    val remindAt: Long
 )

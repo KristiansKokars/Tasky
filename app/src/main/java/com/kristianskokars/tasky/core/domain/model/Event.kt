@@ -13,6 +13,6 @@ data class Event(
     val fromDateTime: LocalDateTime = currentSystemDateTime(),
     val toDateTime: LocalDateTime = currentSystemDateTime(),
     val remindAtTime: RemindAtTime = RemindAtTime.ThirtyMinutesBefore,
-    val creator: Attendee? = null,
     val attendees: List<Attendee> = emptyList(),
+    val creatorUserId: String,
 )

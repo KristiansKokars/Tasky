@@ -38,6 +38,7 @@
     <string name="delete_task">DELETE TASK</string>
     <string name="delete_task_alert_dialog_title">Delete Task</string>
     <string name="delete_agenda_alert_dialog_title">Delete Agenda</string>
+    <string name="remove_attendee_alert_dialog_title">Remove Attendee</string>
     <string name="delete_reminder_alert_dialog_title">Delete Reminder</string>
     <string name="delete_event_alert_dialog_title">Delete Event</string>
     <string name="edit_task">EDIT TASK</string>
@@ -90,6 +91,7 @@
     <string name="failed_delete_event">Failed to delete event due to a server error.</string>
     <string name="confirm_task_delete">Are you sure you want to delete this task?</string>
     <string name="confirm_agenda_delete">Are you sure you want to delete this agenda item?</string>
+    <string name="confirm_removing_attendee">Are you sure you want to remove this attendee from the event?</string>
     <string name="confirm_reminder_delete">Are you sure you want to delete this reminder?</string>
     <string name="confirm_event_delete">Are you sure you want to delete this event?</string>
     <string name="could_not_upload_file_due_to_it_being_too_large">Could not upload file due to it being too large</string>

@@ -259,10 +259,14 @@ private fun EventScreenContent(
                         TaskyDivider()
                     }
                     visitorsSection(
+                        onSwitchStatusFilter = { onEvent(EventScreenEvent.SwitchStatusFilter(it)) },
+                        selectedStatusFilter = state.selectedStatusFilter,
                         isEditing = state.isEditing,
                         onEditVisitors = onOpenAttendeeDialog,
-                        creator = state.event.creator,
-                        attendees = state.event.attendees
+                        creatorUserId = state.event.creatorUserId,
+                        goingAttendees = state.goingAttendees,
+                        notGoingAttendees = state.notGoingAttendees,
+                        onRemoveAttendee = { onEvent(EventScreenEvent.RemoveAttendee(it)) }
                     )
                     item {
                         Spacer(modifier = Modifier.size(44.dp))

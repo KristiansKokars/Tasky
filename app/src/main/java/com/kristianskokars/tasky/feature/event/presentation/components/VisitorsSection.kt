@@ -4,7 +4,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyListScope
@@ -13,6 +12,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -21,17 +21,21 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.kristianskokars.tasky.R
-import com.kristianskokars.tasky.core.presentation.components.TaskyButton
 import com.kristianskokars.tasky.core.presentation.theme.DarkGray
 import com.kristianskokars.tasky.core.presentation.theme.Gray
 import com.kristianskokars.tasky.core.presentation.theme.LightGray
 import com.kristianskokars.tasky.feature.event.domain.model.Attendee
+import com.kristianskokars.tasky.feature.event.domain.model.AttendeeStatusFilter
 
 fun LazyListScope.visitorsSection(
+    onSwitchStatusFilter: (AttendeeStatusFilter) -> Unit,
+    selectedStatusFilter: AttendeeStatusFilter,
     isEditing: Boolean = false,
     onEditVisitors: () -> Unit = {},
-    creator: Attendee? = null,
-    attendees: List<Attendee>
+    creatorUserId: String? = null,
+    goingAttendees: List<Attendee>,
+    notGoingAttendees: List<Attendee>,
+    onRemoveAttendee: (Attendee) -> Unit
 ) {
     item {
         Row(
@@ -62,58 +66,39 @@ fun LazyListScope.visitorsSection(
         }
     }
     item {
-        Row(
-            modifier = Modifier.height(36.dp),
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
-        ) {
-            TaskyButton(
-                modifier = Modifier.weight(1f),
-                onClick = { /*TODO*/ }
-            ) {
-                Text(text = stringResource(R.string.all))
-            }
-            TaskyButton(
-                modifier = Modifier.weight(1f),
-                enabled = false,
-                onClick = { /*TODO*/ }
-            ) {
-                Text(text = stringResource(R.string.going))
-            }
-            TaskyButton(
-                modifier = Modifier.weight(1f),
-                enabled = false,
-                onClick = { /*TODO*/ }
-            ) {
-                Text(text = stringResource(R.string.not_going))
-            }
+       AttendeeStatusTabRow(
+           onSwitchStatusFilter = onSwitchStatusFilter,
+           selectedStatusFilter = selectedStatusFilter
+       )
+    }
+    if (selectedStatusFilter == AttendeeStatusFilter.GOING || selectedStatusFilter == AttendeeStatusFilter.ALL) {
+        item {
+            AttendeeSectionTitle(text = stringResource(R.string.going))
         }
-    }
-    item {
-        Spacer(modifier = Modifier.size(20.dp))
-        Text(
-            text = stringResource(R.string.going),
-            color = DarkGray,
-            fontSize = 16.sp,
-            fontWeight = FontWeight.Medium
-        )
-        Spacer(modifier = Modifier.size(16.dp))
-    }
-    item {
-        if (creator != null) {
-            VisitorCard(attendee = creator, isCreator = true)
+        items(goingAttendees, key = { it.userId }) { attendee ->
+            VisitorCard(attendee, isCreator = attendee.userId == creatorUserId, onRemoveAttendee = onRemoveAttendee)
             Spacer(modifier = Modifier.size(4.dp))
         }
     }
-    items(attendees, key = { it.userId + it.fullName }) { attendee ->
-        VisitorCard(attendee, isCreator = false)
-        Spacer(modifier = Modifier.size(4.dp))
+    if (selectedStatusFilter == AttendeeStatusFilter.NOT_GOING || selectedStatusFilter == AttendeeStatusFilter.ALL) {
+        item {
+            AttendeeSectionTitle(text = stringResource(R.string.not_going))
+        }
+        items(notGoingAttendees, key = { it.userId }) { attendee ->
+            VisitorCard(attendee, isCreator = attendee.userId == creatorUserId, onRemoveAttendee = onRemoveAttendee)
+            Spacer(modifier = Modifier.size(4.dp))
+        }
     }
-    item {
-        Spacer(modifier = Modifier.size(20.dp))
-        Text(text = stringResource(R.string.not_going), color = DarkGray, fontSize = 16.sp, fontWeight = FontWeight.Medium)
-        Spacer(modifier = Modifier.size(16.dp))
-    }
-    items(attendees, key = { it.userId }) { attendee ->
-        VisitorCard(attendee, isCreator = false)
-    }
+}
+
+@Composable
+private fun AttendeeSectionTitle(text: String) {
+    Spacer(modifier = Modifier.size(20.dp))
+    Text(
+        text = text,
+        color = DarkGray,
+        fontSize = 16.sp,
+        fontWeight = FontWeight.Medium
+    )
+    Spacer(modifier = Modifier.size(16.dp))
 }

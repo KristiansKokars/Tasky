@@ -7,7 +7,7 @@ import com.kristianskokars.tasky.core.data.local.db.model.EventDBModel
 import com.kristianskokars.tasky.core.data.local.db.model.ReminderDBModel
 import com.kristianskokars.tasky.core.data.local.db.model.TaskDBModel
 
-@Database(entities = [TaskDBModel::class, EventDBModel::class, ReminderDBModel::class], version = 4)
+@Database(entities = [TaskDBModel::class, EventDBModel::class, ReminderDBModel::class], version = 5)
 @TypeConverters(Converters::class)
 abstract class TaskyDatabase : RoomDatabase() {
     abstract fun taskDao(): TaskDao

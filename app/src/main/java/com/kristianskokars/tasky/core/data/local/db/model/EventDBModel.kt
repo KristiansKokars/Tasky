@@ -39,7 +39,7 @@ fun EventDBModel.toEvent() = Event(
     fromDateTime = fromInMillis.toLocalDateTime(),
     toDateTime = toInMillis.toLocalDateTime(),
     remindAtTime = (fromInMillis - remindAtInMillis).toRemindAtTimeOrDefaultThirtyMinutesBefore(),
-    creator = null,
+    creatorUserId = host,
     attendees = emptyList()
 )
 
@@ -50,8 +50,8 @@ fun Event.toEventDBModel(currentUserId: String) = EventDBModel(
     fromInMillis = fromDateTime.toEpochMilliseconds(),
     toInMillis = toDateTime.toEpochMilliseconds(),
     remindAtInMillis = fromDateTime.toInstant(TimeZone.currentSystemDefault()).minus(remindAtTime.toDuration()).toEpochMilliseconds(),
-    host = creator?.userId ?: "",
-    isUserEventCreator = currentUserId == creator?.userId,
+    host = creatorUserId,
+    isUserEventCreator = currentUserId == creatorUserId,
     photos = photos.map { it.copy(key = it.key, url = it.url) },
     attendees = attendees,
 )
@@ -84,5 +84,4 @@ fun AttendeeResponseDTO.toAttendee() = Attendee(
     fullName = fullName,
     eventId = eventId,
     isGoing = isGoing,
-    remindAt = remindAt
 )

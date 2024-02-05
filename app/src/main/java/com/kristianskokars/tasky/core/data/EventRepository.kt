@@ -120,7 +120,7 @@ class EventRepository @Inject constructor(
         return success()
     }
 
-    suspend fun getAttendee(email: String): Result<Attendee, Unit> {
+    suspend fun getAttendee(email: String, eventId: String): Result<Attendee, Unit> {
         val response = remote.getAttendee(email)
         if (!response.doesUserExist || response.attendee == null) return Err(Unit)
 
@@ -129,6 +129,8 @@ class EventRepository @Inject constructor(
                 userId = response.attendee.userId,
                 email = response.attendee.email,
                 fullName = response.attendee.fullName,
+                eventId = eventId,
+                isGoing = true,
             )
         )
     }
