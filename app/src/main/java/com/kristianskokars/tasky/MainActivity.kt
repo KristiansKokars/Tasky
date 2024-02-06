@@ -29,6 +29,7 @@ class MainActivity : ComponentActivity() {
         val splashScreen = installSplashScreen()
         super.onCreate(savedInstanceState)
         splashScreen.setKeepOnScreenCondition { viewModel.isInitializingApp.value }
+
         setContent {
             val authState by viewModel.authState.collectAsStateWithLifecycle()
             val engine = rememberAnimatedNavHostEngine()
