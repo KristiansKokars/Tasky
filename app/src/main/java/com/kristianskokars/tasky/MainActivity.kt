@@ -31,6 +31,7 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     private val viewModel by viewModels<MainViewModel>()
+    @Inject lateinit var toaster: Toaster
 
     @OptIn(ExperimentalMaterialNavigationApi::class, ExperimentalAnimationApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,6 +42,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             val engine = rememberAnimatedNavHostEngine()
             val navControler = engine.rememberNavController()
+            val snackbarHostState = remember { SnackbarHostState() }
 
             // BUG: reruns every time on screen rotations, later refactor for better solution
             LaunchedEffect(key1 = Unit) {
@@ -76,13 +78,30 @@ class MainActivity : ComponentActivity() {
                 }
             }
 
+            LaunchedEffect(key1 = Unit) {
+                launchImmediate {
+                    toaster.messages.collect { message ->
+                        snackbarHostState.showSnackbar(message.text)
+                    }
+                }
+            }
+
             ScreenSurface {
-                DestinationsNavHost(
-                    modifier = Modifier.fillMaxSize(),
-                    navGraph = NavGraphs.root,
-                    engine = engine,
-                    navController = navControler
-                )
+                Scaffold(
+                    snackbarHost = {
+                        SnackbarHost(
+                            modifier = Modifier.padding(bottom = 72.dp),
+                            hostState = snackbarHostState
+                        )
+                    }
+                ) { padding ->
+                    DestinationsNavHost(
+                        modifier = Modifier.padding(padding).fillMaxSize(),
+                        navGraph = NavGraphs.root,
+                        engine = engine,
+                        navController = navControler
+                    )
+                }
             }
         }
     }

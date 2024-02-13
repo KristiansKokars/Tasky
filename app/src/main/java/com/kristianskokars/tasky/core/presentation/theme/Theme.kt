@@ -9,6 +9,8 @@ private val DarkColorScheme = darkColorScheme(
     primary = Gray,
     secondary = LightGray,
     tertiary = Black,
+    inverseSurface = Black,
+    inverseOnSurface = Light
 )
 
 @Composable
