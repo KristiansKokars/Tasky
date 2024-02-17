@@ -102,7 +102,7 @@ fun AgendaCard(
                 .padding(12.dp)
         ) {
             Column {
-                Spacer(modifier = Modifier.size(6.dp))
+                Spacer(modifier = Modifier.size(4.dp))
 
                 Box(
                     modifier = Modifier
@@ -169,7 +169,7 @@ fun AgendaCard(
                         text = agenda.description,
                         fontWeight = FontWeight.Light,
                         fontSize = 14.sp,
-                        lineHeight = 12.sp,
+                        lineHeight = 18.sp,
                         maxLines = 3,
                         overflow = TextOverflow.Ellipsis
                     )

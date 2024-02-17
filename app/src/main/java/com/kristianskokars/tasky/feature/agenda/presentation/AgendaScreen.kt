@@ -204,6 +204,7 @@ private fun AgendaList(
                 Text(text = stringResource(R.string.no_agenda_items_scheduled), color = Black)
             }
             if (lastDoneAgendaId == null && agendas.isNotEmpty()) {
+                Spacer(modifier = Modifier.size(8.dp))
                 TimeNeedle()
                 Spacer(modifier = Modifier.size(8.dp))
             }
