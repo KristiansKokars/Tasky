@@ -1,5 +1,5 @@
 
-<img src="screenshots/Tasky.png" alt="TaskyFeature Picture" />
+<img src="screenshots/Tasky.jpg" alt="Tasky Feature Picture" />
 
 # Tasky
 
