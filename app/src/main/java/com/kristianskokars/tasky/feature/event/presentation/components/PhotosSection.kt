@@ -21,6 +21,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
@@ -127,7 +129,10 @@ private fun PhotoCard(
         AsyncImage(
             modifier = Modifier.fillMaxSize(),
             model = photo.url,
-            contentDescription = contentDescription
+            contentDescription = contentDescription,
+            alignment = Alignment.Center,
+            contentScale = ContentScale.Crop,
+
         )
     }
 }
@@ -155,6 +160,7 @@ private fun ClickableCard(
     Box(
         modifier = Modifier
             .border(2.dp, LightBlue, shape = RoundedCornerShape(4.dp))
+            .clip(shape = RoundedCornerShape(4.dp))
             .size(64.dp)
             .clickable(
                 role = Role.Button,
