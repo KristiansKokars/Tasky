@@ -8,8 +8,8 @@ import com.kristianskokars.tasky.feature.auth.domain.validateEmail
 import com.kristianskokars.tasky.feature.auth.domain.validatePassword
 import com.kristianskokars.tasky.lib.launch
 import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
 import timber.log.Timber
+import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
@@ -53,20 +53,21 @@ class LoginViewModel @Inject constructor(
         val currentState = state.value
         if (currentState.isEmailValid != true || currentState.isPasswordValid != true) return
 
-        // TODO: implement loading
-        savedStateHandle[stateKey] = state.value.copy(loginResult = LoginResult.NoResult)
+        savedStateHandle[stateKey] = state.value.copy(loginResult = LoginResult.NoResult, isLoggingIn = true)
 
         launch {
             authProvider.login(currentState.email, currentState.password).mapBoth(
                 success = {
                     savedStateHandle[stateKey] = state.value.copy(
-                        loginResult = LoginResult.Success
+                        loginResult = LoginResult.Success,
+                        isLoggingIn = false
                     )
                     Timber.d("Logged in successfully: $currentState")
                 },
                 failure = {
                     savedStateHandle[stateKey] = state.value.copy(
-                        loginResult = LoginResult.Error(it)
+                        loginResult = LoginResult.Error(it),
+                        isLoggingIn = false
                     )
                     Timber.d("Failed to login user: $currentState")
                 }

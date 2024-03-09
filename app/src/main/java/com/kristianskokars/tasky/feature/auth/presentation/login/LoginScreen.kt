@@ -34,6 +34,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kristianskokars.tasky.R
+import com.kristianskokars.tasky.core.presentation.components.LoadingSpinner
 import com.kristianskokars.tasky.core.presentation.components.ScreenSurface
 import com.kristianskokars.tasky.core.presentation.components.TaskyButton
 import com.kristianskokars.tasky.core.presentation.components.TaskySurface
@@ -152,8 +153,12 @@ private fun LoginScreenContent(
                 isError = state.isPasswordValid == false
             )
             Spacer(modifier = Modifier.size(24.dp))
-            TaskyButton(enabled = state.canLogin, onClick = { onEvent(LoginEvent.Login) }) {
-                Text(text = stringResource(R.string.log_in))
+            TaskyButton(enabled = state.canLogin && !state.isLoggingIn, onClick = { onEvent(LoginEvent.Login) }) {
+                if (state.isLoggingIn) {
+                    LoadingSpinner()
+                } else {
+                    Text(text = stringResource(R.string.log_in))
+                }
             }
             Spacer(modifier = Modifier.size(24.dp))
             LoginResultBox(loginResult = state.loginResult)

@@ -10,6 +10,7 @@ data class LoginState(
     val password: String = "",
     val isPasswordValid: Boolean? = null,
     val isPasswordVisible: Boolean = false,
+    val isLoggingIn: Boolean = false,
     val loginResult: LoginResult = LoginResult.NoResult
 ) : Parcelable {
     val canLogin get() = isEmailValid == true && isPasswordValid == true
