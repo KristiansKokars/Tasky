@@ -32,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kristianskokars.tasky.R
+import com.kristianskokars.tasky.core.presentation.components.LoadingSpinner
 import com.kristianskokars.tasky.core.presentation.components.ScreenSurface
 import com.kristianskokars.tasky.core.presentation.components.TaskyButton
 import com.kristianskokars.tasky.core.presentation.components.TaskySurface
@@ -154,9 +155,13 @@ fun RegisterScreenContent(
             Spacer(modifier = Modifier.size(24.dp))
             TaskyButton(
                 onClick = { onEvent(RegisterEvent.Register) },
-                enabled = state.canRegister
+                enabled = state.canRegister && !state.isRegistering
             ) {
-                Text(text = stringResource(R.string.get_started))
+                if (state.isRegistering) {
+                    LoadingSpinner()
+                } else {
+                    Text(text = stringResource(R.string.get_started))
+                }
             }
             Spacer(modifier = Modifier.size(24.dp))
             RegisterResultBox(registerResult = state.registerResult)

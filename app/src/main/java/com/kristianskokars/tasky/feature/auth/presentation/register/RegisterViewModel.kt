@@ -8,8 +8,8 @@ import com.kristianskokars.tasky.feature.auth.domain.validateEmail
 import com.kristianskokars.tasky.feature.auth.domain.validatePassword
 import com.kristianskokars.tasky.lib.launch
 import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
 import timber.log.Timber
+import javax.inject.Inject
 
 @HiltViewModel
 class RegisterViewModel @Inject constructor(
@@ -63,6 +63,7 @@ class RegisterViewModel @Inject constructor(
         if (currentState.isNameValid != true || currentState.isEmailValid != true || currentState.isPasswordValid != true) return
 
         launch {
+            savedStateHandle[stateKey] = state.value.copy(isRegistering = true)
             authProvider.register(
                 name = currentState.name,
                 email = currentState.email,
@@ -70,13 +71,15 @@ class RegisterViewModel @Inject constructor(
             ).mapBoth(
                 success = {
                     savedStateHandle[stateKey] = state.value.copy(
-                        registerResult = RegisterResult.Success
+                        registerResult = RegisterResult.Success,
+                        isRegistering = false
                     )
                     Timber.d("Registered successfully: $currentState")
                 },
                 failure = {
                     savedStateHandle[stateKey] = state.value.copy(
-                        registerResult = RegisterResult.Error(it)
+                        registerResult = RegisterResult.Error(it),
+                        isRegistering = false
                     )
                     Timber.d("Failed to register user: $currentState")
                 }

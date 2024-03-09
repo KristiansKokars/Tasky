@@ -12,6 +12,7 @@ data class RegisterState(
     val password: String = "",
     val isPasswordValid: Boolean? = null,
     val isPasswordVisible: Boolean = false,
+    val isRegistering: Boolean = false,
     val registerResult: RegisterResult = RegisterResult.NoResult
 ) : Parcelable {
     val canRegister get() = isNameValid == true && isEmailValid == true && isPasswordValid == true
