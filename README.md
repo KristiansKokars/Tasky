@@ -15,9 +15,15 @@ Schedule upcoming tasks and reminders with ease, as well as events, where you ca
 - Create reminders that automatically pop a notification to let you stay on top of your day.
 - Edit and delete any existing agenda item.
 
+## Screenshots
+|                                         |                                  |                                   |                                     |
+|:---------------------------------------:|:--------------------------------:|:---------------------------------:|:-----------------------------------:|
+|   ![1](screenshots/AgendaScreen.png)    | ![2](screenshots/SelectDate.png) | ![3](screenshots/LoginScreen.png) | ![4](screenshots/CreateAccount.png) |
+| ![5](screenshots/CreateEventScreen.png) | ![6](screenshots/ViewPhoto.png)  | ![7](screenshots/SelectTime.png)  |   ![8](screenshots/EditTitle.png)   |
+
 ## Architecture
 
-The app follows the official Android app architecture guidance.
+The app follows the [official Android app architecture guidance](https://developer.android.com/topic/architecture), using the MVVM pattern.
 
 ## Technologies
 
