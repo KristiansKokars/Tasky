@@ -6,6 +6,7 @@ plugins {
     alias(libs.plugins.parcelize)
     alias(libs.plugins.serialization)
     alias(libs.plugins.secrets.gradle)
+    alias(libs.plugins.compose.compiler)
 }
 
 android {
@@ -47,9 +48,6 @@ android {
     buildFeatures {
         compose = true
         buildConfig = true
-    }
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.8"
     }
     packaging {
         resources {

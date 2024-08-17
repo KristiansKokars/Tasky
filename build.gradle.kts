@@ -6,6 +6,7 @@ plugins {
     alias(libs.plugins.parcelize) apply false
     alias(libs.plugins.serialization) apply false
     alias(libs.plugins.secrets.gradle) apply false
+    alias(libs.plugins.compose.compiler) apply false
 }
 
 buildscript {
